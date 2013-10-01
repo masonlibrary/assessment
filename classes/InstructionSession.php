@@ -59,10 +59,10 @@ class InstructionSession {
             {
                 $success='Session insert success! <br />';
                 
-                $query="update sessionDesc set sesdOutcomeDone='yes' where sesdID=".$this->sessionID;
+                $query="update sessiondesc set sesdOutcomeDone='yes' where sesdID=".$this->sessionID;
                 $this->outcomeDone='yes';
                 $result=mysqli_query($dbc, $query);
-                if(!$result){$success.='sesdOutcomeDone update failed: <br /> Error: '.mysql_error().'<br />Query: '.$query.'<br />';}
+                if(!$result){$success.='sesdOutcomeDone update failed: <br /> Error: '.mysqli_error().'<br />Query: '.$query.'<br />';}
                 else {$success.='sesdOutcomeDone update success! <br />';} 
              }
  
@@ -99,7 +99,7 @@ class InstructionSession {
         {
             $this->outcomesAssessed=$inArray;
             $success="Complete and utter failure...";
-            $query="insert into outcomessssessed (otcaotctID, otcaMet, otcaPartial, otcaNotMet, otcaNotAssessed) values ";
+            $query="insert into outcomesassessed (otcaotctID, otcaMet, otcaPartial, otcaNotMet, otcaNotAssessed) values ";
             
            
             foreach($inArray as $row)
@@ -127,7 +127,7 @@ class InstructionSession {
                 $query=trim($query, ",");
                 $dbc=$this->getConnection();
         $result=mysqli_query($dbc, $query);
-        if(!$result){$success.='outcomes assessed insert failed: <br /> Error: '.mysql_error().'<br />Query: -->'.$query.'<-- <br />';}
+        if(!$result){$success.='outcomes assessed insert failed: <br /> Error: '.mysql_error($dbc).'<br />Query: -->'.$query.'<-- <br />';}
         else 
             {
                 $success='Outcomes assessed. Success! <br />';
@@ -135,7 +135,7 @@ class InstructionSession {
                 $query="update sessiondesc set sesdAssessed='yes' where sesdID=".$this->sessionID;
                 $this->assessed='yes';
                 $result=mysqli_query($dbc, $query);
-                if(!$result){$success.='sesdAssessed update failed: <br /> Error: '.mysql_error().'<br />Query: '.$query.'<br />';}
+                if(!$result){$success.='sesdAssessed update failed: <br /> Error: '.mysql_error($dbc).'<br />Query: '.$query.'<br />';}
                 else {$success.='Session marked as assessed. Success! <br />';} 
              }
  
@@ -209,21 +209,21 @@ class InstructionSession {
                             }
 
                     $output.='<tr><td>'.$headingID.$outcomeName.'<input type="hidden" name="otctIDS[]" value="'.$taughtID.'" /></td>';
-                    $output.='<td class="assessmentInput"><select name="Met[]" class="assessmentDropDown outcome'.$taughtID.'"><option value=""></option>';
+                    $output.='<td class="assessmentInput"><select name="Met[]" class="assessmentDropDown outcome'.$taughtID.'"><!--<option value=""></option>-->';
                             for($x=0; $x<101; $x++)
                                 {
                                 $output.='<option value="'.$taughtID.' '.$x.'">'.$x.'</option>';
                                 }
                                 $output.='</select></td>';
                                 
-                     $output.='<td class="assessmentInput"><select name="Partial[]" class="assessmentDropDown outcome'.$taughtID.'"><option value=""></option>';
+                     $output.='<td class="assessmentInput"><select name="Partial[]" class="assessmentDropDown outcome'.$taughtID.'"><!--<option value=""></option>-->';
                             for($x=0; $x<101; $x++)
                                 {
                                 $output.='<option value="'.$taughtID.' '.$x.'">'.$x.'</option>';
                                 }
                                 $output.='</select></td>'; 
                                 
-                     $output.='<td class="assessmentInput"><select name="NotMet[]" class="assessmentDropDown outcome'.$taughtID.'"><option value=""></option>';
+                     $output.='<td class="assessmentInput"><select name="NotMet[]" class="assessmentDropDown outcome'.$taughtID.'"><!--<option value=""></option>-->';
                             for($x=0; $x<101; $x++)
                                 {
                                 $output.='<option value="'.$taughtID.' '.$x.'">'.$x.'</option>';
