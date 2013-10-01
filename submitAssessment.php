@@ -27,7 +27,6 @@ echo"<h1>Submit assessments</h1>";
  $didNotAssess=$_POST['otctDidNotAssess'];
  $outcomesTaughtIDS=$_POST['otctIDS'];
  
-
  $MET=array();
  $PARTIAL=array();
  $NOTMET=array();
@@ -39,17 +38,21 @@ echo "<br />";
  for ($x=0;$x<$assessedCount;$x++)
      {
      
-      
-       $a= explode(" ",$met[$x]);
+		$a=explode(" ",$met[$x]);
+		$b=explode(" ",$partial[$x]);
+		$c=explode(" ",$notmet[$x]);
+		$d=explode(" ", $didNotAssess[$x]);
+		
+		// This code dies on a blank entry in an array. Here, we force it to 0
+		// (no students in this category) to ensure it doesn't. -Webster
+		if(!$a[0]) { $a[0] = $outcomesTaughtIDS[$x]; $a[1] = 0; }
+		if(!$b[0]) { $b[0] = $outcomesTaughtIDS[$x]; $b[1] = 0; }
+		if(!$c[0]) { $c[0] = $outcomesTaughtIDS[$x]; $c[1] = 0; }
+		if(!$d[0]) { $d[0] = $outcomesTaughtIDS[$x]; $d[1] = 0; }
+		
        $MET[$a[0]]=$a[1];
-       
-       $b=explode(" ",$partial[$x]);
        $PARTIAL[$b[0]]=$b[1];
-       
-       $c=explode(" ",$notmet[$x]);
-       $NOTMET[$c[0]]=$c[1];  
-      
-       $d=explode(" ", $didNotAssess[$x]);
+       $NOTMET[$c[0]]=$c[1];
        $NOTASSESSED[$d[0]]=$d[1];
      }
      
@@ -67,7 +70,6 @@ echo "<br />";
      $output= $currentSessions[0]->setAndInsertOutcomesAssessed($assessed);
     
      header('Location: assessOutcomes.php');
-     
      
      
 ?>

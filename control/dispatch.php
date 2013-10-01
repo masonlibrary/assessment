@@ -1,7 +1,7 @@
 <?php
 
 include('connectionVars.php');
-include('../classesInstructionSession.php');
+include('../classes/InstructionSession.php');
 require_once('startSession.php');
 
 
