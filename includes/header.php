@@ -24,7 +24,7 @@
        <div class="logo-block">
 		<a href="http://www.keene.edu"><img src="images/KSC-wordmark-150px.png" alt="Keene State College" /></a>
 		<div id="logoTitleDiv">
-			<h2 id="djcWEMlib" ><a href="http://keene.edu/library/">Wallace E. Mason Library</a></h2>
+			<h2 id="djcWEMlib" ><a href="http://keene.edu/academics/library/">Wallace E. Mason Library</a></h2>
 			<h2 id="assessmentTitle"><a href="index.php">Information Literacy Assessment</a></h2>
 		</div></div> </div> 
 <?php
