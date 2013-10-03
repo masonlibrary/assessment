@@ -1,7 +1,7 @@
 <?php
 
 
-   require_once('control/startsession.php');
+   require_once('control/startSession.php');
    require_once("control/connection.php");
 // Insert the page header
   $page_title = 'Enter Session Data';
