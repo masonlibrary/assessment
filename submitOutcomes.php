@@ -14,7 +14,7 @@ $outcomesTaught = $_POST['outcomesTaught'];
 for ($x=0; $x< $sessionCount; $x++)
     {
         $output=$currentSessions[$x]->setAndInsertOutcomesTaught($outcomesTaught);
-        echo $output;
+//        echo $output;
     }
 
     $_SESSION['dialogText']="Success!";
