@@ -68,7 +68,7 @@ require_once('control/startSession.php');
 //                        "sesdOutcomeDone='no' and s.sesdcrspID=c.crspID group by s.sesdcrspID";
 //                
 //                $result = mysqli_query($dbc, $query) or die('This is an outrage- query issues.');
-//                if(!$result){echo "this is an outrage: ".mysql_error()."\n";}
+//                if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
 //
 //                
 //                

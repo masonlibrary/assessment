@@ -11,7 +11,7 @@ include("control/connection.php");
   $query = "select p.ppleID as ID, p.ppleFName as FName, p.ppleLName as LName from people p, librarianmap l, users u ".
               "where p.ppleID=l.libmppleID and l.libmStatus='active' and $userID=l.libmuserID";
    $result = mysqli_query($dbc, $query) or die('dammit- query issues.<br />'.$query);
-        if(!$result){echo "this is an outrage: ".mysql_error()."\n";}
+        if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
 
         while ( $row = mysqli_fetch_assoc( $result) )
         {

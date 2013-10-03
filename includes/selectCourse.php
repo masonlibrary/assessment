@@ -22,8 +22,8 @@
 
                                             include("control/connection.php");
                                             $query = "select crspID as ID, crspName as Name from courseprefix";
-                                            $result = mysqli_query($dbc, $query) or die('Mr. Christian!- query issues.'.mysql_error());
-                                            if(!$result){echo "this is an outrage: ".mysql_error()."\n";}
+                                            $result = mysqli_query($dbc, $query) or die('Mr. Christian!- query issues.'.mysqli_error());
+                                            if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
 
                                             while ( $row = mysqli_fetch_assoc( $result) )
                                             {

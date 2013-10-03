@@ -25,8 +25,8 @@
             
            
             
-            $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysql_error().$query);
-        if(!$result){echo "this is an outrage: ".mysql_error().$query."\n";}
+            $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysqli_error().$query);
+        if(!$result){echo "this is an outrage: ".mysqli_error().$query."\n";}
                      
                print_r($result);
                echo "<br /><br />";

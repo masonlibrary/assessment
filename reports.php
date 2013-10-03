@@ -30,7 +30,7 @@ require_once('control/startSession.php');
                 $query = "select * from allsessionsbylibrarian";
                 
                 $result = mysqli_query($dbc, $query) or die('This is an outrage- query issues.');
-                if(!$result){echo "this is an outrage: ".mysql_error()."\n";}
+                if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
 
                 $dataString="data=[";
                 
@@ -46,7 +46,7 @@ require_once('control/startSession.php');
                 //next one....
                 $query="select * from allsessionsbylength";
                 $result = mysqli_query($dbc, $query) or die('This is an outrage- query issues.');
-                if(!$result){echo "this is an outrage: ".mysql_error()."\n";}
+                if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
 
                 $dataString1="data1=[";
                 

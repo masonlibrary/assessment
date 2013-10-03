@@ -10,8 +10,8 @@
                                         
                                         include("control/connection.php");
                                         $query = "select rsrpID as ID, rsrpName as Name from resourcepool order by Name asc";
-                                        $result = mysqli_query($dbc, $query) or die('Shite!- query issues.'.mysql_error());
-                                        if(!$result){echo "this is an outrage: ".mysql_error()."\n";}
+                                        $result = mysqli_query($dbc, $query) or die('Shite!- query issues.'.mysqli_error());
+                                        if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
                                         echo '<input class="xxx resourcesBox none mustHaveBox" title="You must choose at least 1 resource (or specify NONE) per session" type="checkbox" name="resourcesIntroduced" value="none"  /><span class="xxx resourcesbox">None</span><br class="xxx resourcesbox" />';  
                                         while ( $row = mysqli_fetch_assoc( $result) )
                                         {

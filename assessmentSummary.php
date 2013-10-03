@@ -43,8 +43,8 @@
             $query='select * from outcomeabbrview order by headingID;';
            
             
-            $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysql_error().$query);
-        if(!$result){echo "this is an outrage: ".mysql_error().$query."\n";}
+            $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysqli_error().$query);
+        if(!$result){echo "this is an outrage: ".mysqli_error().$query."\n";}
         
             // set up variables
                 $uniqueOutcomes = array();
@@ -137,8 +137,8 @@
                        $query ="select sum(Met) as Met, sum(Partial) as Partial, sum(NotMet) as NotMet ".
                                "from outcomesassessedview where date ".inAcademicYear($fiscalYear)." and abbr = '$currentABBR'";  
                        
-                        $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysql_error().$query);
-                        if(!$result){echo "this is an outrage: ".mysql_error().$query."\n";}
+                        $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysqli_error().$query);
+                        if(!$result){echo "this is an outrage: ".mysqli_error().$query."\n";}
                         while ( $row = mysqli_fetch_assoc( $result) )
                             {
                             

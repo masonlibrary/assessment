@@ -13,8 +13,8 @@
                                         
                                         include("control/connection.php");
                                         $query = "select seslID as ID, seslName as Name from sesslength";
-                                        $result = mysqli_query($dbc, $query) or die('Victoria! I know your secret!- query issues.'.mysql_error());
-                                        if(!$result){echo "this is an outrage: ".mysql_error()."\n";}
+                                        $result = mysqli_query($dbc, $query) or die('Victoria! I know your secret!- query issues.'.mysqli_error());
+                                        if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
 
                                         while ( $row = mysqli_fetch_assoc( $result) )
                                         {

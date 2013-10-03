@@ -44,7 +44,7 @@
                      '</tr></thead><tbody>';
              
              $result = mysqli_query($dbc, $query) or die('This is an outrage-in testingDates.    '.$query);
-                if(!$result){echo "this is an outrage: ".mysql_error()."\n $query";}
+                if(!$result){echo "this is an outrage: ".mysqli_error()."\n $query";}
                 
                
                 while ( $row = mysqli_fetch_assoc( $result) )
