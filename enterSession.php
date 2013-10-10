@@ -35,10 +35,7 @@
 	$currentSession = new InstructionSession();
 	if (isset($_GET["sesdID"])) {
 		$currentSession->loadSession($_GET["sesdID"]);
-		//print_r($currentSessions[0]);
 	}
-	var_dump($currentSession);
-
 ?>
 
 <form id="assessmentForm" method="post" action="submitData.php">
