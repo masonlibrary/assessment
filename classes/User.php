@@ -60,8 +60,8 @@ class User
        {
             $dbc=$this->getConnection();
             $query="select count(*) as count from librarianmap where libmuserID = $inID";
-            $result = mysqli_query($dbc, $query) or die('gah!- query issues.'.mysqli_error().$query);
-            if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+            $result = mysqli_query($dbc, $query) or die('gah!- query issues.'.mysqli_error($dbc).$query);
+            if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
             while ( $row = mysqli_fetch_assoc( $result) )
                 {
                     if ($row['count']==1)
@@ -75,8 +75,8 @@ class User
          {
          $dbc=$this->getConnection();
          $query = "select p.ppleLName as LName, p.ppleFName as FName, l.libmID as ID from people p, librarianmap l where  l.libmuserID= $inID and p.ppleID=l.libmppleID";
-         $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.$query.'<br>'.mysqli_error());
-          if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+         $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.$query.'<br>'.mysqli_error($dbc));
+          if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
 
             while ( $row = mysqli_fetch_assoc( $result) )
             {
@@ -144,7 +144,7 @@ class User
                      '</tr></thead><tbody>';
 
              $result = mysqli_query($dbc, $query) or die('This is an outrage-in function getMyAssessment query issues.'.$query);
-                if(!$result){echo "this is an outrage: ".mysqli_error()."\n $query";}
+                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n $query";}
 
 
                 while ( $row = mysqli_fetch_assoc( $result) )
@@ -230,7 +230,7 @@ class User
                      '</tr></thead><tbody>';
 
              $result = mysqli_query($dbc, $query) or die('This is an outrage-in function getMySessions query issues.'.$query);
-                if(!$result){echo "this is an outrage: ".mysqli_error()."\n $query";}
+                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n $query";}
 
 
                 while ( $row = mysqli_fetch_assoc( $result) )
@@ -282,7 +282,7 @@ class User
                         "sesdOutcomeDone='yes' and sesdAssessed='no' and s.sesdcrspID=c.crspID group by s.sesdcrspID";
 
                 $result = mysqli_query($dbc, $query) or die('This is an outrage- in getNeedAssessment - query issues. <br>'.$query);
-                if(!$result){echo "this is an outrage -in getNeedAssessment-: ".mysqli_error()."\n".$query;}
+                if(!$result){echo "this is an outrage -in getNeedAssessment-: ".mysqli_error($dbc)."\n".$query;}
 
                 //fill array with prefix as key and count needing outcomes as value
                 $counts = array();
@@ -308,8 +308,8 @@ class User
                 "cp.crspID=sd.sesdcrspID AND ".
                 "sd.sesdAssessed='no' AND sd.sesdOutcomeDone='yes'".
                 "order by sd.sesdcrspID, sd.sesdCourseSection, sd.sesdDate";
-        $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysqli_error().$query);
-        if(!$result){echo "this is an outrage: ".mysqli_error().$query."\n";}
+        $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysqli_error($dbc).$query);
+        if(!$result){echo "this is an outrage: ".mysqli_error($dbc).$query."\n";}
 
 
         $output='<ul>DanaJamesPlaceholder</ul><div id="courseByPrefix" class="empty">';
@@ -371,7 +371,7 @@ class User
 
 
 
-                if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
 
                 //fill array with prefix as key and count needing outcomes as value
                 $counts = array();
@@ -401,8 +401,8 @@ class User
                 "cp.crspID=sd.sesdcrspID AND ".
                 "sd.sesdOutcomeDone='no' ".
                 "order by sd.sesdcrspID, sd.sesdCourseSection, sd.sesdDate";
-        $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysqli_error().$query);
-        if(!$result){echo "this is an outrage: ".mysqli_error().$query."\n";}
+        $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysqli_error($dbc).$query);
+        if(!$result){echo "this is an outrage: ".mysqli_error($dbc).$query."\n";}
 
 
 

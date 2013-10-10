@@ -20,7 +20,7 @@ select p.ppleID as ID, p.ppleLName as LName, p.ppleFName as FName
                                                         "from people p, librarianmap l ".
                                                         "where p.ppleID=l.libmppleID and l.libmStatus='active'";
                                                 $result = mysqli_query($dbc, $query) or die('dammit- query issues.');
-                                                if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+                                                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
 
                                                 while ( $row = mysqli_fetch_assoc( $result) )
                                                 {

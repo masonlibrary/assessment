@@ -54,7 +54,7 @@ class InstructionSession {
 
         $dbc=$this->getConnection();
         $result=mysqli_query($dbc, $query);
-        if(!$result){$success.='outcomes taught insert failed: <br /> Error: '.mysqli_error().'<br />Query: -->'.$query.'<-- <br />';}
+        if(!$result){$success.='outcomes taught insert failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: -->'.$query.'<-- <br />';}
         else
             {
                 $success='Session insert success! <br />';
@@ -62,7 +62,7 @@ class InstructionSession {
                 $query="update sessiondesc set sesdOutcomeDone='yes' where sesdID=".$this->sessionID;
                 $this->outcomeDone='yes';
                 $result=mysqli_query($dbc, $query);
-                if(!$result){$success.='sesdOutcomeDone update failed: <br /> Error: '.mysqli_error().'<br />Query: '.$query.'<br />';}
+                if(!$result){$success.='sesdOutcomeDone update failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
                 else {$success.='sesdOutcomeDone update success! <br />';}
              }
 
@@ -177,7 +177,7 @@ class InstructionSession {
 
                 $dbc=$this->getConnection();
                 $result = mysqli_query($dbc, $query) or die('Oh nonono! Whyyyy??- query issues. <br /><h4>'.$query.'</h4');
-                        if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+                        if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
 
                     $assessedCount=0;
                     $output.='<div class="assessmentDiv">';
@@ -291,7 +291,7 @@ class InstructionSession {
 
         $dbc=$this->getConnection();
         $result=mysqli_query($dbc, $query);
-        if(!$result){$success.='Session insert failed: <br /> Error: '.mysqli_error().'<br />Query: '.$query.'<br />';}
+        if(!$result){$success.='Session insert failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
         else {$success='Session insert success! <br />';}
         $this->setSessionID(mysqli_insert_id($dbc));
 
@@ -304,7 +304,7 @@ class InstructionSession {
             //notes
                 $query=$this->getNoteQuery();
                 $result=mysqli_query($dbc, $query);
-                    if(!$result){$success.=' noteQuery insert failed <br /> Error: '.mysqli_error().'<br />Query: '.$query.'<br />';}
+                    if(!$result){$success.=' noteQuery insert failed <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
                     else {$success.=' Note Insert success! <br />';}   /* <br />'."Query is: $query <br />";}*/
                 }
              else{$success.=' No note to insert. <br />';}
@@ -315,7 +315,7 @@ class InstructionSession {
                  {
                     $query= $this->getResourcesQuery($this->sessionID, $this->resourcesIntroducedID);
                     $result=mysqli_query($dbc, $query);
-                    if(!$result){$success.='  resourcesQuery insert fail <br />Error: '.mysqli_error().'<br /> Query: '.$query.'<br />';}
+                    if(!$result){$success.='  resourcesQuery insert fail <br />Error: '.mysqli_error($dbc).'<br /> Query: '.$query.'<br />';}
                     else {$success.=' resources Insert success! <br />';}
                  }
                  else{$success.=' No resources introduced';}
@@ -369,7 +369,7 @@ class InstructionSession {
         $query = $this->getSessionQuery($inID);
         $dbc=$this->getConnection();
         $result=  mysqli_query($dbc, $query);
-        if(!$result){$success+=mysqli_error();}
+        if(!$result){$success+=mysqli_error($dbc);}
         else {$success='Session load success!';}
 
          while ( $row = mysqli_fetch_assoc( $result) )
@@ -551,8 +551,8 @@ class InstructionSession {
          {
          $dbc=$this->getConnection();
          $query = "select crspName as prefixName from courseprefix where crspID= $inID";
-         $result = mysqli_query($dbc, $query) or die($query.' crustacean!- query issues.'.mysqli_error());
-          if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+         $result = mysqli_query($dbc, $query) or die($query.' crustacean!- query issues.'.mysqli_error($dbc));
+          if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
 
             while ( $row = mysqli_fetch_assoc( $result) )
             {
@@ -566,8 +566,8 @@ class InstructionSession {
          {
          $dbc=$this->getConnection();
          $query = "select ppleLName as LName, ppleFName as FName from people p, librarianmap l where  libmID= $inID and p.ppleID=l.libmppleID";
-         $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error());
-          if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+         $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error($dbc));
+          if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
 
             while ( $row = mysqli_fetch_assoc( $result) )
             {
@@ -599,8 +599,8 @@ class InstructionSession {
         {
         $dbc=$this->getConnection();
          $query = "select locaName as Name from location where  locaID= $inID ";
-         $result = mysqli_query($dbc, $query) or die('crappy crustacean!- query issues.'.mysqli_error());
-          if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+         $result = mysqli_query($dbc, $query) or die('crappy crustacean!- query issues.'.mysqli_error($dbc));
+          if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
 
             while ( $row = mysqli_fetch_assoc( $result) )
             {
@@ -630,8 +630,8 @@ class InstructionSession {
         {
         $dbc=$this->getConnection();
          $query = "select seslName as Name from sesslength where seslID= $inID ";
-         $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error());
-          if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+         $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error($dbc));
+          if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
 
 
             while ( $row = mysqli_fetch_assoc( $result) )
@@ -746,8 +746,8 @@ class InstructionSession {
             {
 
             $query = "select rsrpName as Name from resourcepool where rsrpID=$value";
-            $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error().$query);
-            if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+            $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error($dbc).$query);
+            if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
             while ( $row = mysqli_fetch_assoc( $result) )
                 {
                  $this->resourcesIntroducedName[$value] = $row['Name'];

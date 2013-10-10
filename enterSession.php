@@ -73,8 +73,8 @@
 						<?php
 							include("control/connection.php");
 							$query = "select crspID as ID, crspName as Name from courseprefix";
-							$result = mysqli_query($dbc, $query) or die('Mr. Christian!- query issues.' . mysqli_error());
-							if (!$result) { echo "this is an outrage: " . mysqli_error() . "\n"; }
+							$result = mysqli_query($dbc, $query) or die('Mr. Christian!- query issues.' . mysqli_error($dbc));
+							if (!$result) { echo "this is an outrage: " . mysqli_error($dbc) . "\n"; }
 
 							$crspID = $currentSession->getCoursePrefixID();
 							while ($row = mysqli_fetch_assoc($result)) {
@@ -158,8 +158,8 @@
 						echo "<p>after include</p>";
 						$query = "select locaID as ID, locaname as Name from location";
 						echo "<p>$query</p>";
-						$result = mysqli_query($dbc, $query) or die('crappy crustacean!- query issues.' . mysqli_error());
-						if (!$result) { echo "this is an outrage: " . mysqli_error() . "\n"; }
+						$result = mysqli_query($dbc, $query) or die('crappy crustacean!- query issues.' . mysqli_error($dbc));
+						if (!$result) { echo "this is an outrage: " . mysqli_error($dbc) . "\n"; }
 
 						$location = $currentSession->getLocation();
 						while ($row = mysqli_fetch_assoc($result)) {
@@ -212,8 +212,8 @@
 					<?php
 						include("control/connection.php");
 						$query = "select seslID as ID, seslName as Name from sesslength";
-						$result = mysqli_query($dbc, $query) or die('Victoria! I know your secret!- query issues.' . mysqli_error());
-						if (!$result) { echo "this is an outrage: " . mysqli_error() . "\n"; }
+						$result = mysqli_query($dbc, $query) or die('Victoria! I know your secret!- query issues.' . mysqli_error($dbc));
+						if (!$result) { echo "this is an outrage: " . mysqli_error($dbc) . "\n"; }
 
 						$length = $currentSession->getLengthOfSessionID();
 						while ($row = mysqli_fetch_assoc($result)) {
@@ -257,13 +257,13 @@
 				<?php
 					include("control/connection.php");
 					//$query = "select rsrpID as ID, rsrpName as Name from resourcepool order by Name asc";
-					//$result = mysqli_query($dbc, $query) or die('Shite!- query issues.' . mysqli_error());
+					//$result = mysqli_query($dbc, $query) or die('Shite!- query issues.' . mysqli_error($dbc));
 					$query = "select rp.rsrpID as ID, rp.rsrpName as Name,
 						(select if((count(rsrisesdID) > 0), 'checked', '') from resourcesintroduced ri
 						where (ri.rsrirsrpID=rp.rsrpID) and (rsrisesdID=" . $_GET['sesdID'] . ")) as 'checked'
 						from resourcesintroduced ri, resourcepool rp
 						where rsrisesdID=" . $_GET['sesdID'] . " group by ID order by Name asc;";
-					$result = mysqli_query($dbc, $query) or die('Error querying for resource checkboxes: ' . mysqli_error());
+					$result = mysqli_query($dbc, $query) or die('Error querying for resource checkboxes: ' . mysqli_error($dbc));
 
 					echo '<input class="xxx resourcesBox none mustHaveBox" title="You must choose at least 1 resource (or specify NONE) per session" type="checkbox" name="resourcesIntroduced" value="none"  /><span class="xxx resourcesbox">None</span><br class="xxx resourcesbox" />';
 					while ($row = mysqli_fetch_assoc($result)) {

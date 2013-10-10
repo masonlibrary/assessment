@@ -89,7 +89,7 @@ require_once('control/startSession.php');
             
              
             $result = mysqli_query($dbc, $query) or die('dammit- query issues. <br /><h4>'.$query.'</h4');
-                    if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+                    if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
 
                     
                     echo '<div class="outcomesBox">';

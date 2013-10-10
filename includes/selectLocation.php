@@ -21,8 +21,8 @@
                                         echo "<p>after include</p>";
                                         $query = "select locaID as ID, locaname as Name from location";
                                         echo "<p>$query</p>";
-                                        $result = mysqli_query($dbc, $query) or die('crappy crustacean!- query issues.'.mysqli_error());
-                                        if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
+                                        $result = mysqli_query($dbc, $query) or die('crappy crustacean!- query issues.'.mysqli_error($dbc));
+                                        if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
 
                                         while ( $row = mysqli_fetch_assoc( $result) )
                                         {

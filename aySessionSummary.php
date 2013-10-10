@@ -82,7 +82,7 @@
                          '<th>Percent</th></thead>';
              
              $result = mysqli_query($dbc, $query) or die('This is an outrage-in aySS.    '.$query);
-                if(!$result){echo "this is an outrage: ".mysqli_error()."\n $query";}
+                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n $query";}
                 
                
                 while ( $row = mysqli_fetch_assoc( $result) )
