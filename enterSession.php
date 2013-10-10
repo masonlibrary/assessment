@@ -49,7 +49,7 @@
 	<?php // include('includes/selectCourse.php'); ?> <!-- All the same except ILSession#  -->
 	<div id="courseSelect" class="item">
 		<h2 id="courseSelectHeader">Course ID-Selection </h2>
-		<div id="makeCopiesDiv"><input type="checkbox" name="makeCopies" id="makeCopies" /> <span class="askCopy">Create</span>
+<!--		<div id="makeCopiesDiv"><input type="checkbox" name="makeCopies" id="makeCopies" /> <span class="askCopy">Create</span>
 			<div id="numberOfCopiesDiv">
 				<select id="numberOfCopies" class="hidden" name="numberOfCopies">
 					<option value="1" selected="selected">1</option>
@@ -60,7 +60,7 @@
 				</select>
 			</div> <span class="askCopy"> additional section&lpar;s&rpar;: </span>
 
-		</div>
+		</div>-->
 		<div class="coursePrefixColumn">
 			<h4>Course Prefix</h4>
 			<div id="selectBox">
@@ -147,7 +147,7 @@
 				<span class="courseInfo xxx location"></span><span class="xxx courseSection location"></span>
 				<select id="locationID" name="locationID" class="xxx location mustHave" title="You must select a location." >
 
-					<option class="xxx location"> &nbsp; &nbsp;Please select:</option>
+					<option class="xxx location" value=""> &nbsp; &nbsp;Please select:</option>
 
 					<?php
 						echo "<p>before include</p>";
@@ -188,7 +188,8 @@
 		</div>
 		<div id="dateSelectContainer" class="floatLeft">
 			<span class="xxx courseInfo datepicker"></span><span class="xxx courseSection datepicker"></span>
-			<input type="text" id="datePicker" class="xxx datepicker mustHave" name="dateOfSession" value="<?php echo date("m/d/y", strtotime($currentSession->getDateOfSession())); ?>" title="You must enter the date of the session." />
+			<?php $date = $currentSession->getDateOfSession(); ?>
+			<input type="text" id="datePicker" class="xxx datepicker mustHave" name="dateOfSession" value="<?php if($date) {echo date("m/d/y", $date); } ?>" title="You must enter the date of the session." />
 		<!--  <input type="text" name="timeOfSession" id="timepicker" /> -->
 
 		</div>
@@ -237,7 +238,7 @@
 		<div id="numberOfStudentsContainer">
 			<span class="courseInfo xxx student"></span><span class="xxx courseSection student"></span>
 			<input id="numberOfStudents" class="mustHave xxx student" title="You must enter the number of students in session."
-				   name="numberOfStudents" type="text" value="<?php echo $currentSession->getNumberOfStudents() ?>"/>
+				   name="numberOfStudents" type="text" value="<?php $numStudents = $currentSession->getNumberOfStudents(); if($numStudents) echo $numStudents; ?>"/>
 		</div>
 	</div>
 	<?php // TODO make select number of students into a dropdown. ?>
@@ -308,7 +309,7 @@
 		<div class="selectBox">
 			<div id="completionStatus"></div>
 			<div class="floatLeft">
-				<input id="submitButton" type="submit" value="Enter Session" name="submit" disabled="disabled" />
+				<input id="submitButton" type="submit" onclick="javascript:if(!checkCompletion()){return false;}" value="Enter Session" name="submit" />
 			</div>
 		</div>
 	</div>

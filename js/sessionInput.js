@@ -1,6 +1,6 @@
     var sessionCopies=0;
 
-    //TODO: write code preventing same section for multiple entry of course 
+    //TODO: write code preventing same section for multiple entry of course
     function removeCopies()
                     {
                         $('.copy').remove();
@@ -12,7 +12,7 @@
     {
         //move this (these) call(s) elsewhere
         updateCourseLabels();
-        
+
 
         var mustHave = $('.mustHave')
         var mustHaveCount = mustHave.length;
@@ -20,7 +20,8 @@
         var mustHaveReportStr = '';
         var remainingStr='';
         var message='';
-        
+		var retval;
+
         $.each(mustHave, function()
             {
                 if($(this).val()=="")
@@ -40,28 +41,30 @@
             if (mustHaveRemaining<=0)
                 {
                     remainingStr='All required fields have been filled in.<br /><br />';
-                    $('#submitButton').removeAttr('disabled');
+//                    $('#submitButton').removeAttr('disabled');
                     $('#submitButtonDiv').addClass('complete')
+					retval = true;
                 }
         else
             {
-                $('#submitButton').attr('disabled', true);
+//                $('#submitButton').attr('disabled', true);
                 $('#submitButtonDiv').removeClass('complete');
                 remainingStr+='There are '+mustHaveRemaining+' of '+mustHaveCount+' mandatory fields remaining.<br /><a href="#" id="recheck">recheck</a><br /><br />' ;
+				retval = false;
             }
         $('#completionStatus').empty().html('<p>'+remainingStr+mustHaveReportStr+'</p>');
 
         checkDivCompletion('#librarianSelect');
         checkDivCompletion('#courseSelect');
-        checkDivCompletion('#facultySelect'); 
-        checkDivCompletion('#locationSelect'); 
+        checkDivCompletion('#facultySelect');
+        checkDivCompletion('#locationSelect');
         checkDivCompletion('#dateSelect');
         checkDivCompletion('#lengthSelect');
         checkDivCompletion('#numberSelect');
         checkDivCompletion('#commentSelect');
         checkResourcesCompletion();
         pageUpdate();
-        return;
+        return retval;
     }
 
     function checkDivCompletion(inID)
@@ -87,13 +90,13 @@
         if ($('#makeCopies').is(':checked'))
         {
 
-            if($('#sameResources').is(':checked')) 
+            if($('#sameResources').is(':checked'))
             {
                 //alert('copies with same resources');
                 if ($('.resourcesBox').is(':checked')){$('#resourcesSelect').removeClass('complete').addClass('complete');}
                 else{}
             }
-            else 
+            else
             {
                 //alert('copies with different resources')
                 $('#resourcesSelect').removeClass('complete').addClass('complete');
@@ -106,9 +109,9 @@
                     if (!$(nameStr).is(':checked')) {$('#resourcesSelect').removeClass('complete');}
                     else{}
                     }
-            } 
+            }
         }
-        else 
+        else
         {
             //alert('single copy');
             if ($('.resourcesBox').is(':checked'))
@@ -118,13 +121,14 @@
             else
             {
                 $('#resourcesSelect').removeClass('complete');
-                
-                //TODO: Fix this quick fix. Not ideal. see bug in docReady.js for details. 
-                
-                $('#submitButton').attr('disabled', true);
+
+                //TODO: Fix this quick fix. Not ideal. see bug in docReady.js for details.
+				// Probably fixed -Webster
+
+//                $('#submitButton').attr('disabled', true);
                 $('#submitButtonDiv').removeClass('complete');
-                
-                
+
+
             }
         }
     }
@@ -136,7 +140,7 @@
         courseNumberText+= $('#coursePrefixID option:selected').html();
         courseNumberText+=' ';
         courseNumberText+= $('#courseNumber').val();
-        
+
         //alert(courseNumberText);
 
         $('.courseInfo').html(courseNumberText);
@@ -178,7 +182,7 @@
             var librarianIDVal = $('#librarianID').val();
         for(i=1;i<=sessionCopies;i++)
             {
-            librarianAppend+= '<input class="copy mustHave" type="hidden" name="librarianID'+i+'" id="librarianID'+i+'" value="'+librarianIDVal+'" />'; 
+            librarianAppend+= '<input class="copy mustHave" type="hidden" name="librarianID'+i+'" id="librarianID'+i+'" value="'+librarianIDVal+'" />';
             }
         $('#librarianSelect').append(librarianAppend);
     }
@@ -192,9 +196,9 @@
             {
             coursePrefixAppend += '<input class="copy" id="coursePrefixID'+i+'" type="hidden" name="coursePrefixID'+i+'" value="'+coursePrefixSelectedVal+'" />'+
                         '<input class="copy" id="coursePrefixText'+i+'" type="text" value="'+coursePrefixSelectedText+'" readonly="readonly" />';
-            }   
+            }
 
-        $('#coursePrefixSelectContainer').append(coursePrefixAppend);    
+        $('#coursePrefixSelectContainer').append(coursePrefixAppend);
 
     }
 
@@ -228,7 +232,7 @@
         $('.faculty.copy').remove();
         var facultyAppend='';
 
-        var facultyVal = $('#faculty').val(); 
+        var facultyVal = $('#faculty').val();
         var facultySelectStr = $('#facultySelectContainer').html();
         var facultyCopyStr = '<br class="faculty copy" />'+facultySelectStr.replace('xxx', 'copy');
 
@@ -238,19 +242,19 @@
                     {
                         facultyAppend+='<input class="copy faculty" type="hidden" name="faculty'+i+'" id="faculty'+i+'" value="'+facultyVal+'" />';
                     }
-            else 
+            else
                     {
                         nameReplaceVal='name="faculty'+i+'"';
                         idReplaceVal='id="faculty'+i+'"';
                         var replaceSection='courseSection'+i+' copy ';
 
-                        facultyAppend+= facultyCopyStr.replace(/xxx/g, 'copy').replace(/id="faculty"/g, idReplaceVal).replace(/name="faculty"/g, nameReplaceVal).replace(/copy courseSection/g, replaceSection);  
+                        facultyAppend+= facultyCopyStr.replace(/xxx/g, 'copy').replace(/id="faculty"/g, idReplaceVal).replace(/name="faculty"/g, nameReplaceVal).replace(/copy courseSection/g, replaceSection);
                     }
         }
         $('#facultySelectContainer').append(facultyAppend);
         checkCompletion();
     }
-    
+
     function updateLocation()
     {
         $('.location.copy').remove();
@@ -258,7 +262,7 @@
         var locationAppend='';
         var locationIDVal = $('#locationID').val();
         var locationSelectStr = $('#locationSelectContainer').html();
-        var locationCopyStr = '<br class="copy location" />'+locationSelectStr.replace(/xxx/g, 'copy'); 
+        var locationCopyStr = '<br class="copy location" />'+locationSelectStr.replace(/xxx/g, 'copy');
 
             for(i=1; i<=sessionCopies; i++)
         {
@@ -267,7 +271,7 @@
                 //alert('locationIDVal: '+locationIDVal);
                 locationAppend+='<input id="locationID'+i+'" class="location copy" type="hidden" name="locationID'+i+'" value="'+locationIDVal+'" />';
             }
-            else 
+            else
             {
                 var replaceVal='locationID'+i;
                 var replaceSection='courseSection'+i+' copy ';
@@ -287,7 +291,7 @@
         $('.datepicker.copy').remove();
         var dateAppend='';
 
-        var dateVal = $('#datePicker').val(); 
+        var dateVal = $('#datePicker').val();
         var dateSelectStr = $('#dateSelectContainer').html();
         var dateCopyStr = '<br class="datepicker copy" />'+dateSelectStr.replace('xxx', 'copy');
 
@@ -297,13 +301,13 @@
                     {
                         dateAppend+='<input class="copy datepicker" type="hidden" name="dateOfSession'+i+'" id="datePicker'+i+'" value="'+dateVal+'" />';
                     }
-            else 
+            else
                     {
                         nameReplaceVal='dateOfSession'+i;
                         idReplaceVal='datePicker'+i;
                         var replaceSection='courseSection'+i+' copy ';
 
-                        dateAppend+= dateCopyStr.replace(/xxx/g, 'copy').replace(/dateOfSession/g, nameReplaceVal).replace(/datePicker/g, idReplaceVal).replace(/copy courseSection/g, replaceSection);  
+                        dateAppend+= dateCopyStr.replace(/xxx/g, 'copy').replace(/dateOfSession/g, nameReplaceVal).replace(/datePicker/g, idReplaceVal).replace(/copy courseSection/g, replaceSection);
                     }
         }
         $('#dateSelectContainer').append(dateAppend);
@@ -316,7 +320,7 @@
         var lengthAppend='';
         var lengthIDVal = $('#lengthID').val();
         var lengthSelectStr = $('#lengthSelectContainer').html();
-        var lengthCopyStr = '<br class="copy length" />'+lengthSelectStr.replace(/xxx/g, 'copy'); 
+        var lengthCopyStr = '<br class="copy length" />'+lengthSelectStr.replace(/xxx/g, 'copy');
 
             for(i=1; i<=sessionCopies; i++)
         {
@@ -325,10 +329,10 @@
                 //alert('lengthIDVal: '+lengthIDVal);
                 lengthAppend+='<input id="lengthID'+i+'" class="length copy" type="hidden" name="lengthID'+i+'" value="'+lengthIDVal+'" />';
             }
-            else 
-            {   
-                replaceVal='lengthID'+i; 
-                var replaceSection='courseSection'+i+' copy '; 
+            else
+            {
+                replaceVal='lengthID'+i;
+                var replaceSection='courseSection'+i+' copy ';
                 lengthAppend+= lengthCopyStr.replace(/lengthID/g, replaceVal).replace(/copy courseSection/g, replaceSection);
             }
         }
@@ -336,7 +340,7 @@
         $('#lengthSelectContainer').append(lengthAppend);
         checkCompletion();
     }
-   
+
 
     function updateStudentCount()
     {
@@ -366,26 +370,26 @@
         for(i=1; i<=sessionCopies; i++)
         {
         var replaceSection='courseSection'+i+' copy ';
-        
+
         if($('#sameResources').is(':checked'))
         {
             var selectedBoxes = $('input.resourcesBox');
             $.each(selectedBoxes, function(){
-                if($(this).attr('checked')) 
+                if($(this).attr('checked'))
                 {
                 thisVal=$(this).val();
-                
+
                 if (thisVal !='none')
                     {
                 resourcesIntroducedAppend+='<input class="copy resourcesBox" type="hidden" name="resourcesIntroduced'+i+'[]"  value="'+thisVal+'" />';}
-            
+
                 else {resourcesIntroducedAppend+='<input class="copy resourcesBox" type="hidden" name="resourcesIntroduced'+i+'"  value="'+thisVal+'" />';}
                 }
 
             });
 
         }
-        else 
+        else
         {
             resourcesIntroducedAppend+= '<br class="copy resourcesbox resourcesbox'+i+'" /><hr class="resourcesbox copy" /> '+resourcesSelectStr.replace(/resourcesIntroduced/g, 'resourcesIntroduced'+i).replace(/copy courseSection/g, replaceSection) ;
         }
@@ -412,10 +416,10 @@
                 noteSelectAppend+='<input id="sessionNote'+i+'" class="copy notebox" type="hidden" name="sessionNote'+i+'"  value="'+sessionNoteVal+'" />';
             }
 
-            else 
+            else
             {
                 noteSelectAppend+= '<br class="copy" /> '+noteSelectCopy.replace(/id="sessionNote"/g, 'id="sessionNote'+i+'" ').replace(/name="sessionNote"/g, 'name="sessionNote'+i+'"').replace(/copy courseSection/g, replaceSection) ;
-            } 
+            }
         }
         $('#noteSelectContainer').append(noteSelectAppend);
         checkCompletion();
@@ -423,7 +427,7 @@
 
     //utility function calls all 'update-section' funcitons'
     function makeCopies()
-        { 
+        {
             //start fresh!
             removeCopies();
 
@@ -441,8 +445,8 @@
 
             checkCompletion();
         }
-        
-        
+
+
       function assessmentDropdown()
       {
             var mustHave = $('.assessmentDropDown')
@@ -464,26 +468,26 @@
             else{$('#assessSubmit').attr('disabled', true);}
       }
         function noneOrSome() {
-                    
+
                     var noneName=$(this).attr('name');
                     var selector='.resourcesBox[name="'+noneName+'[]"]';
                     if ($(this).is(':checked'))
                         {
                         //remove all other options of the same name
-                        
+
                         $(selector).attr('checked', false).attr('disabled', true);
-                        
+
                          }
                     else
                         {
                             //add all other options
                             $(selector).removeAttr('disabled');
                         }
-                    
+
                     }
-                    
- 
-                     
+
+
+
  (function( $ ) {
 		$.widget( "ui.combobox", {
 			_create: function() {
@@ -526,11 +530,11 @@
 								item: ui.item.option
 							});
 						},
-						change: function( event, ui ) { 
-                                                    
-                                                    
+						change: function( event, ui ) {
+
+
 							if ( !ui.item ) {
-                                                               
+
 								var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( $(this).val() ) + "$", "i" ),
 									valid = false;
 								select.children( "option" ).each(function() {
@@ -547,21 +551,21 @@
 									return false;
 								}
 							}
-                                                        
+
                                                        //alert('change');
                                                     //TODO: look at this ugly fix and better-fix
                                                     if ( window.location.pathname=='/assessment/enterSession.php')
-                                                    { 
-                                                        
+                                                    {
+
                                                         makeCopies();}
-                                                    
+
                                                     if (window.location.pathname=='/assessment/assessOutcome.php')
                                                         {
-                                                          
+
                                                           assessmentDropdown();
-                                                        } 
-                                                        
-                                                        
+                                                        }
+
+
 						} //end Change detect;
 					})
 					.addClass( "ui-widget ui-widget-content ui-corner-left" );
@@ -586,7 +590,7 @@
 					.removeClass( "ui-corner-all" )
 					.addClass( "ui-corner-right ui-combobox-toggle" )
 					.click(function() {
-                                            
+
 						// close if already visible
 						if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
 							input.autocomplete( "close" );
@@ -609,10 +613,9 @@
 			}
 		});
 	})( jQuery );
-                    
-                    
-                    
-                    
-                    
-                    
-     
+
+
+
+
+
+
