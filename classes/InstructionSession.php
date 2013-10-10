@@ -2,13 +2,13 @@
 
 
 class InstructionSession {
-    
+
     //SessionDesc variables
     private $sessionID=0;
     private $user='';
     private $librarianID = 0;
     private $dateOfSession = '';
-    
+
     private $lengthOfSessionID =0;
     private $numberOfStudents=0;
     private $coursePrefixID=0;
@@ -21,28 +21,28 @@ class InstructionSession {
     private $sesdCopyID=0;
     private $outcomeDone='no';
     private $assessed='no';
-    
-    
+
+
     private $outcomesTaught = array();
     private $outcomesAssessed=array();
     //session data for other db entities
     private $resourcesIntroducedID = array();
     private $sessionNote='';
-    
+
     //sessionDesc variable for later use
     private $facultyID=0;
-    
+
     //variables for later use...
     private $librarianName='not set';
     private $locationName='not set';
     private $coursePrefix='not set';
     private $lengthOfSessionName='not set';
     private $resourcesIntroducedName=array();
-    
-   
+
+
 
              // Declare a public constructor
-    
+
     public function setOutcomesTaught($inArray)
         {
          $this->outcomesTaught=$inArray;
@@ -51,40 +51,40 @@ class InstructionSession {
         {
         $success='query not completed.';
         $query = $this->getOutcomesTaughtInsertQuery();
-        
+
         $dbc=$this->getConnection();
         $result=mysqli_query($dbc, $query);
         if(!$result){$success.='outcomes taught insert failed: <br /> Error: '.mysqli_error().'<br />Query: -->'.$query.'<-- <br />';}
-        else 
+        else
             {
                 $success='Session insert success! <br />';
-                
+
                 $query="update sessiondesc set sesdOutcomeDone='yes' where sesdID=".$this->sessionID;
                 $this->outcomeDone='yes';
                 $result=mysqli_query($dbc, $query);
                 if(!$result){$success.='sesdOutcomeDone update failed: <br /> Error: '.mysqli_error().'<br />Query: '.$query.'<br />';}
-                else {$success.='sesdOutcomeDone update success! <br />';} 
+                else {$success.='sesdOutcomeDone update success! <br />';}
              }
- 
-            
+
+
         $this->closeConnection($dbc);
         return $success;
         }
-        
+
     public function getOutcomesTaughtInsertQuery()
         {
         $query ="insert into outcomestaught (otctsesdID, otctotcdID) values ";
-        
+
         $x= count($this->outcomesTaught);
-        
+
         for ($i=0; $i<$x; $i++)
             {
             $query.="(".$this->sessionID.", ".$this->outcomesTaught[$i]."),";
             }
-            
+
         $query = rtrim($query, ',');
-        
-        
+
+
         return $query;
         }
     public function setAndInsertOutcomesTaught($inArray)
@@ -94,14 +94,14 @@ class InstructionSession {
             $success=$this->insertOutcomesTaught();
             return $success;
         }
-    
+
     public function setAndInsertOutcomesAssessed($inArray)
         {
             $this->outcomesAssessed=$inArray;
             $success="Complete and utter failure...";
             $query="insert into outcomesassessed (otcaotctID, otcaMet, otcaPartial, otcaNotMet, otcaNotAssessed) values ";
-            
-           
+
+
             foreach($inArray as $row)
                 {
                 if ($row['NotAssessed']=='0')
@@ -123,29 +123,29 @@ class InstructionSession {
                     $query.="($otctID, $Met, $Partial, $NotMet, $NotAssessed),";
                      }
                 }
-                
+
                 $query=trim($query, ",");
                 $dbc=$this->getConnection();
         $result=mysqli_query($dbc, $query);
         if(!$result){$success.='outcomes assessed insert failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: -->'.$query.'<-- <br />';}
-        else 
+        else
             {
                 $success='Outcomes assessed. Success! <br />';
-                
+
                 $query="update sessiondesc set sesdAssessed='yes' where sesdID=".$this->sessionID;
                 $this->assessed='yes';
                 $result=mysqli_query($dbc, $query);
                 if(!$result){$success.='sesdAssessed update failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
-                else {$success.='Session marked as assessed. Success! <br />';} 
+                else {$success.='Session marked as assessed. Success! <br />';}
              }
- 
-            
+
+
         $this->closeConnection($dbc);
         return $success;
-          
-        
+
+
         }
-        
+
     public function getOutcomesToAssess()
         {
             $query = "select ".
@@ -167,14 +167,14 @@ class InstructionSession {
                     "and od.otcdotchID=oh.otchID ".
                     "and od.otcdID = ot.otctotcdID ".
                     //"group by headingName ".
-                    "order by oh.otchID, od.otcdID"; 
+                    "order by oh.otchID, od.otcdID";
 
-                  
-                    
+
+
                 $currentOutcomeHeading='first';
                 //$output='<div class="test">'.$query.'</div>';
                 $output='';
-                
+
                 $dbc=$this->getConnection();
                 $result = mysqli_query($dbc, $query) or die('Oh nonono! Whyyyy??- query issues. <br /><h4>'.$query.'</h4');
                         if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
@@ -201,10 +201,10 @@ class InstructionSession {
                                 $output.= '<h4 class="xxx assessmentHeading">'.$headingName.'</h4>';
                                 if ($subheadingName ==''){$output.= '<h5 class="outcomesBox outcomeSubheading">'.$subheadingName.'</h5>';}
                                 else {$output.='<h5 class="outcomesBox outcomeSubheading">'.$this->coursePrefix.': '.$subheadingName.'</h5>';}
-                                
+
                                 $output.='<table id="headingID'.$headingID.'">'.
                                         '<thead><tr><th>Outcome</th><th>Met outcome</th><th>Partially met outcome</th><th>Did not meet outcome</th></tr>';
-                                
+
                                 $currentOutcomeHeading=$headingName;
                             }
 
@@ -215,52 +215,52 @@ class InstructionSession {
                                 $output.='<option value="'.$taughtID.' '.$x.'">'.$x.'</option>';
                                 }
                                 $output.='</select></td>';
-                                
+
                      $output.='<td class="assessmentInput"><select name="Partial[]" class="assessmentDropDown outcome'.$taughtID.'"><!--<option value=""></option>-->';
                             for($x=0; $x<101; $x++)
                                 {
                                 $output.='<option value="'.$taughtID.' '.$x.'">'.$x.'</option>';
                                 }
-                                $output.='</select></td>'; 
-                                
+                                $output.='</select></td>';
+
                      $output.='<td class="assessmentInput"><select name="NotMet[]" class="assessmentDropDown outcome'.$taughtID.'"><!--<option value=""></option>-->';
                             for($x=0; $x<101; $x++)
                                 {
                                 $output.='<option value="'.$taughtID.' '.$x.'">'.$x.'</option>';
                                 }
-                                $output.='</select></td>'; 
-                                
+                                $output.='</select></td>';
+
                     $output.='<td class="assessmentInput didNotAssess"><span class="didNotAssess">Did not assess</span>'.
                                 '<input id="notAssessed'.$taughtID.'" type="hidden" name="otctDidNotAssess[]" value="'.$taughtID.' 0" />'.
                                '<input id="outcome'.$taughtID.'" name = "otctDidNotAssessCheck[]" value="'.$taughtID.'" class="didNotAssess" type="checkbox" /></td>';
-                                
+
                      $output.='</tr>';
-                                
-                                
-                                
-                                
-                                
-                                
+
+
+
+
+
+
                     }
 
                     $output.='</table><input type="hidden" name="assessedCount" value="'.$assessedCount.'" />'.
-                            '<input id="assessSubmit" type="submit" name="assessSubmit" disabled="disabled" value="Submit" /></form></div>' ; 
-                    
+                            '<input id="assessSubmit" type="submit" name="assessSubmit" disabled="disabled" value="Submit" /></form></div>' ;
+
                     return $output;
         }
-    public function __construct($userName ='') 
+    public function __construct($userName ='')
         {
         $this->user=$userName;
         }
-    
+
     public function doPost($inPost, $inSuffix='')
         {
-    
-        $this->setLibrarianID($inPost['librarianID']);  
-   
-        
+
+        $this->setLibrarianID($inPost['librarianID']);
+
+
         $this->setDateOfSession(date("Y-m-d", strtotime($inPost['dateOfSession'.$inSuffix])));
-        
+
         $this->setLengthOfSessionID($inPost['lengthID'.$inSuffix]);
         $this->setNumberOfStudents($inPost['numberOfStudents'.$inSuffix]);
         $this->setCoursePrefixID($inPost['coursePrefixID'.$inSuffix]);
@@ -268,35 +268,35 @@ class InstructionSession {
         $this->setCourseSection($inPost['courseSection'.$inSuffix]);
         $this->setCourseTitle($inPost['courseTitle'.$inSuffix]);
         $this->setSessionNumber($inPost['sessionNumber'.$inSuffix]);
-        
+
         $this->setFaculty($inPost['faculty'.$inSuffix]);
-        
+
         $this->setLocationID($inPost['locationID'.$inSuffix]);
-        
+
         //notes
         $this->setSessionNote($inPost['sessionNote'.$inSuffix]);
-        
+
         //resourcesIntroduced
         $this->setResourcesIntroducedID($inPost['resourcesIntroduced'.$inSuffix]);
-        
-        
+
+
         //if(DEBUG==true){return("All the variables are filled.<br /> Suffix: >>$inSuffix<<");}
         return("Session Created <br />");
-            
+
         }
     public function insertSession()
         {
         $success='query not completed.';
         $query = $this->getSessionInsertQuery();
-        
+
         $dbc=$this->getConnection();
         $result=mysqli_query($dbc, $query);
         if(!$result){$success.='Session insert failed: <br /> Error: '.mysqli_error().'<br />Query: '.$query.'<br />';}
         else {$success='Session insert success! <br />';}
         $this->setSessionID(mysqli_insert_id($dbc));
-        
-      
-        
+
+
+
         // resourcesIntroduced and notes
             // if (DEBUG==true){$success.="<br />btw the session note value is: >>".$this->sessionNote."<< <br />";}
             if(isset($this->sessionNote) && trim($this->sessionNote)!='')
@@ -308,8 +308,8 @@ class InstructionSession {
                     else {$success.=' Note Insert success! <br />';}   /* <br />'."Query is: $query <br />";}*/
                 }
              else{$success.=' No note to insert. <br />';}
-             
-            
+
+
             //resourcesIntroduced
              if($this->resourcesIntroducedID!='none')
                  {
@@ -319,11 +319,11 @@ class InstructionSession {
                     else {$success.=' resources Insert success! <br />';}
                  }
                  else{$success.=' No resources introduced';}
-            
+
         $this->closeConnection($dbc);
         return $success;
         }
-    
+
     private function getResourcesQuery($inID, $inResources)
         {
 
@@ -334,12 +334,12 @@ class InstructionSession {
             }
             //remove last comma
             $resourceString = rtrim($resourceString, ',');
-        
-        //TEST: handle the resources array. 
+
+        //TEST: handle the resources array.
         $query ="insert into resourcesintroduced (rsrisesdID, rsrirsrpID) values $resourceString";
         return $query;
         }
-        
+
     private function getNoteQuery()
         {
         $query ="insert into sessionnotes (sesnsesdID, sesnNote) values ($this->sessionID, '$this->sessionNote')";
@@ -347,30 +347,38 @@ class InstructionSession {
         }
     public function getSessionQuery($inID)
         {
+		/*
         $query="select sesdID, sesdUser, sesdlibmID, sesdDate, sesdseslID, ".
               "sesdNumStudents, sesdcrspID, sesdCourseNumber, sesdCourseTitle, sesdCourseSection, ".
                "sesdSessionSection, sesdFaculty, sesdlocaID, sesdOutcomeDone, sesdAssessed ".
                 "from sessiondesc where sesdID=$inID";
-        
+		 */
+		// New query, includes notes. Does not handle resources, though it should. -Webster
+		$query="select sd.sesdID, sd.sesdUser, sd.sesdlibmID, sd.sesdDate, sd.sesdseslID, ".
+			"sd.sesdNumStudents, sd.sesdcrspID, sd.sesdCourseNumber, sd.sesdCourseTitle, sd.sesdCourseSection, ".
+			"sd.sesdSessionSection, sd.sesdFaculty, sd.sesdlocaID, sd.sesdOutcomeDone, sd.sesdAssessed, ".
+			"sn.sesnNote, ri.rsrirsrpID " .
+			"from sessiondesc sd, sessionnotes sn, resourcesintroduced ri where sesdID = $inID and sesnsesdID = $inID and rsrisesdID = $inID";
+//		echo $query;
         return $query;
-        }    
+        }
     public function loadSession($inID)
         {
-        //TODO loadSession() needs to load resources introduced and notes still. 
+        //TODO loadSession() needs to load resources introduced and notes still.
         $success='Session load failed.';
         $query = $this->getSessionQuery($inID);
         $dbc=$this->getConnection();
         $result=  mysqli_query($dbc, $query);
         if(!$result){$success+=mysqli_error();}
         else {$success='Session load success!';}
-        
+
          while ( $row = mysqli_fetch_assoc( $result) )
             {
             $this->sessionID=$row['sesdID'];
             $this->user=$row['sesdUser'];
             $this->librarianID=$row['sesdlibmID'];
             $this->dateOfSession=$row['sesdDate'];
-        
+
             $this->lengthOfSessionID=$row['sesdseslID'];
             $this->numberOfStudents=$row['sesdNumStudents'];
             $this->setCoursePrefixID($row['sesdcrspID']);
@@ -378,30 +386,33 @@ class InstructionSession {
             $this->courseNumber=$row['sesdCourseNumber'];
             $this->courseSection=$row['sesdCourseSection'];
             $this->sessionNumber=$row['sesdSessionSection'];
-            
+
             $this->faculty=$row['sesdFaculty'];
             $this->setLocationID($row['sesdlocaID']);
             $this->outcomeDone=$row['sesdOutcomeDone'];
             $this->assessed=$row['sesdAssessed'];
-                
+
+			$this->sessionNote=$row['sesnNote'];
+
+			//$this->resourcesIntroducedID=$row['rsrirsrpID'];
             }
             mysqli_free_result($result);
         $this->closeConnection($dbc);
-        
-       
-                
+
+
+
         }
-        
-    
+
+
     public function getSessionInsertQuery()
         {
             /*TODO: implement mysql_real_escape_string()
-             * or: 
+             * or:
              * $stmt = $db->prepare('update people set name = ? where id = ?');
                $stmt->bind_param('si',$name,$id);
                 $stmt->execute(); ;
              */
-            $query = "insert into sessiondesc". 
+            $query = "insert into sessiondesc".
             "(sesdUser, sesdlibmID, sesdDate, sesdseslID, sesdNumStudents, sesdcrspID, ".
              "sesdCourseNumber, sesdCourseTitle, sesdCourseSection, sesdSessionSection, sesdFaculty, sesdlocaID)".
                 "values".
@@ -412,11 +423,11 @@ class InstructionSession {
              "', $this->courseSection, '$this->sessionNumber', '".
               $this->faculty."',".
              "$this->locationID)";
-            
+
             return $query;
         }
-        
-    
+
+
     private function getConnection()
         {
         $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
@@ -427,13 +438,13 @@ class InstructionSession {
         {
         mysqli_close($dbc);
         }
-    
 
-    
+
+
     public function toString()
         {
                 $output='';
-                
+
             $output.="<p class='sessionToString'>".
                     "<span class='name'>User: </span><span class='value'>$this->librarianName</span><br />".
                     "<span class='name'>Date of session: </span><span class='value'>$this->dateOfSession</span><br />".
@@ -448,11 +459,11 @@ class InstructionSession {
                     "<span class='name'>Outcomes assessed yet? : </span><span class='value'>$this->assessed</span><br />".
                     "<span class='name'>Session Notes: </span><span class='value'>$this->sessionNote</span><br />".
                     "<span class='name'>Resources Introduced: </span><br /><span class='value'>";
-                    
+
                    //TODO work on loading session to include notes and resources introduced
                     if($this->resourcesIntroducedID=='none')
                         {$output.='&nbsp;&nbsp;&nbsp;&nbsp;None introduced<br />';}
-                    else 
+                    else
                         {
                         foreach ($this->resourcesIntroducedID as $x)
                             {
@@ -466,7 +477,7 @@ class InstructionSession {
     public function toStringDebug()
         {
                 $output='';
-                
+
             $output.="<p>".
                     "<strong>User: </strong>$this->user<br />".
                     "<strong>SessionID: </strong>$this->sessionID<br />".
@@ -485,11 +496,11 @@ class InstructionSession {
                     "<strong>Outcomes assessed yet? : </strong>$this->assessed<br />".
                     "<strong>Session Notes: </strong>$this->sessionNote<br />".
                     "<strong>Resources Introduced: </strong><br />";
-                    
+
                    //TODO work on loading session to include notes and resources introduced
                     if($this->resourcesIntroducedID=='none')
                         {$output.='&nbsp;&nbsp;&nbsp;&nbsp;None introduced<br />';}
-                    else 
+                    else
                         {
                         foreach ($this->resourcesIntroducedID as $x)
                             {
@@ -499,7 +510,7 @@ class InstructionSession {
                     $output.='</p>';
 
                     return $output;
-        }   
+        }
     public function getSessionID()
         {
         return $this->sessionID;
@@ -525,7 +536,7 @@ class InstructionSession {
 
     public function setLibrarianID($librarian)
         {
-        
+
         $this->librarianID = (int)$librarian;
         $this->setLibrarianName($this->librarianID);
         }
@@ -534,22 +545,22 @@ class InstructionSession {
          {
          return $this->librarianName;
          }
-     
-         
+
+
      public function setCoursePrefix($inID)
          {
          $dbc=$this->getConnection();
          $query = "select crspName as prefixName from courseprefix where crspID= $inID";
          $result = mysqli_query($dbc, $query) or die($query.' crustacean!- query issues.'.mysqli_error());
           if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
-           
+
             while ( $row = mysqli_fetch_assoc( $result) )
             {
                 $prefix=$row['prefixName'];
             }
            $this->coursePrefix=$prefix;
            $this->closeConnection($dbc);
-                 
+
          }
      public function setLibrarianName($inID)
          {
@@ -557,7 +568,7 @@ class InstructionSession {
          $query = "select ppleLName as LName, ppleFName as FName from people p, librarianmap l where  libmID= $inID and p.ppleID=l.libmppleID";
          $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error());
           if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
-           
+
             while ( $row = mysqli_fetch_assoc( $result) )
             {
                 $LName=$row['LName'];
@@ -565,9 +576,9 @@ class InstructionSession {
             }
            $this->librarianName=$FName.' '.$LName;
            $this->closeConnection($dbc);
-                 
+
          }
-        
+
     public function getLocation()
         {
         return $this->locationID;
@@ -583,14 +594,14 @@ class InstructionSession {
         {
             return $this->locationName;
         }
-        
+
     public function setLocationName($inID)
         {
         $dbc=$this->getConnection();
          $query = "select locaName as Name from location where  locaID= $inID ";
          $result = mysqli_query($dbc, $query) or die('crappy crustacean!- query issues.'.mysqli_error());
           if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
-           
+
             while ( $row = mysqli_fetch_assoc( $result) )
             {
                 $Name=$row['Name'];
@@ -608,7 +619,7 @@ class InstructionSession {
         $this->dateOfSession = $dateOfSession;
         }
 
-    
+
 
     public function getLengthOfSessionID()
         {
@@ -621,8 +632,8 @@ class InstructionSession {
          $query = "select seslName as Name from sesslength where seslID= $inID ";
          $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error());
           if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
-           
-         
+
+
             while ( $row = mysqli_fetch_assoc( $result) )
             {
                 $Name=$row['Name'];
@@ -630,7 +641,7 @@ class InstructionSession {
            $this->lengthOfSessionName=$Name;
            $this->closeConnection($dbc);
         }
-        
+
    public function setLengthOfSessionID($lengthOfSession)
         {
         $this->lengthOfSessionID = (int)$lengthOfSession;
@@ -728,12 +739,12 @@ class InstructionSession {
         }
     public function setResourcesIntroducedName($inResourcesIntroducedID)
         {
-        
+
         $dbc=$this->getConnection();
-           
+
         foreach($inResourcesIntroducedID as $value)
             {
-            
+
             $query = "select rsrpName as Name from resourcepool where rsrpID=$value";
             $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error().$query);
             if(!$result){echo "this is an outrage: ".mysqli_error()."\n";}
@@ -741,12 +752,12 @@ class InstructionSession {
                 {
                  $this->resourcesIntroducedName[$value] = $row['Name'];
                 }
-            
+
             }
             $this->closeConnection($dbc);
-        
+
         }
-    public function getSessionComment()
+    public function getSessionNote()
         {
         return $this->sessionNote;
         }
@@ -756,7 +767,7 @@ class InstructionSession {
         $this->sessionNote = $sessionComment;
         }
 
-    
+
         public function getSesdCopyID()
         {
         return $this->sesdCopyID;
@@ -792,7 +803,7 @@ class InstructionSession {
         return $this->lengthOfSessionName;
         }
 
-   
+
 
 }
 
