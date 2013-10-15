@@ -364,7 +364,7 @@ class InstructionSession {
 				LEFT OUTER JOIN sessionnotes sn
 					ON sd.sesdID = sn.sesnsesdID
 			WHERE sesdID=$inID;";
-		echo $query;
+//		echo $query;
         return $query;
         }
     public function loadSession($inID)
