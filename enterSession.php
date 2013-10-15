@@ -189,7 +189,7 @@
 		<div id="dateSelectContainer" class="floatLeft">
 			<span class="xxx courseInfo datepicker"></span><span class="xxx courseSection datepicker"></span>
 			<?php $date = $currentSession->getDateOfSession(); ?>
-			<input type="text" id="datePicker" class="xxx datepicker mustHave" name="dateOfSession" value="<?php if($date) {echo date("m/d/y", $date); } ?>" title="You must enter the date of the session." />
+			<input type="text" id="datePicker" class="xxx datepicker mustHave" name="dateOfSession" value="<?php if($date) {echo date("m/d/y", strtotime($date)); } ?>" title="You must enter the date of the session." />
 		<!--  <input type="text" name="timeOfSession" id="timepicker" /> -->
 
 		</div>
