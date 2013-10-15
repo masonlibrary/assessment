@@ -224,9 +224,10 @@ class User
                      '<th>Session</th>'.
                      '<th>Semester</th>'.
                      '<th>Date</th>'.
+					 '<th>Date2</th>'.
                      '<th>Outcomes</th>'.
                      '<th>Assessed</th>'.
-                     '<th>Delete</th>'.
+                     '<th>Tools</th>'.
                      '</tr></thead><tbody>';
 
              $result = mysqli_query($dbc, $query) or die('This is an outrage-in function getMySessions query issues.'.$query);
@@ -252,7 +253,7 @@ class User
 
 
 
-                    $output.="<tr class='mySessions'>".
+                    $output.="<tr class='mySessions' id='$sessionID'>".
                             "<td class='coursePrefix'>$coursePrefix $courseNumber-$courseSection</td>".
                             "<td class='courseTitle' >$courseTitle</td>".
                             "<td>$faculty</td>".
@@ -262,9 +263,10 @@ class User
                             "<td class='sqlDateCel'>$date</td>".
                             "<td>$outcomeDone</td>".
                             "<td>$AssessedDone</td>".
-                            "<td><a href='enterSession.php?sesdID=$sessionID'>edit</a>&nbsp;<form method='post' action='deleteSession.php'>".
-                            "<input  type='hidden' value='$sessionID' name='inID'>".
-                            "<input class='areYouSure inID$sessionID' type='submit' value='X' name='deleteMe'></form></tr>";
+//                            "<td><a href='enterSession.php?sesdID=$sessionID'>edit</a>&nbsp;<form method='post' action='deleteSession.php'>".
+//                            "<input  type='hidden' value='$sessionID' name='inID'>".
+//                            "<input class='areYouSure inID$sessionID' type='submit' value='X' name='deleteMe'></form></tr>";
+							"<td><div id='d$sessionID' class='menu-div'><p>+</p></div></td>";
 
                 }
 

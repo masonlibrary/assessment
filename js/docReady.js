@@ -87,7 +87,58 @@ $(function(){
 
                 });
 
+				$( document ).delegate( "a.menu-link", "click", function(e) {
+				e.stopPropagation();
+//				e.preventDefault();
+//				alert('pop'+this.id);
+//				return false;
+			});
 
+
+
+			$("tr.mySessions").click( function(event){
+						//event.preventDefault();
+						var rowID = $(this).attr('id');
+						var menuFinder='#d'+rowID;
+
+							if ($(this).hasClass("isOpen") ) {
+								$(menuFinder+' div.removable-menu').remove();
+								$(menuFinder).animate({
+									height: "19px",
+									"padding-top":0,
+									"border-radius":"30px",
+									width: "19px"
+									}, 200, function() {
+									// Animation complete.
+									$('#'+this.id+' p').html('+');
+									});
+								$(this).removeClass("isOpen");
+
+							} else {
+								$(menuFinder).animate({
+									height: "90px",
+									width: "50px",
+									"padding-top": "5px",
+									"border-radius":0
+									}, 200, function() {
+									// Animation complete.
+										$('#'+this.id+' p').html('-');
+										$(this).append('\
+											<div class="removable-menu" > \
+												<a href="enterSession.php?sesdID='+rowID+'&action=view" style="margin-top:4px;" class="menu-link">View</a> \
+												<a href="enterSession.php?sesdID='+rowID+'&action=edit" class="menu-link">Edit</a> \
+												<a href="enterSession.php?sesdID='+rowID+'&action=duplicate" class="menu-link">Duplicate</a> \
+												<form id="delete'+rowID+'" method="post" action="deleteSession.php"> \
+													<input type="hidden" value="'+rowID+'" name="inID"> \
+													<a href="#" class="menu-link" onclick="javascript:$(\'#delete'+rowID+'\').submit()">Delete</a> \
+												</form> \
+											</div>');
+
+								});
+								$(this).addClass("isOpen");
+							}
+							return ;
+						});
 
                 // new version to attempt to use row grouping plugin
                 var pTable = $('#myAssessments').dataTable({
