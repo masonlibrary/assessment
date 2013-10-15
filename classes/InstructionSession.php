@@ -354,23 +354,25 @@ class InstructionSession {
                 "from sessiondesc where sesdID=$inID";
 		 */
 		// New query, includes notes. Does not handle resources, though it should. -Webster
-		$query="select sd.sesdID, sd.sesdUser, sd.sesdlibmID, sd.sesdDate, sd.sesdseslID, ".
-			"sd.sesdNumStudents, sd.sesdcrspID, sd.sesdCourseNumber, sd.sesdCourseTitle, sd.sesdCourseSection, ".
-			"sd.sesdSessionSection, sd.sesdFaculty, sd.sesdlocaID, sd.sesdOutcomeDone, sd.sesdAssessed, ".
-			"sn.sesnNote, ri.rsrirsrpID " .
-			"from sessiondesc sd, sessionnotes sn, resourcesintroduced ri where sesdID = $inID and sesnsesdID = $inID and rsrisesdID = $inID";
-//		echo $query;
+//		$query="select sd.sesdID, sd.sesdUser, sd.sesdlibmID, sd.sesdDate, sd.sesdseslID, ".
+//			"sd.sesdNumStudents, sd.sesdcrspID, sd.sesdCourseNumber, sd.sesdCourseTitle, sd.sesdCourseSection, ".
+//			"sd.sesdSessionSection, sd.sesdFaculty, sd.sesdlocaID, sd.sesdOutcomeDone, sd.sesdAssessed, ".
+//			"sn.sesnNote, ri.rsrirsrpID " .
+//			"from sessiondesc sd, sessionnotes sn, resourcesintroduced ri where sesdID = $inID and sesnsesdID = $inID and rsrisesdID = $inID";
+		// Even newer query, returns rows even when there's no notes. Don't think we do need resources here. Should be more efficient. -Webster
+		 $query="SELECT * FROM sessiondesc sd
+				LEFT OUTER JOIN sessionnotes sn
+					ON sd.sesdID = sn.sesnsesdID
+			WHERE sesdID=$inID;";
+		echo $query;
         return $query;
         }
     public function loadSession($inID)
         {
         //TODO loadSession() needs to load resources introduced and notes still.
-        $success='Session load failed.';
         $query = $this->getSessionQuery($inID);
         $dbc=$this->getConnection();
-        $result=  mysqli_query($dbc, $query);
-        if(!$result){$success+=mysqli_error($dbc);}
-        else {$success='Session load success!';}
+        $result = mysqli_query($dbc, $query) or die("Error loading session: " . mysqli_error($dbc));
 
          while ( $row = mysqli_fetch_assoc( $result) )
             {
