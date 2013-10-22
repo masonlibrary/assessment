@@ -257,18 +257,21 @@
 					//$query = "select rsrpID as ID, rsrpName as Name from resourcepool order by Name asc";
 					//$result = mysqli_query($dbc, $query) or die('Shite!- query issues.' . mysqli_error($dbc));
 					if(isset($_GET['sesdID'])) {
-						$query = "select rp.rsrpID as ID, rp.rsrpName as Name,
-							(select if((count(rsrisesdID) > 0), 'checked', '') from resourcesintroduced ri
-							where (ri.rsrirsrpID=rp.rsrpID) and (rsrisesdID=" . $_GET['sesdID'] . ")) as 'checked'
-							from resourcesintroduced ri, resourcepool rp
-							where rsrisesdID=" . $_GET['sesdID'] . " group by ID order by Name asc;";
+//						$query = "select rp.rsrpID as ID, rp.rsrpName as Name,
+//							(select if((count(rsrisesdID) > 0), 'checked', '') from resourcesintroduced ri
+//							where (ri.rsrirsrpID=rp.rsrpID) and (rsrisesdID=" . $_GET['sesdID'] . ")) as 'checked'
+//							from resourcesintroduced ri, resourcepool rp
+//							where rsrisesdID=" . $_GET['sesdID'] . " group by ID order by Name asc;";
+						$query = "select * from resourcepool rp
+							left outer join resourcesintroduced ri
+							on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = " . $_GET['sesdID'] . ");";
 						$result = mysqli_query($dbc, $query) or die('Error querying for resource checkboxes: ' . mysqli_error($dbc));
 
 						echo '<input class="xxx resourcesBox none mustHaveBox" title="You must choose at least 1 resource (or specify NONE) per session" type="checkbox" name="resourcesIntroduced" value="none"  /><span class="xxx resourcesbox">None</span><br class="xxx resourcesbox" />';
 						while ($row = mysqli_fetch_assoc($result)) {
-							$id = $row['ID'];
-							$Name = $row['Name'];
-							$checked = $row['checked'];
+							$id = $row['rsrpID'];
+							$Name = $row['rsrpName'];
+							$row['rsrirsrpID'] ? $checked = "checked" : $checked = "";
 							echo '<input class="xxx resourcesBox mustHaveBox notNone" title="You must choose at least 1 resource per session" type="checkbox" ' . $checked . ' name="resourcesIntroduced[]" value="' . $id . '"  /><span class="xxx resourcesbox">' . $Name . '</span><br class="xxx resourcesbox" />';
 						}
 					} else {
@@ -309,6 +312,8 @@
 		<div class="selectBox">
 			<div id="completionStatus"></div>
 			<div class="floatLeft">
+				<input type="hidden" name="action" value="<?php if(isset($_GET['action'])){echo $_GET['action'];} ?>" />
+				<input type="hidden" name="sesdID" value="<?php if(isset($_GET['sesdID'])){echo $_GET['sesdID'];} ?>" />
 				<input id="submitButton" type="submit" onclick="javascript:if(!checkCompletion()){return false;}" value="Enter Session" name="submit" />
 			</div>
 		</div>

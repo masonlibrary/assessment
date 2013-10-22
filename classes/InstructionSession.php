@@ -324,6 +324,32 @@ class InstructionSession {
         return $success;
         }
 
+	public function updateSession($id) {
+		$query = $this->getSessionUpdateQuery($id);
+		$dbc = $this->getConnection();
+		$result = mysqli_query($dbc, $query) or die("Error performing session update query: " . mysqli_error($dbc));
+
+		if (isset($this->sessionNote) && trim($this->sessionNote) != '') {
+			//notes
+			$query = $this->getUpdateNoteQuery($id);
+			$result = mysqli_query($dbc, $query) or die("Error performing note update query: " . mysqli_error($dbc));
+		} else {
+			$success.=' No note to insert. <br />';
+		}
+
+		// Only way I can think of to do update resources is to just delete the
+		// rows with our ID, then insert new ones. This is probably dangerous,
+		// since it's possible for the delete to succeed but the insert to fail,
+		// and then we'd be in a bad state. Transactions? -Webster
+		$query = "delete from resourcesintroduced where rsrisesdID = $id";
+		$result = mysqli_query($dbc, $query) or die("Error performing resource delete query: " . mysqli_error($dbc));
+
+		if($this->resourcesIntroducedID != 'none') {
+			$query = $this->getResourcesQuery($id, $this->resourcesIntroducedID);
+			$result = mysqli_query($dbc, $query) or die("$query <br>Error performing resource insertion query: " . mysqli_error($dbc));
+		}
+	}
+
     private function getResourcesQuery($inID, $inResources)
         {
 
@@ -340,11 +366,30 @@ class InstructionSession {
         return $query;
         }
 
+	private function getUpdateResourcesQuery($inID, $inResources) {
+        $resourceString="";
+        foreach ($inResources as $value)
+            {
+            $resourceString.= "($inID ,$value),";
+            }
+            //remove last comma
+            $resourceString = rtrim($resourceString, ',');
+
+        //TEST: handle the resources array.
+        $query = "update resourcesintroduced set rsrisesdID= rsrirsrpID) values $resourceString";
+        return $query;
+	}
+
     private function getNoteQuery()
         {
         $query ="insert into sessionnotes (sesnsesdID, sesnNote) values ($this->sessionID, '$this->sessionNote')";
         return $query;
         }
+
+	private function getUpdateNoteQuery($id) {
+		return $query = "update sessionnotes set sesnNote='$this->sessionNote' where sesnsesdID=$id";
+	}
+
     public function getSessionQuery($inID)
         {
 		/*
@@ -429,6 +474,22 @@ class InstructionSession {
             return $query;
         }
 
+	public function getSessionUpdateQuery($id) {
+		return $query = "update sessiondesc set
+				sesdUser='$this->user',
+				sesdlibmID='$this->librarianID',
+				sesdDate='$this->dateOfSession',
+				sesdseslID='$this->lengthOfSessionID',
+				sesdNumStudents='$this->numberOfStudents',
+				sesdcrspID='$this->coursePrefixID',
+				sesdCourseNumber='$this->courseNumber',
+				sesdCourseTitle='$this->courseTitle',
+				sesdCourseSection='$this->courseSection',
+				sesdSessionSection='$this->sessionNumber',
+				sesdFaculty='$this->faculty',
+				sesdlocaID='$this->locationID'
+				where sesdID = $id;";
+	}
 
     private function getConnection()
         {
