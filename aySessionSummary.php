@@ -27,39 +27,39 @@
             
             $query='select * from ('.
                     'select '.
-                    '(select count(sesdID) from LowerLevel where sesdDate '.$AYQueryString.') as Count, '.
+                    '(select count(sesdID) from lowerlevel where sesdDate '.$AYQueryString.') as Count, '.
                     '"Lower Level" as Description, '.
-                    'round((select count(sesdID) from LowerLevel where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
+                    'round((select count(sesdID) from lowerlevel where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
                     'from sessiondesc group by Description '.
                     'UNION '.
                     'select '.
-                    '(select count(sesdID) from UpperLevel where sesdDate '.$AYQueryString.') as Count, '.
+                    '(select count(sesdID) from upperlevel where sesdDate '.$AYQueryString.') as Count, '.
                     '"Upper Level" as Description, '.
-                    'round((select count(sesdID) from UpperLevel where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
+                    'round((select count(sesdID) from upperlevel where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
                     'from sessiondesc group by Description '.
                     'UNION '.
                     'select '.
-                    '(select count(sesdID) from ITW where sesdDate '.$AYQueryString.') as Count, '.
+                    '(select count(sesdID) from itw where sesdDate '.$AYQueryString.') as Count, '.
                     '"ITW" as Description, '.
-                    'round((select count(sesdID) from ITW where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
+                    'round((select count(sesdID) from itw where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
                     'from sessiondesc group by Description '.
                     'UNION '.
                     ' select '.
-                    '(select count(sesdID) from IQL where sesdDate '.$AYQueryString.') as Count, '.
+                    '(select count(sesdID) from iql where sesdDate '.$AYQueryString.') as Count, '.
                     '"IQL" as Description, '.
-                    'round((select count(sesdID) from IQL where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
+                    'round((select count(sesdID) from iql where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
                     'from sessiondesc group by Description '.
                     'UNION '.
                     'select '.
-                    '(select count(sesdID) from HLSC where sesdDate '.$AYQueryString.') as Count, '.
+                    '(select count(sesdID) from hlsc where sesdDate '.$AYQueryString.') as Count, '.
                     '"HLSC" as Description, '.
-                    ' round((select count(sesdID) from HLSC where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
+                    ' round((select count(sesdID) from hlsc where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
                     'from sessiondesc group by Description '.
                     'UNION '.
                     'select '.
-                    '(select count(sesdID) from IHCOMM171 where sesdDate '.$AYQueryString.') as Count, '.
+                    '(select count(sesdID) from ihcomm171 where sesdDate '.$AYQueryString.') as Count, '.
                     '"IHCOMM171" as Description, '.
-                    'round((select count(sesdID) from IHCOMM171 where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
+                    'round((select count(sesdID) from ihcomm171 where sesdDate '.$AYQueryString.')/(select count(*) from sessiondesc where sesdDate '.$AYQueryString.')*100, 2) as percent '.
                     'from sessiondesc group by Description '.
                     'UNION '.
                     'select count(*) as Count, '.
