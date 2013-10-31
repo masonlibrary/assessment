@@ -15,7 +15,12 @@
   ?>
 
 <h2>Outcomes Map - Assessed</h2>
-<a href="outcomesTaughtMap.php">Go to Outcomes Taught Map</a>
+<?php
+	echo '<a href="outcomesTaughtMap.php?';
+	if(isset($_GET['semester'])) { echo 'semester=' . $_GET['semester'] . '&'; }
+	if(isset($_GET['year'])) { echo 'year=' . $_GET['year']; }
+	echo '">Go to Outcomes Taught Map</a>';
+?>
 
 <?php
             $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
@@ -59,8 +64,28 @@
                      'where '.
                      'ov.prefix <>"ITW" '.
                      'and ov.prefix <>"IQL" '.
-                     'and ov.assessed = "yes" '.
-                     'group by concat(ov.prefix," ",ov.number,"-",ov.section) '.
+                     'and ov.assessed = "yes" ';
+
+			 		if(isset($_GET['semester']) && $_GET['semester'] != "any") {
+						 switch($_GET['semester']) {
+							case "spring":
+								$query .= "and MONTH(Date) <= 4 ";
+								break;
+							case "fall":
+								$query .= "and MONTH(Date) >= 8 ";
+								break;
+							case "summer":
+								$query .= "and MONTH(Date) > 4 AND MONTH(Date) < 8 ";
+								break;
+						 }
+					 }
+
+					 if(isset($_GET['year']) && $_GET['year'] != "") {
+						 // FIXME user input in a query
+						 $query .= "and YEAR(Date) = " . $_GET['year'] . " ";
+					 }
+
+                     $query .= 'group by concat(ov.prefix," ",ov.number,"-",ov.section) '.
                      'order by ov.Date,concat(ov.prefix," ",ov.number,"-",ov.section)';
 
 

@@ -48,8 +48,28 @@
                         's.sesdcrspID = cp.crspID '.
                         'and lm.libmppleID=p.ppleID '.
                         'and s.sesdlibmID = lm.libmID '.
-                        'and s.sesdseslID = sl.seslID '.
-                        'order by '.
+                        'and s.sesdseslID = sl.seslID ';
+
+						if (isset($_GET['semester']) && $_GET['semester'] != "any") {
+							switch ($_GET['semester']) {
+								case "spring":
+									$query .= "and MONTH(s.sesdDate) <= 4 ";
+									break;
+								case "fall":
+									$query .= "and MONTH(s.sesdDate) >= 8 ";
+									break;
+								case "summer":
+									$query .= "and MONTH(s.sesdDate) > 4 AND MONTH(s.sesdDate) < 8 ";
+									break;
+							}
+						}
+
+						if (isset($_GET['year']) && $_GET['year'] != "") {
+							// FIXME user input in a query
+							$query .= "and YEAR(s.sesdDate) = " . $_GET['year'] . " ";
+						}
+
+						$query .= 'order by '.
                         'LastName, '.
                         'CoursePrefix, '.
                         'CourseNumber, '.
@@ -75,9 +95,7 @@
                      '<th>Assessed?</th>'.
                      '</tr></thead><tbody>';
 
-             $result = mysqli_query($dbc, $query) or die('This is an outrage-in allSessionsByLibrarian.    '.$query);
-                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n $query";}
-
+             $result = mysqli_query($dbc, $query) or die('Error in allSessionsByLibrarian: ' . mysqli_error($dbc));
 
                 while ( $row = mysqli_fetch_assoc( $result) )
                 {

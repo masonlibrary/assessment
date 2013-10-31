@@ -15,7 +15,12 @@
   ?>
 
 <h2>Outcomes Map - Taught</h2>
-<a href="outcomesAssessedMap.php">Go to Outcomes Assessed Map</a>
+<?php
+	echo '<a href="outcomesAssessedMap.php?';
+	if(isset($_GET['semester'])) { echo 'semester=' . $_GET['semester'] . '&'; }
+	if(isset($_GET['year'])) { echo 'year=' . $_GET['year']; }
+	echo '">Go to Outcomes Assessed Map</a>';
+?>
 
 <?php
             $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
@@ -51,17 +56,36 @@
                  $query.='(select if((count(0) > 0),"x","") from outcomesview x where ((x.sesdID = ov.sesdID) and (x.otchID = '.$IDValue.'))) AS "Outcome '.$IDValue.'", ';
 
                  }
-             $query = substr($query, 0, -2);
+             $query = substr($query, 0, -2); // Take off final comma, space
              $query.=' ';
              $query.='from '.
                      'outcomesview ov '.
                      'where '.
                      'ov.prefix <>"ITW" '.
-                     'and ov.prefix <>"IQL" '.
+                     'and ov.prefix <>"IQL" ';
+
+					 if(isset($_GET['semester']) && $_GET['semester'] != "any") {
+						 switch($_GET['semester']) {
+							case "spring":
+								$query .= "and MONTH(Date) <= 4 ";
+								break;
+							case "fall":
+								$query .= "and MONTH(Date) >= 8 ";
+								break;
+							case "summer":
+								$query .= "and MONTH(Date) > 4 AND MONTH(Date) < 8 ";
+								break;
+						 }
+					 }
+
+					 if(isset($_GET['year']) && $_GET['year'] != "") {
+						 // FIXME user input in a query
+						 $query .= "and YEAR(Date) = " . $_GET['year'] . " ";
+					 }
+
                      // fix the following group-by statement to also concatenate date
                      //otherwise duplicate course/sections accross semesters disappear.
-
-                     'group by  concat(ov.prefix," ",ov.number,"-",ov.section) '.
+                     $query .= 'group by concat(ov.prefix," ",ov.number,"-",ov.section) '.
                      'order by Date,concat(ov.prefix," ",ov.number,"-",ov.section)';
 
 
@@ -85,12 +109,10 @@
                      '<th>Outcome 1</th>'.
                      '<th>Outcome 2</th>'.
                      '<th>Outcome 3</th>'.
-                     '<th>Ouctome 5</th>'.
+                     '<th>Outcome 5</th>'.
                      '</tr></thead><tbody>';
 
-             $result = mysqli_query($dbc, $query) or die('This is an outrage-in outcomesMap.    '.$query);
-                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n $query";}
-
+             $result = mysqli_query($dbc, $query) or die('Error in outcomes taught query: ' . mysqli_error($dbc));
 
                 while ( $row = mysqli_fetch_assoc( $result) )
                 {
