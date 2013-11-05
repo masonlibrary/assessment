@@ -12,18 +12,13 @@
 
  // $thisUser=$_SESSION['thisUser'];
 
-  ?>
+	(isset($_GET['semester']) && $_GET['semester'] != "") ? $semester = $_GET['semester'] : $semester = "any";
+	(isset($_GET['year']) && $_GET['year'] != "") ? $year = $_GET['year'] : $year = "any"; // FIXME this var is used in queries
 
-<h2>Outcomes Map - Assessed</h2>
-<?php
-	echo '<a href="outcomesTaughtMap.php?';
-	if(isset($_GET['semester'])) { echo 'semester=' . $_GET['semester'] . '&'; }
-	if(isset($_GET['year'])) { echo 'year=' . $_GET['year']; }
-	echo '">Go to Outcomes Taught Map</a>';
-?>
+	echo "<h2>Outcomes Map - Assessed ($semester semester, AY $year)</h2>";
+	echo "<a href='outcomesTaughtMap.php?semester=$semester&year=$year'>Go to Outcomes Taught Map</a>";
 
-<?php
-            $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
+	$dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
                     or die('Error connecting to the stupid database');
 
 
@@ -66,24 +61,23 @@
                      'and ov.prefix <>"IQL" '.
                      'and ov.assessed = "yes" ';
 
-			 		if(isset($_GET['semester']) && $_GET['semester'] != "any") {
-						 switch($_GET['semester']) {
-							case "spring":
-								$query .= "and MONTH(Date) <= 4 ";
-								break;
-							case "fall":
-								$query .= "and MONTH(Date) >= 8 ";
-								break;
-							case "summer":
-								$query .= "and MONTH(Date) > 4 AND MONTH(Date) < 8 ";
-								break;
-						 }
+					 // FIXME probably should use existing date<->semester functions (in includes/functions.php)
+					 switch($semester) {
+						case "spring":
+							$query .= "and MONTH(Date) <= 4 ";
+							break;
+						case "fall":
+							$query .= "and MONTH(Date) >= 8 ";
+							break;
+						case "summer":
+							$query .= "and MONTH(Date) > 4 AND MONTH(Date) < 8 ";
+							break;
+						case "any":
+						default:
+							break;
 					 }
 
-					 if(isset($_GET['year']) && $_GET['year'] != "") {
-						 // FIXME user input in a query
-						 $query .= "and YEAR(Date) = " . $_GET['year'] . " ";
-					 }
+					 if($year != "any") { $query .= "and YEAR(Date) = $year "; } // FIXME user input in a query
 
                      $query .= 'group by concat(ov.prefix," ",ov.number,"-",ov.section) '.
                      'order by ov.Date,concat(ov.prefix," ",ov.number,"-",ov.section)';
@@ -109,7 +103,7 @@
                      '<th>Outcome 1</th>'.
                      '<th>Outcome 2</th>'.
                      '<th>Outcome 3</th>'.
-                     '<th>Ouctome 5</th>'.
+                     '<th>Outcome 5</th>'.
                      '</tr></thead><tbody>';
 
              $result = mysqli_query($dbc, $query) or die('This is an outrage-in outcomesMap.    '.$query);

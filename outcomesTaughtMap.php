@@ -12,18 +12,13 @@
 
  // $thisUser=$_SESSION['thisUser'];
 
-  ?>
+	(isset($_GET['semester']) && $_GET['semester'] != "") ? $semester = $_GET['semester'] : $semester = "any";
+	(isset($_GET['year']) && $_GET['year'] != "") ? $year = $_GET['year'] : $year = "any"; // FIXME this var is used in queries
 
-<h2>Outcomes Map - Taught</h2>
-<?php
-	echo '<a href="outcomesAssessedMap.php?';
-	if(isset($_GET['semester'])) { echo 'semester=' . $_GET['semester'] . '&'; }
-	if(isset($_GET['year'])) { echo 'year=' . $_GET['year']; }
-	echo '">Go to Outcomes Assessed Map</a>';
-?>
+	echo "<h2>Outcomes Map - Taught ($semester semester, AY $year)</h2>";
+	echo "<a href='outcomesAssessedMap.php?semester=$semester&year=$year'>Go to Outcomes Assessed Map</a>";
 
-<?php
-            $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
+	$dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
                     or die('Error connecting to the stupid database');
 
 
@@ -64,24 +59,23 @@
                      'ov.prefix <>"ITW" '.
                      'and ov.prefix <>"IQL" ';
 
-					 if(isset($_GET['semester']) && $_GET['semester'] != "any") {
-						 switch($_GET['semester']) {
-							case "spring":
-								$query .= "and MONTH(Date) <= 4 ";
-								break;
-							case "fall":
-								$query .= "and MONTH(Date) >= 8 ";
-								break;
-							case "summer":
-								$query .= "and MONTH(Date) > 4 AND MONTH(Date) < 8 ";
-								break;
-						 }
+					 // FIXME probably should use existing date<->semester functions (in includes/functions.php)
+					 switch($semester) {
+						case "spring":
+							$query .= "and MONTH(Date) <= 4 ";
+							break;
+						case "fall":
+							$query .= "and MONTH(Date) >= 8 ";
+							break;
+						case "summer":
+							$query .= "and MONTH(Date) > 4 AND MONTH(Date) < 8 ";
+							break;
+						case "any":
+						default:
+							break;
 					 }
 
-					 if(isset($_GET['year']) && $_GET['year'] != "") {
-						 // FIXME user input in a query
-						 $query .= "and YEAR(Date) = " . $_GET['year'] . " ";
-					 }
+					 if($year != "any") { $query .= "and YEAR(Date) = $year "; } // FIXME user input in a query
 
                      // fix the following group-by statement to also concatenate date
                      //otherwise duplicate course/sections accross semesters disappear.
