@@ -14,7 +14,7 @@
  // $thisUser=$_SESSION['thisUser'];
 
 	(isset($_GET['semester']) && $_GET['semester'] != "") ? $semester = $_GET['semester'] : $semester = "any";
-	(isset($_GET['year']) && $_GET['year'] != "") ? $year = $_GET['year'] : $year = "any"; // FIXME this var is used in queries
+	(isset($_GET['year']) && $_GET['year'] != "") ? $year = $_GET['year'] : $year = "any";
 
 	echo "<h2>Outcomes Map - Assessed ($semester semester, AY $year)</h2>";
 	echo "<a href='outcomesTaughtMap.php?semester=$semester&year=$year'>Go to Outcomes Taught Map</a>";
