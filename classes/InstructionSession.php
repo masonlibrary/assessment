@@ -12,8 +12,8 @@ class InstructionSession {
     private $lengthOfSessionID =0;
     private $numberOfStudents=0;
     private $coursePrefixID=0;
-    private $courseNumber=0;
-    private $courseSection=0;
+    private $courseNumber;
+    private $courseSection;
     private $courseTitle='';
     private $sessionNumber='';
     private $faculty='';
