@@ -39,12 +39,35 @@
 ?>
 
 <form id="assessmentForm" method="post" action="submitData.php">
+	<div  id="librarianSelect" class="item ui-corner-all">
+		<h2 id="librarianHeader">Librarian</h2>
+		<div class="selectBox">
+			<div class="floatLeft">
+				<?php
+					echo '<select id="librarianID" name="librarianID" class="mustHave" title="You must select a librarian."' . ($_SESSION['roleName'] == 'user' ? 'disabled="disabled"' : '') . '>';
+						$reportLibID = $currentSession->getLibrarianID();
+						echo '<option value="" ' . ((!$reportLibID && $_SESSION['roleName'] == 'admin') ? 'selected="selected"' :  '') . '> &nbsp; &nbsp;Please select:</option>';
+						$query = "select p.ppleID as ID, p.ppleFName as FName, p.ppleLName as LName, l.libmStatus as Status " .
+							"from people p, librarianmap l where p.ppleID=l.libmppleID;";
+						$result = mysqli_query($dbc, $query) or die('Error querying for librarians: ' . mysqli_error($dbc));
 
-	<?php
-		if ($_SESSION['roleName'] == 'admin') { include('includes/selectLibrarian.php'); }
-		if ($_SESSION['roleName'] == 'power') { include('includes/selectLibrarianPre.php'); }
-		if ($_SESSION['roleName'] == 'user') { include('includes/selectLibrarianNo.php'); }
-	?>
+						while ($row = mysqli_fetch_assoc($result)) {
+							if ($row['Status'] != 'active') { continue; }
+							$id = $row['ID'];
+							$librarianName = $row['FName'] . ' ' . $row['LName'];
+							if ($reportLibID == $id) {
+								echo '<option id="libm' . $id . '" value="' . $id . '" selected="selected">' . $librarianName . '</option>';
+							} else {
+								echo '<option id="libm' . $id . '" value="' . $id . '">' . $librarianName . '</option>';
+							}
+						}
+
+						mysqli_free_result($result);
+				?>
+				</select>
+			</div>
+		</div>
+	</div>
 
 	<?php // include('includes/selectCourse.php'); ?> <!-- All the same except ILSession#  -->
 	<div id="courseSelect" class="item">
@@ -68,7 +91,7 @@
 					<select id="coursePrefixID" name="coursePrefixID" class="mustHave" title="You must select a course prefix.">
 						<option value="" >&nbsp;</option>
 						<?php
-							include("control/connection.php");
+//							include("control/connection.php");
 							$query = "select crspID as ID, crspName as Name from courseprefix";
 							$result = mysqli_query($dbc, $query) or die('Mr. Christian!- query issues.' . mysqli_error($dbc));
 							if (!$result) { echo "this is an outrage: " . mysqli_error($dbc) . "\n"; }
@@ -151,7 +174,7 @@
 
 					<?php
 						echo "<p>before include</p>";
-						include("control/connection.php");
+//						include("control/connection.php");
 						echo "<p>after include</p>";
 						$query = "select locaID as ID, locaname as Name from location";
 						echo "<p>$query</p>";
@@ -171,7 +194,7 @@
 
 						echo "<h3>$query</h3>";
 						mysqli_free_result($result);
-						//  mysqli_close($dbc);
+//						mysqli_close($dbc);
 					?>
 				</select>
 			</div>
@@ -208,7 +231,7 @@
 				<select id="lengthID" name="lengthID" class="mustHave xxx length" title="You must select a session length." >
 					<option value="" selected="selected"> &nbsp; &nbsp;Please select:</option>
 					<?php
-						include("control/connection.php");
+//						include("control/connection.php");
 						$query = "select seslID as ID, seslName as Name from sesslength";
 						$result = mysqli_query($dbc, $query) or die('Victoria! I know your secret!- query issues.' . mysqli_error($dbc));
 						if (!$result) { echo "this is an outrage: " . mysqli_error($dbc) . "\n"; }
@@ -225,7 +248,7 @@
 						}
 
 						mysqli_free_result($result);
-						mysqli_close($dbc);
+//						mysqli_close($dbc);
 					?>
 				</select>
 			</div>
@@ -253,7 +276,7 @@
 			<div id="resourcesSelectContainer" class="floatLeft">
 				<span class="courseInfo xxx resourcesBox"></span><span class="xxx courseSection resourcesBox"></span><br />
 				<?php
-					include("control/connection.php");
+//					include("control/connection.php");
 					//$query = "select rsrpID as ID, rsrpName as Name from resourcepool order by Name asc";
 					//$result = mysqli_query($dbc, $query) or die('Shite!- query issues.' . mysqli_error($dbc));
 					if(isset($_GET['sesdID'])) {
@@ -288,7 +311,7 @@
 
 
 					mysqli_free_result($result);
-					//mysqli_close($dbc); // seems to go a little faster if we don't explicitly close the connection -Webster
+//					mysqli_close($dbc); // seems to go a little faster if we don't explicitly close the connection -Webster
 				?>
 
 			</div>

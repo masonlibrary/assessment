@@ -15,7 +15,7 @@
 
 
         var mustHave = $('.mustHave')
-        var mustHaveCount = mustHave.length;
+        var mustHaveCount = mustHave.length+1;
         var mustHaveRemaining = 0
         var mustHaveReportStr = '';
         var remainingStr='';
@@ -37,6 +37,10 @@
                 else{}
             });
 
+	        if(!checkResourcesCompletion()) {
+				mustHaveRemaining++;
+				retval = false;
+			}
 
             if (mustHaveRemaining<=0)
                 {
@@ -62,7 +66,6 @@
         checkDivCompletion('#lengthSelect');
         checkDivCompletion('#numberSelect');
         checkDivCompletion('#commentSelect');
-        checkResourcesCompletion();
         pageUpdate();
         return retval;
     }
@@ -94,7 +97,6 @@
             {
                 //alert('copies with same resources');
                 if ($('.resourcesBox').is(':checked')){$('#resourcesSelect').removeClass('complete').addClass('complete');}
-                else{}
             }
             else
             {
@@ -109,6 +111,7 @@
                     if (!$(nameStr).is(':checked')) {$('#resourcesSelect').removeClass('complete');}
                     else{}
                     }
+				return false;
             }
         }
         else
@@ -127,10 +130,12 @@
 
 //                $('#submitButton').attr('disabled', true);
                 $('#submitButtonDiv').removeClass('complete');
+				return false;
 
 
             }
         }
+		return true;
     }
 
     function updateCourseLabels()
