@@ -28,7 +28,21 @@
         ?>
 
 <script type="text/javascript">
-	function formFunction(action) { $('#adminReportsForm').attr('action', action).submit(); }
+	function formFunction() {
+		semester = $('#semester').val();
+		year = $('#year').val();
+		$('#linklist').html(" \
+			<li><a href='outcomesTaughtMap.php?semester="+semester+"&year="+year+"'>Outcomes Map - Taught</a></li> \
+			<li><a href='outcomesAssessedMap.php?semester="+semester+"&year="+year+"'>Outcomes Map - Assessed</a></li> \
+			<li><a href='allSessionsByLibrarian.php?semester="+semester+"&year="+year+"'>All Sessions By Librarian (test)</a></li> \
+			<li><a href='assessmentSummary.php?semester="+semester+"&year="+year+"'>Assessment Summary</a></li> \
+			<li><a href='aySessionSummary.php?semester="+semester+"&year="+year+"'>Academic Year Session Summary</a></li>");
+	}
+	$(document).ready(function(){
+		$('#semester').change(function(){formFunction()})
+		$('#year').change(function(){formFunction()})
+		formFunction();
+	});
 </script>
 
 <h2 id="introduction">Reports</h2>
@@ -54,20 +68,13 @@
 			?>
 		</select>
 		<br><br/>
-		<ul>
-			<!--
-			<li><a href="outcomesTaughtMap.php">Outcomes Map - Taught</a></li>
-			<li><a href="outcomesAssessedMap.php">Outcomes Map - Assessed</a></li>
-			<li><a href="assessmentSummary.php">Assessment Summary</a></li>
-			<li><a href="aySessionSummary.php">Academic Year Session Summary</a></li>
-			<li><a href="allSessionsByLibrarian.php">All Sessions By Librarian (test)</a></li>
-			-->
-			<?php // FIXME should turn these back into regular links (use onblur on select boxes?) -Webster ?>
-			<li><a href="javascript:formFunction('outcomesTaughtMap.php')">Outcomes Map - Taught</a></li>
-			<li><a href="javascript:formFunction('outcomesAssessedMap.php')">Outcomes Map - Assessed</a></li>
-			<li><a href="javascript:formFunction('allSessionsByLibrarian.php')">All Sessions By Librarian (test)</a></li>
-			<li><a href="javascript:formFunction('assessmentSummary.php')">Assessment Summary</a></li>
-			<li><a href="javascript:formFunction('aySessionSummary.php')">Academic Year Session Summary</a></li>
+		<ul id="linklist">
+			<?php // This should immediately be overwritten by formFunction() -Webster ?>
+			<li><a href='outcomesTaughtMap.php'>Outcomes Map - Taught</a></li>
+			<li><a href='outcomesAssessedMap.php'>Outcomes Map - Assessed</a></li>
+			<li><a href='allSessionsByLibrarian.php'>All Sessions By Librarian (test)</a></li>
+			<li><a href='assessmentSummary.php'>Assessment Summary</a></li>
+			<li><a href='aySessionSummary.php'>Academic Year Session Summary</a></li>
 		</ul>
 	</form>
 	<br/>
