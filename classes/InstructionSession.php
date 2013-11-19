@@ -290,23 +290,28 @@ class InstructionSession {
         $query = $this->getSessionInsertQuery();
 
         $dbc=$this->getConnection();
-        $result=mysqli_query($dbc, $query);
-        if(!$result){$success.='Session insert failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
-        else {$success='Session insert success! <br />';}
-        $this->setSessionID(mysqli_insert_id($dbc));
+//        $result=mysqli_query($dbc, $query);
+//        if(!$result){$success.='Session insert failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
+//        else {$success='Session insert success! <br />';}
 
 
+		$stmt = mysqli_prepare($dbc, $query);
+		$stmt->bind_param("sisiiiisissi", $this->user, $this->librarianID, $this->dateOfSession, $this->lengthOfSessionID, $this->numberOfStudents,
+			$this->coursePrefixID, $this->courseNumber, $this->courseTitle, $this->courseSection, $this->sessionNumber, $this->faculty, $this->locationID);
+		$stmt->execute() or die("Failed to insert session: " . mysqli_error($dbc));
+		$stmt->close;
+		$this->setSessionID(mysqli_insert_id($dbc));
 
         // resourcesIntroduced and notes
-            // if (DEBUG==true){$success.="<br />btw the session note value is: >>".$this->sessionNote."<< <br />";}
+			// if (DEBUG==true){$success.="<br />btw the session note value is: >>".$this->sessionNote."<< <br />";}
             if(isset($this->sessionNote) && trim($this->sessionNote)!='')
                 {
-            //notes
-                $query=$this->getNoteQuery();
-                $result=mysqli_query($dbc, $query);
+					//notes
+					$query=$this->getNoteQuery($this->sessionID, $this->sessionNote);
+					$result=mysqli_query($dbc, $query);
                     if(!$result){$success.=' noteQuery insert failed <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
                     else {$success.=' Note Insert success! <br />';}   /* <br />'."Query is: $query <br />";}*/
-                }
+				}
              else{$success.=' No note to insert. <br />';}
 
 
@@ -320,7 +325,7 @@ class InstructionSession {
                  }
                  else{$success.=' No resources introduced';}
 
-        $this->closeConnection($dbc);
+//        $this->closeConnection($dbc);
         return $success;
         }
 
@@ -329,15 +334,19 @@ class InstructionSession {
 		$dbc = $this->getConnection();
 		$result = mysqli_query($dbc, $query) or die("Error performing session update query: " . mysqli_error($dbc));
 
+		// FIXME: Just as dangerous as resources below. Should probably look into transactions for these. -Webster
+		$query = "delete from sessionnotes where sesnsesdID = $id";
+		$result = mysqli_query($dbc, $query) or die("Error performing session delete query: " . mysqli_error($dbc));
+
 		if (isset($this->sessionNote) && trim($this->sessionNote) != '') {
 			//notes
-			$query = $this->getUpdateNoteQuery($id);
+			$query = $this->getNoteQuery($id, $this->sessionNote);
 			$result = mysqli_query($dbc, $query) or die("Error performing note update query: " . mysqli_error($dbc));
 		} else {
 			$success.=' No note to insert. <br />';
 		}
 
-		// Only way I can think of to do update resources is to just delete the
+		// FIXME: Only way I can think of to do update resources/notes is to just delete the
 		// rows with our ID, then insert new ones. This is probably dangerous,
 		// since it's possible for the delete to succeed but the insert to fail,
 		// and then we'd be in a bad state. Transactions? -Webster
@@ -366,29 +375,11 @@ class InstructionSession {
         return $query;
         }
 
-	private function getUpdateResourcesQuery($inID, $inResources) {
-        $resourceString="";
-        foreach ($inResources as $value)
-            {
-            $resourceString.= "($inID ,$value),";
-            }
-            //remove last comma
-            $resourceString = rtrim($resourceString, ',');
-
-        //TEST: handle the resources array.
-        $query = "update resourcesintroduced set rsrisesdID= rsrirsrpID) values $resourceString";
-        return $query;
-	}
-
-    private function getNoteQuery()
+    private function getNoteQuery($inID, $inNote)
         {
-        $query ="insert into sessionnotes (sesnsesdID, sesnNote) values ($this->sessionID, '$this->sessionNote')";
+        $query ="insert into sessionnotes (sesnsesdID, sesnNote) values ($inID, '$inNote')";
         return $query;
         }
-
-	private function getUpdateNoteQuery($id) {
-		return $query = "update sessionnotes set sesnNote='$this->sessionNote' where sesnsesdID=$id";
-	}
 
     public function getSessionQuery($inID)
         {
@@ -453,25 +444,22 @@ class InstructionSession {
 
     public function getSessionInsertQuery()
         {
-            /*TODO: implement mysql_real_escape_string()
-             * or:
-             * $stmt = $db->prepare('update people set name = ? where id = ?');
-               $stmt->bind_param('si',$name,$id);
-                $stmt->execute(); ;
-             */
-            $query = "insert into sessiondesc".
-            "(sesdUser, sesdlibmID, sesdDate, sesdseslID, sesdNumStudents, sesdcrspID, ".
-             "sesdCourseNumber, sesdCourseTitle, sesdCourseSection, sesdSessionSection, sesdFaculty, sesdlocaID)".
-                "values".
-             "('".$this->user.
-             "', $this->librarianID, '$this->dateOfSession',".
-             "$this->lengthOfSessionID, $this->numberOfStudents, $this->coursePrefixID,".
-             "$this->courseNumber, '".$this->courseTitle.
-             "', $this->courseSection, '$this->sessionNumber', '".
-              $this->faculty."',".
-             "$this->locationID)";
+//            $query = "insert into sessiondesc".
+//            "(sesdUser, sesdlibmID, sesdDate, sesdseslID, sesdNumStudents, sesdcrspID, ".
+//             "sesdCourseNumber, sesdCourseTitle, sesdCourseSection, sesdSessionSection, sesdFaculty, sesdlocaID)".
+//                "values".
+//             "('".$this->user.
+//             "', $this->librarianID, '$this->dateOfSession',".
+//             "$this->lengthOfSessionID, $this->numberOfStudents, $this->coursePrefixID,".
+//             "$this->courseNumber, '".$this->courseTitle.
+//             "', $this->courseSection, '$this->sessionNumber', '".
+//              $this->faculty."',".
+//             "$this->locationID)";
 
-            return $query;
+			return "insert into sessiondesc".
+				"(sesdUser, sesdlibmID, sesdDate, sesdseslID, sesdNumStudents, sesdcrspID, ".
+				"sesdCourseNumber, sesdCourseTitle, sesdCourseSection, sesdSessionSection, sesdFaculty, sesdlocaID)".
+				"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         }
 
 	public function getSessionUpdateQuery($id) {

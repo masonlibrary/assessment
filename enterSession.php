@@ -55,7 +55,7 @@
 							if ($row['Status'] != 'active') { continue; }
 							$id = $row['ID'];
 							$librarianName = $row['FName'] . ' ' . $row['LName'];
-							if ($reportLibID == $id) {
+							if (($reportLibID == $id) || (!$reportLibID && $_SESSION['librarianID'] == $id)) {
 								echo '<option id="libm' . $id . '" value="' . $id . '" selected="selected">' . $librarianName . '</option>';
 							} else {
 								echo '<option id="libm' . $id . '" value="' . $id . '">' . $librarianName . '</option>';
@@ -337,7 +337,7 @@
 			<div class="floatLeft">
 				<input type="hidden" name="action" value="<?php if(isset($_GET['action'])){echo $_GET['action'];} ?>" />
 				<input type="hidden" name="sesdID" value="<?php if(isset($_GET['sesdID'])){echo $_GET['sesdID'];} ?>" />
-				<input id="submitButton" type="submit" onclick="javascript:if(!checkCompletion()){return false;}" value="Enter Session" name="submit" />
+				<input id="submitButton" type="submit" onclick="javascript:if(!checkCompletion()){return false;}else{$('#librarianID').removeAttr('disabled');return true;}" value="Enter Session" name="submit" />
 			</div>
 		</div>
 	</div>
