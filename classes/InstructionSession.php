@@ -285,78 +285,53 @@ class InstructionSession {
 
         }
     public function insertSession()
-        {
-        $success='query not completed.';
-        $query = $this->getSessionInsertQuery();
-
+	{
         $dbc=$this->getConnection();
-//        $result=mysqli_query($dbc, $query);
-//        if(!$result){$success.='Session insert failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
-//        else {$success='Session insert success! <br />';}
 
-
-		$stmt = mysqli_prepare($dbc, $query);
-		$stmt->bind_param("sisiiiisissi", $this->user, $this->librarianID, $this->dateOfSession, $this->lengthOfSessionID, $this->numberOfStudents,
-			$this->coursePrefixID, $this->courseNumber, $this->courseTitle, $this->courseSection, $this->sessionNumber, $this->faculty, $this->locationID);
+		$stmt = mysqli_prepare($dbc, $this->getSessionInsertQuery());
+		$stmt->bind_param("sisiiiisissi",
+				$this->user,
+				$this->librarianID,
+				$this->dateOfSession,
+				$this->lengthOfSessionID,
+				$this->numberOfStudents,
+				$this->coursePrefixID,
+				$this->courseNumber,
+				$this->courseTitle,
+				$this->courseSection,
+				$this->sessionNumber,
+				$this->faculty,
+				$this->locationID);
 		$stmt->execute() or die("Failed to insert session: " . mysqli_error($dbc));
 		$stmt->close;
 		$this->setSessionID(mysqli_insert_id($dbc));
 
-        // resourcesIntroduced and notes
-			// if (DEBUG==true){$success.="<br />btw the session note value is: >>".$this->sessionNote."<< <br />";}
-            if(isset($this->sessionNote) && trim($this->sessionNote)!='')
-                {
-					//notes
-					$query=$this->getNoteQuery($this->sessionID, $this->sessionNote);
-					$result=mysqli_query($dbc, $query);
-                    if(!$result){$success.=' noteQuery insert failed <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
-                    else {$success.=' Note Insert success! <br />';}   /* <br />'."Query is: $query <br />";}*/
-				}
-             else{$success.=' No note to insert. <br />';}
-
-
-            //resourcesIntroduced
-             if($this->resourcesIntroducedID!='none')
-                 {
-                    $query= $this->getResourcesQuery($this->sessionID, $this->resourcesIntroducedID);
-                    $result=mysqli_query($dbc, $query);
-                    if(!$result){$success.='  resourcesQuery insert fail <br />Error: '.mysqli_error($dbc).'<br /> Query: '.$query.'<br />';}
-                    else {$success.=' resources Insert success! <br />';}
-                 }
-                 else{$success.=' No resources introduced';}
-
-//        $this->closeConnection($dbc);
-        return $success;
-        }
+		$this->setNotes($dbc, $this->sessionID, $this->sessionNote);
+		$this->setResources($dbc, $this->sessionID, $this->resourcesIntroducedID);
+	}
 
 	public function updateSession($id) {
-		$query = $this->getSessionUpdateQuery($id);
-		$dbc = $this->getConnection();
-		$result = mysqli_query($dbc, $query) or die("Error performing session update query: " . mysqli_error($dbc));
+			$dbc = $this->getConnection();
+			$stmt = mysqli_prepare($dbc, $this->getSessionUpdateQuery());
+			$stmt->bind_param("sisiiiisissii",
+				$this->user,
+				$this->librarianID,
+				$this->dateOfSession,
+				$this->lengthOfSessionID,
+				$this->numberOfStudents,
+				$this->coursePrefixID,
+				$this->courseNumber,
+				$this->courseTitle,
+				$this->courseSection,
+				$this->sessionNumber,
+				$this->faculty,
+				$this->locationID,
+				$id);
+			$stmt->execute() or die("Failed to update session: " . $stmt->error);
+			$stmt->close;
 
-		// FIXME: Just as dangerous as resources below. Should probably look into transactions for these. -Webster
-		$query = "delete from sessionnotes where sesnsesdID = $id";
-		$result = mysqli_query($dbc, $query) or die("Error performing session delete query: " . mysqli_error($dbc));
-
-		if (isset($this->sessionNote) && trim($this->sessionNote) != '') {
-			//notes
-			$query = $this->getNoteQuery($id, $this->sessionNote);
-			$result = mysqli_query($dbc, $query) or die("Error performing note update query: " . mysqli_error($dbc));
-		} else {
-			$success.=' No note to insert. <br />';
-		}
-
-		// FIXME: Only way I can think of to do update resources/notes is to just delete the
-		// rows with our ID, then insert new ones. This is probably dangerous,
-		// since it's possible for the delete to succeed but the insert to fail,
-		// and then we'd be in a bad state. Transactions? -Webster
-		$query = "delete from resourcesintroduced where rsrisesdID = $id";
-		$result = mysqli_query($dbc, $query) or die("Error performing resource delete query: " . mysqli_error($dbc));
-
-		if($this->resourcesIntroducedID != 'none') {
-			$query = $this->getResourcesQuery($id, $this->resourcesIntroducedID);
-			$result = mysqli_query($dbc, $query) or die("$query <br>Error performing resource insertion query: " . mysqli_error($dbc));
-		}
+			$this->setNotes($dbc, $id, $this->sessionNote);
+			$this->setResources($dbc, $id, $this->resourcesIntroducedID);
 	}
 
     private function getResourcesQuery($inID, $inResources)
@@ -371,15 +346,64 @@ class InstructionSession {
             $resourceString = rtrim($resourceString, ',');
 
         //TEST: handle the resources array.
-        $query ="insert into resourcesintroduced (rsrisesdID, rsrirsrpID) values $resourceString";
-        return $query;
+        return "insert into resourcesintroduced (rsrisesdID, rsrirsrpID) values $resourceString";
         }
 
-    private function getNoteQuery($inID, $inNote)
+		private function setResources($dbc, $inID, $inResources) {
+			// Potentially dangerous two-step operation, so we use a transaction to ensure both succeed, or both fail. -Webster
+			try {
+				mysqli_autocommit($dbc, false);
+
+				$stmt = mysqli_prepare($dbc, 'delete from resourcesintroduced where rsrisesdID = ?');
+				$stmt->bind_param('i', $inID);
+				if(!$stmt->execute()) throw new Exception("Error performing resource deletion query: " . $stmt->error);
+
+				if($inResources != 'none') {
+					$stmt = mysqli_prepare($dbc, 'insert into resourcesintroduced (rsrisesdID, rsrirsrpID) values (?, ?)');
+					foreach ($inResources as $value) {
+						$stmt->bind_param('is', $inID, $value);
+						if(!$stmt->execute()) throw new Exception("Failed to insert resource ($inID, $value): " . $stmt->error);
+					}
+				}
+
+				mysqli_commit($dbc);
+				mysqli_autocommit($dbc, true);
+			} catch (Exception $e) {
+				mysqli_rollback($dbc);
+				mysqli_autocommit($dbc, true);
+				die("Couldn't set resources: " . $e->getMessage());
+			}
+		}
+
+    private function getNoteQuery()
         {
-        $query ="insert into sessionnotes (sesnsesdID, sesnNote) values ($inID, '$inNote')";
-        return $query;
+        return "insert into sessionnotes (sesnsesdID, sesnNote) values (?, ?)";
         }
+
+		private function setNotes($dbc, $inID, $inNote) {
+			// Potentially dangerous two-step operation, so we use a transaction to ensure both succeed, or both fail. -Webster
+			try {
+				mysqli_autocommit($dbc, false);
+
+				$stmt = mysqli_prepare($dbc, "delete from sessionnotes where sesnsesdID = ?");
+				$stmt->bind_param('i', $inID);
+				if(!$stmt->execute()) throw new Exception("Error performing note deletion query: " . $stmt->error);
+
+				// Note has been deleted. If note is blank, don't worry about inserting a row just for that.
+				if (isset($inNote) && trim($inNote) != '') {
+					$stmt = mysqli_prepare($dbc, 'insert into sessionnotes (sesnsesdID, sesnNote) values (?, ?)');
+					$stmt->bind_param('is', $inID, $inNote);
+					if(!$stmt->execute()) throw new Exception("Failed to insert note: " . $stmt->error);
+				}
+
+				mysqli_commit($dbc);
+				mysqli_autocommit($dbc, true);
+			} catch (Exception $e) {
+				mysqli_rollback($dbc);
+				mysqli_autocommit($dbc, true);
+				die("Couldn't set note: " . $e->getMessage());
+			}
+		}
 
     public function getSessionQuery($inID)
         {
@@ -459,24 +483,24 @@ class InstructionSession {
 			return "insert into sessiondesc".
 				"(sesdUser, sesdlibmID, sesdDate, sesdseslID, sesdNumStudents, sesdcrspID, ".
 				"sesdCourseNumber, sesdCourseTitle, sesdCourseSection, sesdSessionSection, sesdFaculty, sesdlocaID)".
-				"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+				"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
-	public function getSessionUpdateQuery($id) {
-		return $query = "update sessiondesc set
-				sesdUser='$this->user',
-				sesdlibmID='$this->librarianID',
-				sesdDate='$this->dateOfSession',
-				sesdseslID='$this->lengthOfSessionID',
-				sesdNumStudents='$this->numberOfStudents',
-				sesdcrspID='$this->coursePrefixID',
-				sesdCourseNumber='$this->courseNumber',
-				sesdCourseTitle='$this->courseTitle',
-				sesdCourseSection='$this->courseSection',
-				sesdSessionSection='$this->sessionNumber',
-				sesdFaculty='$this->faculty',
-				sesdlocaID='$this->locationID'
-				where sesdID = $id;";
+	public function getSessionUpdateQuery() {
+		return "update sessiondesc set
+				sesdUser=?,
+				sesdlibmID=?,
+				sesdDate=?,
+				sesdseslID=?,
+				sesdNumStudents=?,
+				sesdcrspID=?,
+				sesdCourseNumber=?,
+				sesdCourseTitle=?,
+				sesdCourseSection=?,
+				sesdSessionSection=?,
+				sesdFaculty=?,
+				sesdlocaID=?
+				where sesdID = ?";
 	}
 
     private function getConnection()
