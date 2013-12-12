@@ -22,7 +22,8 @@ th {font-weight: bold; padding: 3px;}
 #container {margin-left: auto; margin-right: auto; margin-top: 200px; }
 #login {margin-left: auto; margin-right: auto;}
 #loginLine {float: right;}
-#logout a {color: #3B6E8F;}
+#userlinks {float: right;clear: right;}
+#userlinks a {color: #3B6E8F;}
 #header{padding-top: 20px;}
 
 
@@ -31,7 +32,6 @@ th {font-weight: bold; padding: 3px;}
 #loginDiv{width: 40%; float: right; }
 #footer{clear: both;}
 #formComplete{display: none; /*clear: both; height:0;line-height:0;display:block;*/}
-#logout {float: right;clear: right;}
 
 #makeCopiesDiv{ margin: 10px 2px 30px 2px; width: 95%}
 

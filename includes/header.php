@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <?php
-  echo '<title>Assessment - ' . $page_title . '</title>';
+  echo '<title>' . $page_title . ' - Assessment</title>';
 ?>
   <link rel="icon" type="image/png" href="images/favicon.png" />
 
@@ -37,8 +37,8 @@
         <?PHP
    if (isset($_SESSION['userID']))
        {
-       echo('<span id="loginLine" class="login">You are logged in as <strong>' . $_SESSION['userName'] . '.</strong></span>');
-       include('logoutForm.php');
+       echo '<div id="loginLine" class="login">You are logged in as <strong>' . $_SESSION['userName'] . '</strong>.</div>';
+       echo '<div id="userlinks"><a href="userEdit.php">Account</a> &bull; <a href="logout.php">Logout</a></div>';
        }
 ?>
     <br />
@@ -50,7 +50,7 @@
        // if($page_title!='Home'){include('assessmentMenu.php');} ?>
 
 
-        <div id="slider" class="open"><?PHP include('includes/tabzillaMenu1.php') ?></div> <a href="index.php" id="tabzilla">mozilla</a>
+        <div id="slider" class="open"><?PHP include('includes/tabzillaMenu1.php') ?></div> <a href="#" id="tabzilla">mozilla</a>
     </div><!-- header-->
     <div id="content">
 
