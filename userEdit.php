@@ -9,6 +9,7 @@
 	// If we're not an admin, force the user we're editing to the user we're logged in as
 	$uid = ($_SESSION['roleID'] == 1 ? $_GET['userID'] : $_SESSION['userID']);
 
+	$row = array();
 	$userDataStmt = mysqli_prepare($dbc, 'select userID, userName, userPass, roleroleID, libmStatus, ppleID, ppleFName, ppleLName, ppleEmail from users u
 		left outer join userroles ur on u.userID = ur.roleuserID
 		left outer join roles r on ur.roleroleID = r.roleID
@@ -17,10 +18,12 @@
 		where u.userid = ?');
 	mysqli_stmt_bind_param($userDataStmt, "i", $uid);
 	mysqli_stmt_execute($userDataStmt) or die("Failed to get user data: " . mysqli_error($dbc));
-	$result = mysqli_stmt_get_result($userDataStmt);
-	$row = mysqli_fetch_assoc($result);
-	$ppleID = $row['ppleID']; // used for setting real name below
-	mysqli_free_result($result); // necessary? recommended?
+	mysqli_stmt_store_result($userDataStmt);
+	mysqli_stmt_bind_result($userDataStmt, $row['userID'], $row['userName'], $row['userPass'], $row['roleroleID'],
+		$row['libmStatus'], $row['ppleID'], $row['ppleFName'], $row['ppleLName'], $row['ppleEmail']);
+	mysqli_stmt_fetch($userDataStmt);
+	mysqli_stmt_free_result($userDataStmt);
+//	$ppleID = $row['ppleID']; // used for setting real name below
 
 	$page_title = $row['userName'] . ' - User edit';
 	include('includes/header.php');
@@ -41,7 +44,7 @@
 			}
 
 			$stmt = mysqli_prepare($dbc, 'update people set ppleFName=?, ppleLName=?, ppleEmail=? where ppleID=?');
-			mysqli_stmt_bind_param($stmt, 'sssi', $_POST['fname'], $_POST['lname'], $_POST['email'], $ppleID);
+			mysqli_stmt_bind_param($stmt, 'sssi', $_POST['fname'], $_POST['lname'], $_POST['email'], $row['ppleID']);
 			if(!mysqli_stmt_execute($stmt)) throw new Exception("Couldn't update account information: " . mysqli_error($dbc));
 
 			// Only let admins change these values
@@ -70,8 +73,11 @@
 
 	// reuse $userDataStmt from above
 	mysqli_stmt_execute($userDataStmt) or die("Failed to get user data: " . mysqli_error($dbc));
-	$result = mysqli_stmt_get_result($userDataStmt);
-	$row = mysqli_fetch_assoc($result);
+	mysqli_stmt_store_result($userDataStmt);
+	mysqli_stmt_bind_result($userDataStmt, $row['userID'], $row['userName'], $row['userPass'], $row['roleroleID'],
+		$row['libmStatus'], $row['ppleID'], $row['ppleFName'], $row['ppleLName'], $row['ppleEmail']);
+	mysqli_stmt_fetch($userDataStmt);
+	mysqli_stmt_free_result($userDataStmt);
 
 	echo '<form method="post">
 		<table>
@@ -83,12 +89,15 @@
 			if ($_SESSION['roleID'] == 1) { // Only admins are allowed to see these fields
 				echo '<tr><th><label for="role">Role</label></th><td><select id="role" name="role">';
 
+				$s = array();
 				$stmt = mysqli_prepare($dbc, 'select roleID, roleName from roles');
 				mysqli_stmt_execute($stmt) or die("Failed to retrieve roles: " . mysqli_error($dbc));
-				$result = mysqli_stmt_get_result($stmt);
-				while ($s = mysqli_fetch_assoc($result)) {
+				mysqli_stmt_store_result($stmt);
+				mysqli_stmt_bind_result($stmt, $s['roleID'], $s['roleName']);
+				while (mysqli_stmt_fetch($stmt)) {
 					echo '<option value="'.$s['roleID'].'" '.($s['roleID'] == $row['roleroleID'] ? 'selected="selected"' : '').'>'.$s['roleName'].'</option>';
 				}
+				mysqli_stmt_free_result($stmt);
 
 				echo '</select></td></tr>
 				<tr><th><label for="status">Status</label></th><td>
