@@ -26,8 +26,17 @@
 		<a href="http://www.keene.edu"><img src="images/KSC-wordmark-150px.png" alt="Keene State College" /></a>
 		<div id="logoTitleDiv">
 			<h2 id="djcWEMlib" ><a href="http://keene.edu/academics/library/">Wallace E. Mason Library</a></h2>
-			<!--<h2 id="assessmentTitle"><a href="index.php">Information Literacy Assessment</a></h2>-->
-			<h2 id="assessmentTitle" ><a style="color: #1DC623;" href="index.php">** Development Copy **</a></h2>
+			<?php
+			switch ($_SERVER['HTTP_HOST']) {
+				case 'kscmasonlibrary.org':
+					echo '<h2 id="assessmentTitle" ><a href="index.php">Information Literacy Assessment</a></h2>';
+					break;
+				case 'localhost':
+					echo '<h2 id="assessmentTitle" ><a style="color:#2C2;" href="index.php">** Development Copy **</a></h2>';
+					break;
+				default:
+			}
+			?>
 		</div></div> </div>
 <?php
  // echo '<div id="pageTitleDiv"><h3>Assessment - ' . $page_title . '</h3></div>';
