@@ -51,47 +51,34 @@
 		<h2 id="librarianHeader">Librarian</h2>
 		<div class="selectBox">
 			<div class="floatLeft">
-                            
-                            
-                            
-                           
-                            
 				<?php
-                                 //WEBSTER: This code doesn't work for non-admin librarians. Please fix asap. Thanks -Dana
-                                //    I've made a quick change to things that hopefully doesn't mess up other stuff. 
-                                
-                                 
-                                    $thisUser = new User($_SESSION['userID'], $_SESSION['userName'], $_SESSION['roleName']);
-                                    
-                                    $_SESSION['librarianID'] = $thisUser->getLibrarianID();
-                                    // echo "LIBRARIAN ID = $thisUser->librarianID <br>";
-                                    //$_SESSION['librarianID']=$thisUser->librarianID;
-                                    // print_r($thisUser);
-                                    
-                                
-                                    
+					// WEBSTER: This code doesn't work for non-admin librarians. Please fix asap. Thanks -Dana
+					// I've made a quick change to things that hopefully doesn't mess up other stuff.
+					$thisUser = new User($_SESSION['userID'], $_SESSION['userName'], $_SESSION['roleName']);
+					$_SESSION['librarianID'] = $thisUser->getLibrarianID();
+																		
 					echo '<select id="librarianID" name="librarianID" class="mustHave" title="You must select a librarian."' . ($_SESSION['roleName'] == 'user' ? 'disabled="disabled"' : '') . '>';
-						$reportLibID = $currentSession->getLibrarianID();
-						echo '<option value="" ' . ((!$reportLibID && $_SESSION['roleName'] == 'admin') ? 'selected="selected"' :  '') . '> &nbsp; &nbsp;Please select:</option>';
-						
-                                                //WEBSTER: I've also modified this query to select the librarian ID rather than the personID.
-                                                //double check that this isn't a mistake on my part. I believe sessions should 
-                                                $query = "select l.libmID as ID, p.ppleFName as FName, p.ppleLName as LName, l.libmStatus as Status " .
-							"from people p, librarianmap l where p.ppleID=l.libmppleID;";
-						$result = mysqli_query($dbc, $query) or die('Error querying for librarians: ' . mysqli_error($dbc));
+					$reportLibID = $currentSession->getLibrarianID();
+					echo '<option value="" ' . ((!$reportLibID && $_SESSION['roleName'] == 'admin') ? 'selected="selected"' :  '') . '> &nbsp; &nbsp;Please select:</option>';
 
-						while ($row = mysqli_fetch_assoc($result)) {
-							if ($row['Status'] != 'active') { continue; }
-							$id = $row['ID'];
-							$librarianName = $row['FName'] . ' ' . $row['LName'];
-							if (($reportLibID == $id) || (!$reportLibID && $_SESSION['librarianID'] == $id)) {
-								echo '<option id="libm' . $id . '" value="' . $id . '" selected="selected">' . $librarianName . '</option>';
-							} else {
-								echo '<option id="libm' . $id . '" value="' . $id . '">' . $librarianName . '</option>';
-							}
+					//WEBSTER: I've also modified this query to select the librarian ID rather than the personID.
+					//double check that this isn't a mistake on my part. I believe sessions should 
+					$query = "select l.libmID as ID, p.ppleFName as FName, p.ppleLName as LName, l.libmStatus as Status " .
+						"from people p, librarianmap l where p.ppleID=l.libmppleID;";
+					$result = mysqli_query($dbc, $query) or die('Error querying for librarians: ' . mysqli_error($dbc));
+
+					while ($row = mysqli_fetch_assoc($result)) {
+						if ($row['Status'] != 'active') { continue; }
+						$id = $row['ID'];
+						$librarianName = $row['FName'] . ' ' . $row['LName'];
+						if (($reportLibID == $id) || (!$reportLibID && $_SESSION['librarianID'] == $id)) {
+							echo '<option id="libm' . $id . '" value="' . $id . '" selected="selected">' . $librarianName . '</option>';
+						} else {
+							echo '<option id="libm' . $id . '" value="' . $id . '">' . $librarianName . '</option>';
 						}
+					}
 
-						mysqli_free_result($result);
+					mysqli_free_result($result);
 				?>
 				</select>
 			</div>
