@@ -2,6 +2,14 @@
 	require_once('control/startSession.php');
 	require_once("control/connection.php");
 	include('classes/InstructionSession.php');
+	
+	//djc added 2014
+	include('classes/User.php');
+	
+	// Make sure the user is logged in before going any further.
+	if (!isset($_SESSION['userID']))
+		{header("Location: login.php"); exit();}
+
 	// Insert the page header
 	$page_title = 'Enter Session Data';
 	include('includes/header.php');
@@ -43,11 +51,32 @@
 		<h2 id="librarianHeader">Librarian</h2>
 		<div class="selectBox">
 			<div class="floatLeft">
+                            
+                            
+                            
+                           
+                            
 				<?php
+                                 //WEBSTER: This code doesn't work for non-admin librarians. Please fix asap. Thanks -Dana
+                                //    I've made a quick change to things that hopefully doesn't mess up other stuff. 
+                                
+                                 
+                                    $thisUser = new User($_SESSION['userID'], $_SESSION['userName'], $_SESSION['roleName']);
+                                    
+                                    $_SESSION['librarianID'] = $thisUser->getLibrarianID();
+                                    // echo "LIBRARIAN ID = $thisUser->librarianID <br>";
+                                    //$_SESSION['librarianID']=$thisUser->librarianID;
+                                    // print_r($thisUser);
+                                    
+                                
+                                    
 					echo '<select id="librarianID" name="librarianID" class="mustHave" title="You must select a librarian."' . ($_SESSION['roleName'] == 'user' ? 'disabled="disabled"' : '') . '>';
 						$reportLibID = $currentSession->getLibrarianID();
 						echo '<option value="" ' . ((!$reportLibID && $_SESSION['roleName'] == 'admin') ? 'selected="selected"' :  '') . '> &nbsp; &nbsp;Please select:</option>';
-						$query = "select p.ppleID as ID, p.ppleFName as FName, p.ppleLName as LName, l.libmStatus as Status " .
+						
+                                                //WEBSTER: I've also modified this query to select the librarian ID rather than the personID.
+                                                //double check that this isn't a mistake on my part. I believe sessions should 
+                                                $query = "select l.libmID as ID, p.ppleFName as FName, p.ppleLName as LName, l.libmStatus as Status " .
 							"from people p, librarianmap l where p.ppleID=l.libmppleID;";
 						$result = mysqli_query($dbc, $query) or die('Error querying for librarians: ' . mysqli_error($dbc));
 
