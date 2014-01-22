@@ -79,7 +79,8 @@
 	mysqli_stmt_fetch($userDataStmt);
 	mysqli_stmt_free_result($userDataStmt);
 
-	echo '<form method="post">
+	echo '<h1>Edit user '.$row['userName'].'</h1>
+		<form method="post">
 		<table>
 			<tr><th>Account information</th><td></td></tr>
 			<tr><th><label for="username">Username</label></th><td><input id="username" name="username" type="text" disabled="disabled" value="'.$row['userName'].'"/></td></tr>
