@@ -68,22 +68,27 @@ require_once('control/startSession.php');
          
       <?php //include('includes/selectSessionsNoOutcomes.php');
          include("control/connection.php");
-           $query = "select ".
-                "otpm.otcmotchID as headingID, ".
-                "oh.otchName as headingName, ".
-                "otpm.otcmsubhName as subheadingName, ".
-                "od.otcdID as outcomeID, ".
-                "od.otcdName as outcomeName ".
-                "from ".
-                "outcometoprefixmap otpm, ".
-                "outcomeheading oh, ".
-                "outcomedetail od ".
-                "where ".
-                "otpm.otcmcrspID=$coursePrefixID ".
-                "and otpm.otcmotchID=oh.otchID ".
-                "and oh.otchID=od.otcdotchID ".
-                " order by otpm.otcmotchID"; 
-                
+//           $query = "select ".
+//                "otpm.otcmotchID as headingID, ".
+//                "oh.otchName as headingName, ".
+//                "otpm.otcmsubhName as subheadingName, ".
+//                "od.otcdID as outcomeID, ".
+//                "od.otcdName as outcomeName ".
+//                "from ".
+//                "outcometoprefixmap otpm, ".
+//                "outcomeheading oh, ".
+//                "outcomedetail od ".
+//                "where ".
+//                "otpm.otcmcrspID=$coursePrefixID ".
+//                "and otpm.otcmotchID=oh.otchID ".
+//                "and oh.otchID=od.otcdotchID ".
+//                " order by otpm.otcmotchID"; 
+				 
+						$query='select oh.otchID as headingID, oh.otchName as headingName, od.otcdID as outcomeID, od.otcdName as outcomeName 
+							from outcomeheading oh, outcomedetail od 
+							where oh.otchID=od.otcdotchID 
+							order by oh.otchID, od.otcdName;';
+
              $currentOutcomeHeading='first';
              
             
@@ -101,7 +106,7 @@ require_once('control/startSession.php');
                     {
                         $headingID= $row['headingID'];
                         $headingName=$row['headingName'];
-                        $subheadingName=$row['subheadingName'];
+//                        $subheadingName=$row['subheadingName'];
                         $outcomeID = $row['outcomeID'];
                         $outcomeName = $row['outcomeName'];
                         
@@ -112,8 +117,8 @@ require_once('control/startSession.php');
                                 $currentOutcomeHeading = $headingName;
                              //   $countByLetterIndex=0;
                                 echo '<h4 class="xxx outcomesBox outcomeHeading outcomeDiv" id="outcomeDiv'.$headingID.'"><span class="explode">&nbsp;+&nbsp;</span>'.$headingID.'. '.$headingName.'</h4>';
-                                if ($subheadingName ==''){echo '<h5 class="outcomesBox outcomeSubheading">'.$subheadingName.'</h5>';}
-                                else {echo '<h5 class="outcomesBox outcomeSubheading">'.$coursePrefix.': '.$subheadingName.'</h5>';}
+//                                if ($subheadingName ==''){echo '<h5 class="outcomesBox outcomeSubheading">'.$subheadingName.'</h5>';}
+//                                else {echo '<h5 class="outcomesBox outcomeSubheading">'.$coursePrefix.': '.$subheadingName.'</h5>';}
                                 echo '<div class="hidden outcomeHeadingDiv outcomeDiv'.$headingID.'">';
                             }
                         
