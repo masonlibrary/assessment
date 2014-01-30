@@ -301,18 +301,25 @@
 //							where (ri.rsrirsrpID=rp.rsrpID) and (rsrisesdID=" . $_GET['sesdID'] . ")) as 'checked'
 //							from resourcesintroduced ri, resourcepool rp
 //							where rsrisesdID=" . $_GET['sesdID'] . " group by ID order by Name asc;";
-						$query = "select * from resourcepool rp
+						$query = "select rsrpID, rsrpName, rsrirsrpID from resourcepool rp
 							left outer join resourcesintroduced ri
-							on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = " . $_GET['sesdID'] . ");";
-						$result = mysqli_query($dbc, $query) or die('Error querying for resource checkboxes: ' . mysqli_error($dbc));
+							on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = ?)
+							order by rsrpName asc;";
+						$stmt = mysqli_prepare($dbc, $query);
+						mysqli_bind_param($stmt, "i", $_GET['sesdID']);
+						mysqli_stmt_execute($stmt) or die('Error querying for resource checkboxes: ' . mysqli_error($dbc));
+						mysqli_stmt_store_result($stmt);
+						mysqli_stmt_bind_result($stmt, $id, $Name, $resourceID);
 
 						echo '<input class="xxx resourcesBox none mustHaveBox" title="You must choose at least 1 resource (or specify NONE) per session" type="checkbox" name="resourcesIntroduced" value="none"  /><span class="xxx resourcesbox">None</span><br class="xxx resourcesbox" />';
-						while ($row = mysqli_fetch_assoc($result)) {
-							$id = $row['rsrpID'];
-							$Name = $row['rsrpName'];
-							$row['rsrirsrpID'] ? $checked = "checked" : $checked = "";
+						while (mysqli_stmt_fetch($stmt)) {
+//							$id = $row['rsrpID'];
+//							$Name = $row['rsrpName'];
+//							$row['rsrirsrpID'] ? $checked = "checked" : $checked = "";
+							$resourceID ? $checked = "checked" : $checked = "";
 							echo '<input class="xxx resourcesBox mustHaveBox notNone" title="You must choose at least 1 resource per session" type="checkbox" ' . $checked . ' name="resourcesIntroduced[]" value="' . $id . '"  /><span class="xxx resourcesbox">' . $Name . '</span><br class="xxx resourcesbox" />';
 						}
+						mysqli_stmt_free_result($stmt);
 					} else {
 						$query = "select rsrpID as ID, rsrpName as Name from resourcepool order by Name asc";
 						$result = mysqli_query($dbc, $query) or die('Error querying for resource checkboxes: ' . mysqli_error($dbc));
@@ -323,10 +330,10 @@
 							$Name = $row['Name'];
 							echo '<input class="xxx resourcesBox mustHaveBox notNone" title="You must choose at least 1 resource per session" type="checkbox" name="resourcesIntroduced[]" value="' . $id . '"  /><span class="xxx resourcesbox">' . $Name . '</span><br class="xxx resourcesbox" />';
 						}
+						mysqli_free_result($result);
 					}
 
 
-					mysqli_free_result($result);
 //					mysqli_close($dbc); // seems to go a little faster if we don't explicitly close the connection -Webster
 				?>
 
