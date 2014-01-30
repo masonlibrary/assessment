@@ -36,8 +36,12 @@
                 <li><h2>Admin</h2>
                     <ul>
                         <li><a href="adminReports.php">Admin Reports</a></li>
-                        <li><a href="userAdmin.php">User admin</a></li>
-                        <li><a href="#"></a></li>
+												<?php
+													if($_SESSION['roleID'] == 1) {
+														echo '<li><a href="userAdd.php">Add user</a></li>';
+														echo '<li><a href="userAdmin.php">Manage users</a></li>';
+													}
+												?>
                     </ul>
                 </li>
             </ul>
