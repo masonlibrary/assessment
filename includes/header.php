@@ -27,15 +27,14 @@
 		<div id="logoTitleDiv">
 			<h2 id="djcWEMlib" ><a href="http://keene.edu/academics/library/">Wallace E. Mason Library</a></h2>
 			<?php
-			switch ($_SERVER['HTTP_HOST']) {
-				case 'kscmasonlibrary.org':
-					echo '<h2 id="assessmentTitle" ><a href="index.php">Information Literacy Assessment</a></h2>';
-					break;
-				case 'localhost':
+				// Check to see if we're local or the path to this script starts with this:
+				// Same check is used in control/connectionVars.php
+				$practiceprefix='/assessment/practice/assessment';
+				if ($_SERVER['HTTP_HOST'] == 'localhost' || (strncmp($_SERVER['SCRIPT_NAME'], $practiceprefix, strlen($practiceprefix)) == 0)) {
 					echo '<h2 id="assessmentTitle" ><a style="color:#2C2;" href="index.php">** Development Copy **</a></h2>';
-					break;
-				default:
-			}
+				} else {
+					echo '<h2 id="assessmentTitle" ><a href="index.php">Information Literacy Assessment</a></h2>';
+				}
 			?>
 		</div></div> </div>
 <?php
