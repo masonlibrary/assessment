@@ -17,7 +17,8 @@ for ($x=0; $x< $sessionCount; $x++)
 //        echo $output;
     }
 
-    $_SESSION['dialogText']="Success!";
+//    $_SESSION['dialogText']="Success!";
+		$_SESSION['dialogText']=$output;
     $_SESSION['dialogTitle']='Result';
     
     $returnTo='';
