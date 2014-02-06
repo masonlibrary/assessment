@@ -1,3 +1,7 @@
+<?php
+	// For all pages, make sure the user is logged in before going any further.
+	if (!isset($_SESSION['userID'])) { header("Location: login.php"); exit('Not logged in'); }
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
