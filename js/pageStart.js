@@ -21,14 +21,6 @@ function pageStart(){
                                             maxWidth: 700,
                                             maxHeight: 200,
                                             position: [500,350]});
-
-
-                            var numberOfCopies =$('select#numberOfCopies').selectmenu({
-                                width: 50,
-                                menuWidth: 400
-				});
-                            numberOfCopies.selectmenu("disable");
-
 			}
 
 

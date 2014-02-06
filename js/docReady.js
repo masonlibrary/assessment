@@ -7,12 +7,6 @@ var sySSChartData1;
 var asInitVals = new Array();
 $(function(){
 
-//                global (ugh TODO figure out better way.
-                var numberOfCopies =$('select#numberOfCopies').selectmenu({
-                                width: 50,
-                                menuWidth: 400
-				});
-
 		jQuery.event.add(window, "load", pageStart);
                 // **************************************
                 //slide down menu code. Remove if unused.
@@ -562,36 +556,6 @@ $(function(){
 
                 });
 
-
-
-                $('#makeCopies').change(function(){
-
-                       if( $('#makeCopies').is(':checked') )
-                            {
-                                $('#numberOfCopies').removeClass('hidden');
-                                numberOfCopies.selectmenu("enable");
-                                sessionCopies = parseInt($('#numberOfCopies').val(), 10);
-                                $('.copyOptions').removeClass('hidden');
-                                $('.copyOptions input').attr('checked', true);
-                                makeCopies();
-                            }
-                       else
-                            {
-                                numberOfCopies.selectmenu("disable");
-                                $('#numberOfCopies').addClass('hidden');
-                                sessionCopies=0;
-                                $('.copyOptions').addClass('hidden');
-                                removeCopies();
-                            }
-                      checkCompletion();
-                });
-
-                $('#numberOfCopies').change(function(){
-                    removeCopies();
-                    sessionCopies= parseInt($('#numberOfCopies').val(), 10);
-                    makeCopies();
-                });
-
                 $('#sameNotes').change(function(){updateNotes();})
                 $('#sameResources').change(function(){updateResources();});
                 $('#sameLocations').change(function(){updateLocation();});
@@ -610,28 +574,14 @@ $(function(){
                 /* *******************  */
 
                 $('#librarianID').change(function(){
-
-                        updateCopies($(this).attr('id'));
                         checkCompletion();
 			});
 
                 $('#coursePrefixID').change(function(){
-
-                        if ($('#makeCopies').attr('checked')=='checked' )
-                        {
-                            for(x=1; x<=sessionCopies; x++)
-                                {
-                                    $('#coursePrefixID'+x).val( $('#coursePrefixID').val() );
-                                    $('#coursePrefixText'+x).val($('#coursePrefixID option:selected').html());
-                                }
-
-                        }
-                        else {}
                         checkCompletion();
                 });
 
                 $('#courseNumber').change(function(){
-                     updateCopies($(this).attr('id'));
                      checkCompletion();
                 });
 
@@ -640,26 +590,22 @@ $(function(){
                 });
 
                 $('#courseTitle').change(function(){
-                    updateCopies($(this).attr('id'));
                     checkDivCompletion('#courseSelect');
                     checkCompletion();
                 });
 
                 $('#sessionNumber').change(function(){
-                    updateCopies($(this).attr('id'));
                     checkCompletion();
                 });
 
                 $('#faculty').change(function(){
 			var faculty= $('#faculty').val();
 
-                        updateCopies($(this).attr('id'));
                          checkCompletion();
 			});
 
 
 		$('#locationID').change(function(){
-                        updateCopies($(this).attr('id'));
 
                           checkCompletion();
 			});
@@ -675,7 +621,6 @@ $(function(){
 
 
 		$('#lengthID').change(function(){
-                        updateCopies($(this).attr('id'));
                         //updateLength();
                         checkCompletion();
 			});

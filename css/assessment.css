@@ -33,8 +33,6 @@ th {font-weight: bold; padding: 3px;}
 #footer{clear: both;}
 #formComplete{display: none; /*clear: both; height:0;line-height:0;display:block;*/}
 
-#makeCopiesDiv{ margin: 10px 2px 30px 2px; width: 95%}
-
 .copyOptions{width: 95%;}
 
 .assessmentDiv{ padding-top: 20px; margin-bottom: 40px; width: 100%;}
@@ -113,7 +111,6 @@ div.complete{ border: 1px solid #cdcdcd; border-bottom: 4px solid #cdcdcd; backg
                 border-left: 0;
 		}
                 div.complete h2 {color: #484848; background-color: #ffffff; padding: 4px; width: 42%; border-bottom: 2px solid #cdcdcd; border-top: 2px solid #cdcdcd; margin-bottom: 10px;}
-                div.complete div#makeCopiesDiv {color: #000000;}
                 div.complete div.copyOptions {color: #000000;}
                 div.complete span.courseInfo {color: #000000;}
                 div.complete span.courseSection {color: #000000;}
@@ -180,7 +177,6 @@ span.needOutcomes, span.needAssessment { border: 1px solid #000000;
  #submitButton {height: 40px;}
 #askCopy{font-size: 12px;}
 
-#numberOfCopiesDiv .ui-autocomplete-input {width: 20px;}
 span.ui-combobox input {background-color: #ffffff; background-image: none; border: 1px solid #A5ACB2; border-radius: 0;}
 td.assessmentInput input {width: 40px;}
 #assessSubmit {height: 30px;}
