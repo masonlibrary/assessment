@@ -88,18 +88,6 @@
 	<?php // include('includes/selectCourse.php'); ?> <!-- All the same except ILSession#  -->
 	<div id="courseSelect" class="item">
 		<h2 id="courseSelectHeader">Course ID-Selection </h2>
-<!--		<div id="makeCopiesDiv"><input type="checkbox" name="makeCopies" id="makeCopies" /> <span class="askCopy">Create</span>
-			<div id="numberOfCopiesDiv">
-				<select id="numberOfCopies" class="hidden" name="numberOfCopies">
-					<option value="1" selected="selected">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-				</select>
-			</div> <span class="askCopy"> additional section&lpar;s&rpar;: </span>
-
-		</div>-->
 		<div class="coursePrefixColumn">
 			<h4>Course Prefix</h4>
 			<div id="selectBox">
@@ -160,9 +148,6 @@
 	<?php // include('includes/selectFaculty.php'); ?><!-- All the same -->
 	<div id="facultySelect" class="item">
 		<h2>Faculty name <span id="facultyComment" class="commentDiv" ></span></h2> <!-- classroom faculty -->
-		<div class="copyOptions hidden">
-			Same for all sections:<input type="checkbox"  name="sameFaculty" id="sameFaculty" checked="checked" />
-		</div>
 		<div id="facultySelectContainer" >
 			<span class="courseInfo xxx faculty"></span><span class="xxx courseSection faculty"></span>
 			<input id="faculty" class="mustHave xxx faculty" name="faculty" type="text" value="<?php echo $currentSession->getFaculty(); ?>" title="You must enter the faculty name." />
@@ -178,9 +163,6 @@
 
 	<div id="locationSelect" class="item ui-corner-all">
 		<h2>Location <span id="locationComment" class="commentDiv" ></span></h2> <!-- classroom -->
-		<div  class="copyOptions hidden">
-			Same for all sections:<input type="checkbox" checked="checked" name="sameLocations" id="sameLocations" />
-		</div>
 		<div class="selectBox">
 			<div id="locationSelectContainer" class="floatLeft">
 				<span class="courseInfo xxx location"></span><span class="xxx courseSection location"></span>
@@ -222,9 +204,6 @@
 	<?php // include('includes/selectDate.php'); ?>
 	<div id="dateSelect" class="item">
 		<h2>Date of session <span id="dateTimeComment" class="commentDiv"></span></h2>
-		<div class="copyOptions hidden">
-			Same for all sections:<input type="checkbox"  name="sameDates" id="sameDates" checked="checked" />
-		</div>
 		<div id="dateSelectContainer" class="floatLeft">
 			<span class="xxx courseInfo datepicker"></span><span class="xxx courseSection datepicker"></span>
 			<?php $date = $currentSession->getDateOfSession(); ?>
@@ -238,9 +217,6 @@
 
 	<div id="lengthSelect" class="item ui-corner-all">
 		<h2>Session Length <span id="lengthComment" class="commentDiv"></span></h2>
-		<div class="copyOptions hidden">
-			Same for all sections:<input type="checkbox" checked="checked" name="sameLengths" id="sameLengths" />
-		</div>
 		<div class="selectBox">
 			<div id="lengthSelectContainer" class="floatLeft">
 				<span class="courseInfo xxx length"></span><span class="xxx courseSection length"></span>
@@ -285,9 +261,6 @@
 	<?php // include('includes/selectResources.php'); ?>
 	<div id="resourcesSelect" class="item ui-corner-all">
 		<h2>Resources introduced <span id="resourcesComment" class="commentDiv"></span></h2>
-		<div class="copyOptions hidden">
-			Same for all sections:<input type="checkbox" checked="checked" name="sameResources" id="sameResources" />
-		</div>
 		<div class="selectBox">
 			<div id="resourcesSelectContainer" class="floatLeft">
 				<span class="courseInfo xxx resourcesBox"></span><span class="xxx courseSection resourcesBox"></span><br />
@@ -313,9 +286,6 @@
 
 						echo '<input class="xxx resourcesBox none mustHaveBox" title="You must choose at least 1 resource (or specify NONE) per session" type="checkbox" name="resourcesIntroduced" value="none"  /><span class="xxx resourcesbox">None</span><br class="xxx resourcesbox" />';
 						while (mysqli_stmt_fetch($stmt)) {
-//							$id = $row['rsrpID'];
-//							$Name = $row['rsrpName'];
-//							$row['rsrirsrpID'] ? $checked = "checked" : $checked = "";
 							$resourceID ? $checked = "checked" : $checked = "";
 							echo '<input class="xxx resourcesBox mustHaveBox notNone" title="You must choose at least 1 resource per session" type="checkbox" ' . $checked . ' name="resourcesIntroduced[]" value="' . $id . '"  /><span class="xxx resourcesbox">' . $Name . '</span><br class="xxx resourcesbox" />';
 						}
@@ -343,9 +313,6 @@
 	<?php // include('includes/selectNote.php'); ?>
 	<div id="commentSelect" class="item">
 		<h2>Comments/Notes</h2>
-		<div class="copyOptions hidden">
-			Same for all sections:<input type="checkbox" checked="checked" name="sameNotes" id="sameNotes" />
-		</div>
 		<div id="noteSelectContainer">
 			<span class="courseInfo xxx notebox"></span><span class="xxx courseSection notebox"></span><br />
 			<textarea class="xxx notebox optional" rows="4" cols="60" id="sessionNote" name="sessionNote" title="Notes are optional"><?php echo $currentSession->getSessionNote() ?></textarea>

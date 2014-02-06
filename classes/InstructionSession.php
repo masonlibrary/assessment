@@ -24,7 +24,8 @@ class InstructionSession {
 
 
     private $outcomesTaught = array();
-    private $outcomesAssessed=array();
+    //private $outcomesAssessed=array();
+		private $outcomesAssessed;
     //session data for other db entities
     private $resourcesIntroducedID = array();
     private $sessionNote='';
@@ -96,7 +97,7 @@ class InstructionSession {
         }
 
     public function setAndInsertOutcomesAssessed($inArray)
-        {
+        { 
             $this->outcomesAssessed=$inArray;
             $success="Complete and utter failure...";
             $query="insert into outcomesassessed (otcaotctID, otcaMet, otcaPartial, otcaNotMet, otcaNotAssessed) values ";
@@ -126,6 +127,7 @@ class InstructionSession {
 
                 $query=trim($query, ",");
                 $dbc=$this->getConnection();
+								// @FIXME parameterize
         $result=mysqli_query($dbc, $query);
         if(!$result){$success.='outcomes assessed insert failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: -->'.$query.'<-- <br />';}
         else
@@ -148,6 +150,7 @@ class InstructionSession {
 
     public function getOutcomesToAssess()
         {
+						// @FIXME parameterize
             $query = "select ".
                     "ot.otctID as taughtID, ".
                     "oh.otchID as headingID, ".
@@ -243,8 +246,9 @@ class InstructionSession {
 
                     }
 
-                    $output.='</table><input type="hidden" name="assessedCount" value="'.$assessedCount.'" />'.
-                            '<input id="assessSubmit" type="submit" name="assessSubmit" disabled="disabled" value="Submit" /></form></div>' ;
+                    $output.='</table><input type="hidden" name="assessedCount" value="'.$assessedCount.'" />
+														<input type="hidden" name="sessionID" value="'.$this->sessionID.'"/>
+                            <input id="assessSubmit" type="submit" name="assessSubmit" disabled="disabled" value="Submit" /></form></div>' ;
 
                     return $output;
         }

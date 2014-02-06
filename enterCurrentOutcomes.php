@@ -42,19 +42,8 @@ require_once('control/startSession.php');
   $courseTitle = $currentSessions[0]->getCourseTitle();
   $sessionCount = count($currentSessions);
   
-  $courseHeaderString = '';
-  $submitButtonString = '';
-  
-  if ($sessionCount > 1) 
-      { 
-        $courseHeaderString = 'You are selecting outcomes taught for <span class="sessionCountSpan">'.$sessionCount.'</span> sections of this course';
-        $submitButtonString = 'Associate outcomes with these sessions';
-        }
-  else
-      {
-      $courseHeaderString = 'You are selecting outcomes taught for <span class="sessionCountSpan">'.$sessionCount.'</span> section of this course';
-      $submitButtonString = 'Associate outcomes with this session';
-      }
+  $courseHeaderString = 'You are selecting outcomes taught for <span class="sessionCountSpan">'.$sessionCount.'</span> section(s) of this course';
+  $submitButtonString = 'Associate outcomes with these sessions';
 ?>
 
 		
@@ -68,21 +57,6 @@ require_once('control/startSession.php');
          
       <?php //include('includes/selectSessionsNoOutcomes.php');
          include("control/connection.php");
-//           $query = "select ".
-//                "otpm.otcmotchID as headingID, ".
-//                "oh.otchName as headingName, ".
-//                "otpm.otcmsubhName as subheadingName, ".
-//                "od.otcdID as outcomeID, ".
-//                "od.otcdName as outcomeName ".
-//                "from ".
-//                "outcometoprefixmap otpm, ".
-//                "outcomeheading oh, ".
-//                "outcomedetail od ".
-//                "where ".
-//                "otpm.otcmcrspID=$coursePrefixID ".
-//                "and otpm.otcmotchID=oh.otchID ".
-//                "and oh.otchID=od.otcdotchID ".
-//                " order by otpm.otcmotchID"; 
 				 
 						$query='select oh.otchID as headingID, oh.otchName as headingName, od.otcdID as outcomeID, od.otcdName as outcomeName 
 							from outcomeheading oh, outcomedetail od 

@@ -11,15 +11,9 @@ require_once('control/startSession.php');
   include('includes/header.php');
   
 echo"<h1>Submit assessments</h1>";
-  $currentSessions=$_SESSION['currentSessions'];
-  
-  
- $thisUser = $_SESSION['thisUser'];
- 
  
  $assessedCount=$_POST['assessedCount'];
  echo $assessedCount;
- echo $currentSessions[0]->toString();
  
  $met=$_POST['Met'];
  $partial=$_POST['Partial'];
@@ -67,7 +61,10 @@ echo "<br />";
          echo "ID:".$row['otctID']."  Met:".$row['Met']."  Partial:".$row['Partial']."  NotMet:".$row['NotMet']."<br />";
          }
      
-     $output= $currentSessions[0]->setAndInsertOutcomesAssessed($assessed);
+		 $currentSession = new InstructionSession();
+		 $currentSession->loadSession($_POST['sessionID']);
+     $output = $currentSession->setAndInsertOutcomesAssessed($assessed);
+		 echo $output;
     
      header('Location: assessOutcomes.php');
      

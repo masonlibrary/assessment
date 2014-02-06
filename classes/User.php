@@ -363,7 +363,7 @@ class User
         {
         $dbc=$this->getConnection();
 
-
+								// @FIXME parameterize
                 $query = "select  c.crspName as Name, count(s.sesdcrspID) as Count ".
                         "from sessiondesc s, courseprefix c ".
                         "where sesdlibmID= $inID and ".
@@ -388,7 +388,7 @@ class User
 
 
 
-
+				// @FIXME parameterize
         $query ="select ".
                 "sd.sesdID as ID, ".
                 " sd.sesdcrspID as prefixID, ".

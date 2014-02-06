@@ -44,44 +44,6 @@ $output.= "<br />";
 $output.="<span class='immediateOutcomeEntry'><a id='immediateOutcomeEntry'class='ui-corner-all' href='/assessment/control/dispatch.php?gotoNext=enterCurrentOutcomes&returnTo=enterSession' >Enter Outcomes Taught for these sessions</a></span><br /><br />";
 $output.= "<h3>Original Session</h3>".$InstructionSession->toString()."<hr /><br /><br />";
 
-
-$currentSessions = array();
-//first number in this array is the number of session copies held by this array.
-    $currentSessions[0]=$InstructionSession;
-
-
-if ( isset($_POST['makeCopies']) && $_POST['makeCopies']=='on'  )
-    {
-    $numberOfCopies = intval($_POST['numberOfCopies']);
-
-    for ($x=1; $x<=$numberOfCopies; $x++)
-        {
-         $currentSessions[$x] = new InstructionSession($userName);
-         //$output.=
-         $currentSessions[$x]->doPost($_POST, strval($x));
-            $output.= "<h4>Copy # $x  </h4>";
-            $currentSessions[$x]->insertSession();
-//            $output.= "<br />";
-//            $output.= "user name: $userName <br />";
-//            $output.= "user id: ".$_SESSION['userID']."<br />";
-//            $output.= "<h1>Copy #$x; toString</h1>";
-            $output.= $currentSessions[$x]->toString();
-            $output.= "<hr /><br /><br />";
-        }
-
-    }
-else {$output.= "No copies. <br />";}
-
-
-
-
-
-//echo "if you're interested, there are ".count($currentSessions)." sessions still available for you to work with!";
-
-$_SESSION['currentSessions']=$currentSessions;
-$_SESSION['currentSessionCount']=count($currentSessions);
-
-
 $_SESSION['dialogText']=$output;
 $_SESSION['dialogTitle']="Session Result";
 

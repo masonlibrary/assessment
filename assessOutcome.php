@@ -12,21 +12,11 @@ require_once('control/startSession.php');
   
   echo '<h3 class="pageTitle">'.$page_title.'</h3>';
  
-  $currentSessions= array();
-  
-  
-  
- $thisUser = $_SESSION['thisUser'];
+ $currentSession= new InstructionSession();
+ $currentSession->loadSession($_POST['assessID']);
  
- $currentSessions[0]= new InstructionSession();
- $currentSessions[0]->loadSession($_POST['assessID']);
+ echo $currentSession->getOutcomesToAssess();
  
-// echo $thisSession->toString();
- 
- echo $currentSessions[0]->getOutcomesToAssess();
- 
- $_SESSION['currentSessions']=$currentSessions;
-
  include('includes/footer.php');
  
 ?>
