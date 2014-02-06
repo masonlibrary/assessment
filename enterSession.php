@@ -6,39 +6,10 @@
 	//djc added 2014
 	include('classes/User.php');
 	
-	// Make sure the user is logged in before going any further.
-	if (!isset($_SESSION['userID']))
-		{header("Location: login.php"); exit();}
-
-	// Insert the page header
 	$page_title = 'Enter Session Data';
 	include('includes/header.php');
 
 	if ($_SESSION['dialogText'] != '') { include('includes/dialogDiv.php'); }
-
-
-//	if (isset($_GET["sesdID"])) {
-//		$query ='select '.
-//			's.sesdID as sessionID, '.
-//			'cp.crspName as CoursePrefix, '.
-//			's.sesdCourseNumber as CourseNumber, '.
-//			's.sesdCourseSection as CourseSection, '.
-//			's.sesdCourseTitle as CourseTitle, '.
-//			's.sesdSessionSection as SessionNum, '.
-//			's.sesdDate as Date, '.
-//			's.sesdFaculty as Faculty, '.
-//			's.sesdOutcomeDone as OutcomeDone, '.
-//			's.sesdAssessed as AssessedDone '.
-//			'from '.
-//			'sessiondesc s, '.
-//			'courseprefix cp '.
-//			'where '.
-//			's.sesdID = ' . $_GET["sesdID"]; //@FIXME needs permissions validation
-//		echo $query;
-//		$result = mysqli_query($dbc, $query) or die("error in field prepopulation query: " . mysqli_error($dbc));
-//
-//		print_r($result);
-//	}
 
 	$currentSession = new InstructionSession();
 	if (isset($_GET["sesdID"])) {
@@ -47,13 +18,12 @@
 ?>
 
 <form id="assessmentForm" method="post" action="submitData.php">
+	<?php /****** Librarian dropdown ******/ ?>
 	<div  id="librarianSelect" class="item ui-corner-all">
 		<h2 id="librarianHeader">Librarian</h2>
 		<div class="selectBox">
 			<div class="floatLeft">
 				<?php
-					// WEBSTER: This code doesn't work for non-admin librarians. Please fix asap. Thanks -Dana
-					// I've made a quick change to things that hopefully doesn't mess up other stuff.
 					$thisUser = new User($_SESSION['userID'], $_SESSION['userName'], $_SESSION['roleName']);
 					$_SESSION['librarianID'] = $thisUser->getLibrarianID();
 																		
@@ -61,8 +31,6 @@
 					$reportLibID = $currentSession->getLibrarianID();
 					echo '<option value="" ' . ((!$reportLibID && $_SESSION['roleName'] == 'admin') ? 'selected="selected"' :  '') . '> &nbsp; &nbsp;Please select:</option>';
 
-					//WEBSTER: I've also modified this query to select the librarian ID rather than the personID.
-					//double check that this isn't a mistake on my part. I believe sessions should 
 					$query = "select l.libmID as ID, p.ppleFName as FName, p.ppleLName as LName, l.libmStatus as Status " .
 						"from people p, librarianmap l where p.ppleID=l.libmppleID;";
 					$result = mysqli_query($dbc, $query) or die('Error querying for librarians: ' . mysqli_error($dbc));
@@ -85,7 +53,7 @@
 		</div>
 	</div>
 
-	<?php // include('includes/selectCourse.php'); ?> <!-- All the same except ILSession#  -->
+	<?php /****** Course information block ******/ ?>
 	<div id="courseSelect" class="item">
 		<h2 id="courseSelectHeader">Course ID-Selection </h2>
 		<div class="coursePrefixColumn">
@@ -95,7 +63,6 @@
 					<select id="coursePrefixID" name="coursePrefixID" class="mustHave" title="You must select a course prefix.">
 						<option value="" >&nbsp;</option>
 						<?php
-//							include("control/connection.php");
 							$query = "select crspID as ID, crspName as Name from courseprefix";
 							$result = mysqli_query($dbc, $query) or die('Mr. Christian!- query issues.' . mysqli_error($dbc));
 							if (!$result) { echo "this is an outrage: " . mysqli_error($dbc) . "\n"; }
@@ -113,7 +80,6 @@
 							}
 
 							mysqli_free_result($result);
-//	                        mysqli_close($dbc);
 						?>
 					</select>
 				</div>
@@ -138,14 +104,13 @@
 					<option value="III" <?php if($sessionNumber === "III") echo 'selected="selected"'; ?> >III</option>
 					<option value="Visit" <?php if($sessionNumber === "Visit") echo 'selected="selected"'; ?> >Visit</option>
 					<option value="Other" <?php if($sessionNumber === "Other") echo 'selected="selected"'; ?> >Other</option>
-					' ?>
 				</select>
 			</div>
 		</div>
 		<br />
 	</div>
 
-	<?php // include('includes/selectFaculty.php'); ?><!-- All the same -->
+	<?php /****** Faculty text box ******/ ?>
 	<div id="facultySelect" class="item">
 		<h2>Faculty name <span id="facultyComment" class="commentDiv" ></span></h2> <!-- classroom faculty -->
 		<div id="facultySelectContainer" >
@@ -154,13 +119,7 @@
 		</div>
 	</div>
 
-	<!--<h1>test</h1>-->
-	<?php // include('includes/selectLocation.php'); ?><!-- possibly different -->
-
-	<?php
-		/* select locaName as location from location */
-	?>
-
+	<?php /****** Location dropdown ******/ ?>
 	<div id="locationSelect" class="item ui-corner-all">
 		<h2>Location <span id="locationComment" class="commentDiv" ></span></h2> <!-- classroom -->
 		<div class="selectBox">
@@ -171,11 +130,7 @@
 					<option class="xxx location" value=""> &nbsp; &nbsp;Please select:</option>
 
 					<?php
-						echo "<p>before include</p>";
-//						include("control/connection.php");
-						echo "<p>after include</p>";
 						$query = "select locaID as ID, locaname as Name from location";
-						echo "<p>$query</p>";
 						$result = mysqli_query($dbc, $query) or die('crappy crustacean!- query issues.' . mysqli_error($dbc));
 						if (!$result) { echo "this is an outrage: " . mysqli_error($dbc) . "\n"; }
 
@@ -190,18 +145,14 @@
 							}
 						}
 
-						echo "<h3>$query</h3>";
 						mysqli_free_result($result);
-//						mysqli_close($dbc);
 					?>
 				</select>
 			</div>
 		</div>
-
 	</div>
 
-	<!--<h1>test</h1>-->
-	<?php // include('includes/selectDate.php'); ?>
+	<?php /****** Date picker ******/ ?>
 	<div id="dateSelect" class="item">
 		<h2>Date of session <span id="dateTimeComment" class="commentDiv"></span></h2>
 		<div id="dateSelectContainer" class="floatLeft">
@@ -213,8 +164,7 @@
 		</div>
 	</div>
 
-	<?php // include('includes/selectLength.php'); ?>
-
+	<?php /****** Session length dropdown ******/ ?>
 	<div id="lengthSelect" class="item ui-corner-all">
 		<h2>Session Length <span id="lengthComment" class="commentDiv"></span></h2>
 		<div class="selectBox">
@@ -223,7 +173,6 @@
 				<select id="lengthID" name="lengthID" class="mustHave xxx length" title="You must select a session length." >
 					<option value="" selected="selected"> &nbsp; &nbsp;Please select:</option>
 					<?php
-//						include("control/connection.php");
 						$query = "select seslID as ID, seslName as Name from sesslength";
 						$result = mysqli_query($dbc, $query) or die('Victoria! I know your secret!- query issues.' . mysqli_error($dbc));
 						if (!$result) { echo "this is an outrage: " . mysqli_error($dbc) . "\n"; }
@@ -240,14 +189,13 @@
 						}
 
 						mysqli_free_result($result);
-//						mysqli_close($dbc);
 					?>
 				</select>
 			</div>
 		</div>
 	</div>
 
-	<?php // include('includes/selectNumber.php'); ?>
+	<?php /****** Number of students text box ******/ ?>
 	<div id="numberSelect" class="item ui-corner-all">
 		<h2>Number of students<span id="numberStudentsComment" class="commentDiv"></span></h2>
 		<div id="numberOfStudentsContainer">
@@ -258,22 +206,14 @@
 	</div>
 	<?php // TODO make select number of students into a dropdown. ?>
 
-	<?php // include('includes/selectResources.php'); ?>
+	<?php /****** Resources checkboxes ******/ ?>
 	<div id="resourcesSelect" class="item ui-corner-all">
 		<h2>Resources introduced <span id="resourcesComment" class="commentDiv"></span></h2>
 		<div class="selectBox">
 			<div id="resourcesSelectContainer" class="floatLeft">
 				<span class="courseInfo xxx resourcesBox"></span><span class="xxx courseSection resourcesBox"></span><br />
 				<?php
-//					include("control/connection.php");
-					//$query = "select rsrpID as ID, rsrpName as Name from resourcepool order by Name asc";
-					//$result = mysqli_query($dbc, $query) or die('Shite!- query issues.' . mysqli_error($dbc));
 					if(isset($_GET['sesdID'])) {
-//						$query = "select rp.rsrpID as ID, rp.rsrpName as Name,
-//							(select if((count(rsrisesdID) > 0), 'checked', '') from resourcesintroduced ri
-//							where (ri.rsrirsrpID=rp.rsrpID) and (rsrisesdID=" . $_GET['sesdID'] . ")) as 'checked'
-//							from resourcesintroduced ri, resourcepool rp
-//							where rsrisesdID=" . $_GET['sesdID'] . " group by ID order by Name asc;";
 						$query = "select rsrpID, rsrpName, rsrirsrpID from resourcepool rp
 							left outer join resourcesintroduced ri
 							on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = ?)
@@ -302,15 +242,13 @@
 						}
 						mysqli_free_result($result);
 					}
-
-
-//					mysqli_close($dbc); // seems to go a little faster if we don't explicitly close the connection -Webster
 				?>
 
 			</div>
 		</div>
 	</div>
-	<?php // include('includes/selectNote.php'); ?>
+	
+	<?php /****** Notes field ******/ ?>
 	<div id="commentSelect" class="item">
 		<h2>Comments/Notes</h2>
 		<div id="noteSelectContainer">
@@ -318,8 +256,8 @@
 			<textarea class="xxx notebox optional" rows="4" cols="60" id="sessionNote" name="sessionNote" title="Notes are optional"><?php echo $currentSession->getSessionNote() ?></textarea>
 		</div>
 	</div>
-	<?php // include('includes/selectSubmitButton.php'); ?>
 
+	<?php /****** Submit button ******/ ?>
 	<div  id="submitButtonDiv" class="item ui-corner-all ">
 		<h2>Complete form: </h2>
 		<div class="selectBox">
@@ -331,7 +269,6 @@
 			</div>
 		</div>
 	</div>
-
 
 </form>
 <br />
