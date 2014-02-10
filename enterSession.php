@@ -262,7 +262,11 @@
 		if (isset($_GET['action'])){
 			$action = $_GET['action'];
 		} else {
-			$action = 'insert';
+			if (isset($_GET['sesdID'])) {
+				$action = 'view';
+			} else {
+				$action = 'insert';
+			}
 		}
 		
 		if (isset($_GET['sesdID'])) {
