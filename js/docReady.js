@@ -449,7 +449,7 @@ $(function(){
                 $('#assessOutcomesDiv').tabs();
 
                 //if user selects 'none' (no resources introduced) then disable resources checkbox
-                $('.none').live('click', noneOrSome);
+                $('.resourcesBox').live('click', noneOrSome);
 
 
                 $('.areYouSure').click(function(e){

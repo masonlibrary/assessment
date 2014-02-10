@@ -216,30 +216,31 @@
 					if(isset($_GET['sesdID'])) {
 						$query = "select rsrpID, rsrpName, rsrirsrpID from resourcepool rp
 							left outer join resourcesintroduced ri
-							on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = ?)
-							order by rsrpName asc;";
+							on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = ?)";
 						$stmt = mysqli_prepare($dbc, $query);
 						mysqli_bind_param($stmt, "i", $_GET['sesdID']);
 						mysqli_stmt_execute($stmt) or die('Error querying for resource checkboxes: ' . mysqli_error($dbc));
 						mysqli_stmt_store_result($stmt);
 						mysqli_stmt_bind_result($stmt, $id, $Name, $resourceID);
 
-						echo '<input class="xxx resourcesBox none mustHaveBox" title="You must choose at least 1 resource (or specify NONE) per session" type="checkbox" name="resourcesIntroduced" value="none"  /><span class="xxx resourcesbox">None</span><br class="xxx resourcesbox" />';
+						$isNone='none'; // Add 'none' class for first row
 						while (mysqli_stmt_fetch($stmt)) {
 							$resourceID ? $checked = "checked" : $checked = "";
-							echo '<input class="xxx resourcesBox mustHaveBox notNone" title="You must choose at least 1 resource per session" type="checkbox" ' . $checked . ' name="resourcesIntroduced[]" value="' . $id . '"  /><span class="xxx resourcesbox">' . $Name . '</span><br class="xxx resourcesbox" />';
+							echo '<input class="xxx resourcesBox mustHaveBox '.$isNone.'" title="You must choose at least 1 resource (or \'None\') per session" type="checkbox" ' . $checked . ' name="resourcesIntroduced[]" value="' . $id . '"  /><span class="xxx resourcesbox">' . $Name . '</span><br class="xxx resourcesbox" />';
+							$isNone='notNone'; // Add notNone class for subsequent rows
 						}
 						mysqli_stmt_free_result($stmt);
 					} else {
-						$query = "select rsrpID as ID, rsrpName as Name from resourcepool order by Name asc";
+						$query = "select rsrpID as ID, rsrpName as Name from resourcepool";
 						$result = mysqli_query($dbc, $query) or die('Error querying for resource checkboxes: ' . mysqli_error($dbc));
 
-						echo '<input class="xxx resourcesBox none mustHaveBox" title="You must choose at least 1 resource (or specify NONE) per session" type="checkbox" name="resourcesIntroduced" value="none"  /><span class="xxx resourcesbox">None</span><br class="xxx resourcesbox" />';
+						$isNone='none'; // Add 'none' class for first row
 						while ($row = mysqli_fetch_assoc($result)) {
 							$id = $row['ID'];
 							$Name = $row['Name'];
-							echo '<input class="xxx resourcesBox mustHaveBox notNone" title="You must choose at least 1 resource per session" type="checkbox" name="resourcesIntroduced[]" value="' . $id . '"  /><span class="xxx resourcesbox">' . $Name . '</span><br class="xxx resourcesbox" />';
-						}
+							echo '<input class="xxx resourcesBox mustHaveBox '.$isNone.'" title="You must choose at least 1 resource (or \'None\') per session" type="checkbox" name="resourcesIntroduced[]" value="' . $id . '"  /><span class="xxx resourcesbox">' . $Name . '</span><br class="xxx resourcesbox" />';
+							$isNone='notNone'; // Add notNone class for subsequent rows
+					}
 						mysqli_free_result($result);
 					}
 				?>
@@ -308,5 +309,7 @@
 
 </form>
 <br />
+
+<script type="text/javascript">$(document).ready( function(){noneOrSome(); checkCompletion();} );</script>
 
 <?php include('includes/footer.php'); ?>

@@ -353,26 +353,22 @@
             if (mustHaveRemaining<=0){$('#assessSubmit').removeAttr('disabled');}
             else{$('#assessSubmit').attr('disabled', true);}
       }
+
         function noneOrSome() {
+					if ($('.none').is(':checked')) {
+						$('.notNone').attr('checked', false);
+						$('.notNone').attr('disabled', 'disabled');
+					} else {
+						$('.notNone').removeAttr('disabled');
+					}
 
-                    var noneName=$(this).attr('name');
-                    var selector='.resourcesBox[name="'+noneName+'[]"]';
-                    if ($(this).is(':checked'))
-                        {
-                        //remove all other options of the same name
-
-                        $(selector).attr('checked', false).attr('disabled', true);
-
-                         }
-                    else
-                        {
-                            //add all other options
-                            $(selector).removeAttr('disabled');
-                        }
-
-                    }
-
-
+					if ($('.notNone').is(':checked')) {
+						$('.none').attr('checked', false);
+//						$('.none').attr('disabled', 'disabled');
+					} else {
+						$('.none').removeAttr('disabled');
+					}
+				}
 
  (function( $ ) {
 		$.widget( "ui.combobox", {
