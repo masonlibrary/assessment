@@ -258,17 +258,49 @@
 	</div>
 
 	<?php /****** Submit button ******/ ?>
-	<div  id="submitButtonDiv" class="item ui-corner-all ">
-		<h2>Complete form: </h2>
-		<div class="selectBox">
-			<div id="completionStatus"></div>
-			<div class="floatLeft">
-				<input type="hidden" name="action" value="<?php if(isset($_GET['action'])){echo $_GET['action'];} ?>" />
-				<input type="hidden" name="sesdID" value="<?php if(isset($_GET['sesdID'])){echo $_GET['sesdID'];} ?>" />
-				<input id="submitButton" type="submit" onclick="javascript:if(!checkCompletion()){return false;}else{$('#librarianID').removeAttr('disabled');return true;}" value="Enter Session" name="submit" />
-			</div>
-		</div>
-	</div>
+	<?php
+		if (isset($_GET['action'])){
+			$action = $_GET['action'];
+		} else {
+			$action = 'insert';
+		}
+		
+		if (isset($_GET['sesdID'])) {
+			$session = $_GET['sesdID'];
+		} else {
+			if ($action != 'insert') die('Error: Trying to perform a non-insert action without session ID!');
+			$session = null;
+		}
+		
+		switch ($action) {
+			case 'insert':
+			case 'duplicate':
+				$submitText='Add session';
+				break;
+			case 'edit':
+				$submitText='Update session';
+				break;
+			case 'view':
+			default:
+				$submitText='';
+				break;
+		}
+		
+		if ($submitText) {
+			echo '<div  id="submitButtonDiv" class="item ui-corner-all ">
+				<h2>Complete form: </h2>
+				<div class="selectBox">
+					<div id="completionStatus"></div>
+						<div class="floatLeft">
+							<input type="hidden" name="action" value="'.$action.'"/>
+							<input type="hidden" name="sesdID" value="'.$session.'"/>
+							<input id="submitButton" type="submit" name="submit" value="'.$submitText.'"/>
+					</div>
+				</div>
+			</div>';
+		} // else, no button (view/unknown action)
+
+	?>
 
 </form>
 <br />

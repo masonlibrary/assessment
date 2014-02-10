@@ -688,6 +688,16 @@ $(function(){
                     checkCompletion();
                     });
 
+								$('#assessmentForm').live('submit', function(e){
+									if (checkCompletion()) {
+										$('#librarianID').removeAttr('disabled');
+										return true;
+									} else {
+										e.preventDefault();
+										$('#librarianID').attr('disabled', 'disabled');
+										return false;
+									}
+								})
 
 
 
