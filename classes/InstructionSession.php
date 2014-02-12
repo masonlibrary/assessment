@@ -10,7 +10,7 @@ class InstructionSession {
     private $dateOfSession = '';
 
     private $lengthOfSessionID =0;
-    private $numberOfStudents=0;
+    private $numberOfStudents;
     private $coursePrefixID=0;
     private $courseNumber;
     private $courseSection;
