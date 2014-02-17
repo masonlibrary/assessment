@@ -70,7 +70,7 @@ table {margin-top: 10px; margin-bottom: 10px;
        -webkit-box-shadow: 4px 4px 4px #000000; box-shadow: 4px 4px 4px #000000;*/}
 th {color: #484848; font-size: 16px;}
 td {
-	/*border: 1px solid #484848;*/
+	border: 1px solid #484848;
 	padding: 2px;
 	/*background-color: #ffffff*/
 }
