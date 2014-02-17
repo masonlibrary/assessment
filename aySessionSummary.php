@@ -12,7 +12,13 @@
 
  // $thisUser=$_SESSION['thisUser'];
 
-	$desiredAY = 'AY ' . ($_GET['year']-1) . '-' . ($_GET['year']); // FIXME user input in query
+	if (isset($_GET['year']) && is_numeric($_GET['year'])) {
+		$year = $_GET['year'];
+	} else {
+		die('Non-numeric or nonexistant year!');
+	}
+	
+	$desiredAY = 'AY ' . ($year-1) . '-' . ($year);
 	$AYQueryString = inAcademicYear($desiredAY);
 
 ?>

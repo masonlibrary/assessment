@@ -64,10 +64,13 @@
 							}
 						}
 
-						if (isset($_GET['year']) && $_GET['year'] != "") {
-							// FIXME user input in a query
-							$query .= "and YEAR(s.sesdDate) = " . $_GET['year'] . " ";
+						if (isset($_GET['year']) && is_numeric($_GET['year'])) {
+							$year = $_GET['year'];
+						} else {
+							die('Non-numeric or nonexistant year!');
 						}
+						
+						$query .= "and YEAR(s.sesdDate) = " . $year . " ";
 
 						$query .= 'order by '.
                         'LastName, '.

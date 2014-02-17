@@ -99,48 +99,41 @@ class InstructionSession {
     public function setAndInsertOutcomesAssessed($inArray)
         { 
             $this->outcomesAssessed=$inArray;
-            $success="Complete and utter failure...";
-            $query="insert into outcomesassessed (otcaotctID, otcaMet, otcaPartial, otcaNotMet, otcaNotAssessed) values ";
-
-
-            foreach($inArray as $row)
-                {
-                if ($row['NotAssessed']=='0')
-                    {
-                    $otctID=$row['otctID'];
-                    $Met=$row['Met'];
-                    $Partial=$row['Partial'];
-                    $NotMet=$row['NotMet'];
-                    $NotAssessed=$row['NotAssessed'];
-                    $query.="($otctID, $Met, $Partial, $NotMet, $NotAssessed),";
-                    }
-                 else
-                     {
-                      $otctID=$row['otctID'];
-                    $Met='0';
-                    $Partial='0';
-                    $NotMet='0';
-                    $NotAssessed=$row['NotAssessed'];
-                    $query.="($otctID, $Met, $Partial, $NotMet, $NotAssessed),";
-                     }
-                }
-
-                $query=trim($query, ",");
-                $dbc=$this->getConnection();
-								// @FIXME parameterize
-        $result=mysqli_query($dbc, $query);
-        if(!$result){$success.='outcomes assessed insert failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: -->'.$query.'<-- <br />';}
-        else
-            {
-                $success='Outcomes assessed. Success! <br />';
-
-                $query="update sessiondesc set sesdAssessed='yes' where sesdID=".$this->sessionID;
-                $this->assessed='yes';
-                $result=mysqli_query($dbc, $query);
-                if(!$result){$success.='sesdAssessed update failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
-                else {$success.='Session marked as assessed. Success! <br />';}
-             }
-
+						$success='Setting and inserting outcomes assessed...<br/>';
+						$dbc=$this->getConnection();
+						$stmt = mysqli_prepare($dbc, 'insert into outcomesassessed (otcaotctID, otcaMet, otcaPartial, otcaNotMet, otcaNotAssessed) values (?, ?, ?, ?, ?)');
+						
+						// Loop through each element of $inArray, binding variables to and executing the above query in each iteration
+						foreach ($inArray as $row) {
+							
+							// If not assessed, force values to 0
+							if ($row['NotAssessed']) {
+								$row['Met']=0;
+								$row['Partial']=0;
+								$row['NotMet']=0;
+							}
+							
+							mysqli_bind_param($stmt, 'iiiii', $row['otctID'], $row['Met'], $row['Partial'], $row['NotMet'], $row['NotAssessed']);
+							
+							// If inserting outcome assessment succeeds, update sessiondesc for this session and set assessed to 'yes':
+							if (mysqli_stmt_execute($stmt)) {
+								
+								$success .= 'Successfully assessed outcome '.$row['otctID'].'!<br/>';
+								
+								// Set assessed to 'yes'
+								if (mysqli_query($dbc, 'update sessiondesc set sesdAssessed="yes" where sesdID='.$this->sessionID)) {
+									$this->assessed='yes';
+									$success .= 'Successfully set session '.$this->sessionID.' to assessed!<br/>';
+								} else {
+									// Setting assessed to 'yes' failed
+									$success .= 'Failed to set session '.$this->sessionID.' as assessed: '.mysqli_error($dbc).'<br/>';
+								}
+								
+							} else {
+								// Inserting assessment failed
+								$success .= 'Failed to insert outcome assessment '.$row['otctID'].': '.mysqli_error($dbc).'<br/>';
+							}
+						}
 
         $this->closeConnection($dbc);
         return $success;
@@ -150,7 +143,6 @@ class InstructionSession {
 
     public function getOutcomesToAssess()
         {
-						// @FIXME parameterize
             $query = "select ".
                     "ot.otctID as taughtID, ".
                     "oh.otchID as headingID, ".
@@ -164,38 +156,32 @@ class InstructionSession {
                     "outcomeheading oh, ".
                     "outcomedetail od ".
                     "where ".
-                    "ot.otctsesdID=".$this->sessionID." ".
+                    "ot.otctsesdID=? ".
                     "and otpm.otcmotchID=oh.otchID ".
-                    "and otpm.otcmcrspID=$this->coursePrefixID ".
+                    "and otpm.otcmcrspID=? ".
                     "and od.otcdotchID=oh.otchID ".
                     "and od.otcdID = ot.otctotcdID ".
                     //"group by headingName ".
                     "order by oh.otchID, od.otcdID";
-
-
 
                 $currentOutcomeHeading='first';
                 //$output='<div class="test">'.$query.'</div>';
                 $output='';
 
                 $dbc=$this->getConnection();
-                $result = mysqli_query($dbc, $query) or die('Oh nonono! Whyyyy??- query issues. <br /><h4>'.$query.'</h4');
-                        if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
+								$stmt = mysqli_prepare($dbc, $query);
+								mysqli_bind_param($stmt, 'ii', $this->sessionID, $this->coursePrefixID);
+								mysqli_stmt_execute($stmt) or die('Failed to get outcomes to assess: ' . mysqli_error($dbc));
+								mysqli_stmt_store_result($stmt);
+								mysqli_stmt_bind_result($stmt, $taughtID, $headingID, $headingName, $subheadingName, $outcomeID, $outcomeName);
 
                     $assessedCount=0;
                     $output.='<div class="assessmentDiv">';
                     $output.='<h4 id="courseIdent">'.$this->coursePrefix.' '.$this->courseNumber.'-'.$this->courseSection.' '.$this->courseTitle.'</h4>';
                     $output.='<div id="courseSummary" class="hidden">'.$this->toString().'</div>';
                     $output.= '<form action="submitAssessment.php" method="post">';
-                    while ( $row = mysqli_fetch_assoc( $result) )
-                    {
+										while (mysqli_stmt_fetch($stmt)) {
                         $assessedCount++;
-                        $taughtID=$row['taughtID'];
-                        $headingID= $row['headingID'];
-                        $headingName=$row['headingName'];
-                        $subheadingName=$row['subheadingName'];
-                        $outcomeID = $row['outcomeID'];
-                        $outcomeName = $row['outcomeName'];
 
                         if ($headingName!=$currentOutcomeHeading)
                             {
@@ -206,7 +192,7 @@ class InstructionSession {
                                 else {$output.='<h5 class="outcomesBox outcomeSubheading">'.$this->coursePrefix.': '.$subheadingName.'</h5>';}
 
                                 $output.='<table id="headingID'.$headingID.'">'.
-                                        '<thead><tr><th>Outcome</th><th>Met outcome</th><th>Partially met outcome</th><th>Did not meet outcome</th></tr>';
+                                        '<thead><tr><th>Outcome</th><th>Met outcome</th><th>Partially met outcome</th><th>Did not meet outcome</th><th>Did not assess</th></tr>';
 
                                 $currentOutcomeHeading=$headingName;
                             }
@@ -233,7 +219,7 @@ class InstructionSession {
                                 }
                                 $output.='</select></td>';
 
-                    $output.='<td class="assessmentInput didNotAssess"><span class="didNotAssess">Did not assess</span>'.
+                    $output.='<td class="assessmentInput didNotAssess">'.
                                 '<input id="notAssessed'.$taughtID.'" type="hidden" name="otctDidNotAssess[]" value="'.$taughtID.' 0" />'.
                                '<input id="outcome'.$taughtID.'" name = "otctDidNotAssessCheck[]" value="'.$taughtID.'" class="didNotAssess" type="checkbox" /></td>';
 
