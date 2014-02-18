@@ -175,7 +175,7 @@ span.needOutcomes, span.needAssessment { border: 1px solid #000000;
     width: 20px;
     margin-top: 2px;
  }
- input {height: 22px;}
+ /*input {height: 22px;}*/
  .ui-menu{max-height: 300px; overflow-x: hidden; overflow-y: scroll;}
 
  #submitButton {height: 40px;}

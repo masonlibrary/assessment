@@ -16,6 +16,21 @@
 	include('includes/header.php');
 	
 	if ($_POST) {
+		if(!isset($_POST['outcomeHeading']) || $_POST['outcomeHeading'] == '') {
+			$_POST['outcomeHeading']='(blank)';
+		}
+		
+		if(isset($_POST['active']) && $_POST['active']) {
+			$headingActive='yes';
+		} else {
+			$headingActive='no';
+		}
+		
+		$stmt = mysqli_prepare($dbc, 'update outcomeheading set otchName=?, otchActive=? where otchID=?');
+		mysqli_bind_param($stmt, "ssi", $_POST['outcomeHeading'], $headingActive, $_POST['headingID']);
+//		echo 'update outcomeheading set otchName='.$_POST['outcomeHeading'].', otchActive='.$headingActive.' where otchID='.$_POST['headingID'];
+		mysqli_stmt_execute($stmt) or die('Failed to update outcome headings: ' . mysqli_error($dbc));
+		
 		$stmt = mysqli_prepare($dbc, 'update outcomedetail set otcdName=? where otcdID=?');
 		foreach ($_POST['editOutcomeDetailName'] as $i=>$name) {
 			if (!$name) { $name = "(blank)"; }
@@ -44,7 +59,7 @@
 	mysqli_stmt_store_result($stmt);
 	mysqli_stmt_bind_result($stmt, $heading['otchID'], $heading['otchName'], $heading['otchActive']);
 	mysqli_stmt_fetch($stmt);
-	mysqli_stmt_free_result($stmt);
+//	mysqli_stmt_free_result($stmt);
 	
 	echo '<h1>'.$page_title.'</h1>
 		<h2>'.$heading['otchName'].'</h2>
@@ -52,6 +67,8 @@
 	
 	echo '<form method="post">
 		<div class="item" style="width:initial">
+		<h3>Heading name</h3>
+		<table><tr><td><input type="text" name="outcomeHeading" value="'.$heading['otchName'].'"/></td></tr></table>
 		<h3>Edit existing outcome details</h3>
 		<table style="width:100%">';
 	
@@ -74,6 +91,10 @@
 	}
 
 	echo '</table>
+		<input type="hidden" name="headingID" value="'.$id.'"/>
+		<input type="checkbox" id="active" name="active" '.($heading['otchActive']=="yes"?"checked":"").'/>
+		<label for="active">Heading is active</label>
+		<br/>
 		<input type="submit"/>
 		</form>';
 
