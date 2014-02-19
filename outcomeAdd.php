@@ -5,7 +5,7 @@
 
 	if ($_SESSION['roleID'] != 1) { header("HTTP/1.0 403 Forbidden"); die("Unauthorized"); }
 	
-	$page_title = 'Add outcome';
+	$page_title = 'Add new outcome';
 	include('includes/header.php');
 	
 	if($_POST) {
