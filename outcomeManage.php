@@ -68,7 +68,7 @@
 	echo '<form method="post">
 		<div class="item" style="width:initial">
 		<h3>Heading name</h3>
-		<table><tr><td><input type="text" name="outcomeHeading" value="'.$heading['otchName'].'"/></td></tr></table>
+		<textarea name="outcomeHeading" style="width:100%">'.$heading['otchName'].'</textarea>
 		<h3>Edit existing outcome details</h3>
 		<table style="width:100%">';
 	
