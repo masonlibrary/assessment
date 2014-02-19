@@ -60,6 +60,7 @@ class InstructionSession {
             {
                 $success='Session insert success! <br />';
 
+								// @FIXME parameterize
                 $query="update sessiondesc set sesdOutcomeDone='yes' where sesdID=".$this->sessionID;
                 $this->outcomeDone='yes';
                 $result=mysqli_query($dbc, $query);
@@ -74,6 +75,7 @@ class InstructionSession {
 
     public function getOutcomesTaughtInsertQuery()
         {
+				// @FIXME parameterize
         $query ="insert into outcomestaught (otctsesdID, otctotcdID) values ";
 
         $x= count($this->outcomesTaught);
@@ -615,6 +617,7 @@ class InstructionSession {
      public function setCoursePrefix($inID)
          {
          $dbc=$this->getConnection();
+				 // @FIXME parameterize
          $query = "select crspName as prefixName from courseprefix where crspID= $inID";
          $result = mysqli_query($dbc, $query) or die($query.' crustacean!- query issues.'.mysqli_error($dbc));
           if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
@@ -630,6 +633,7 @@ class InstructionSession {
      public function setLibrarianName($inID)
          {
          $dbc=$this->getConnection();
+				 // @FIXME parameterize
          $query = "select ppleLName as LName, ppleFName as FName from people p, librarianmap l where  libmID= $inID and p.ppleID=l.libmppleID";
          $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error($dbc));
           if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
@@ -663,6 +667,7 @@ class InstructionSession {
     public function setLocationName($inID)
         {
         $dbc=$this->getConnection();
+				// @FIXME parameterize
          $query = "select locaName as Name from location where  locaID= $inID ";
          $result = mysqli_query($dbc, $query) or die('crappy crustacean!- query issues.'.mysqli_error($dbc));
           if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
@@ -694,6 +699,7 @@ class InstructionSession {
     public function setLengthOfSessionName($inID)
         {
         $dbc=$this->getConnection();
+				// @FIXME parameterize
          $query = "select seslName as Name from sesslength where seslID= $inID ";
          $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error($dbc));
           if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
@@ -810,6 +816,7 @@ class InstructionSession {
         foreach($inResourcesIntroducedID as $value)
             {
 
+					// @FIXME parameterize
             $query = "select rsrpName as Name from resourcepool where rsrpID=$value";
             $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error($dbc).$query);
             if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}

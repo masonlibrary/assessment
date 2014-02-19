@@ -56,143 +56,142 @@ class User
         {
         mysqli_close($dbc);
         }
-   public function setIsLibrarian($inID)
-       {
-            $dbc=$this->getConnection();
-            $query="select count(*) as count from librarianmap where libmuserID = $inID";
-            $result = mysqli_query($dbc, $query) or die('gah!- query issues.'.mysqli_error($dbc).$query);
-            if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
-            while ( $row = mysqli_fetch_assoc( $result) )
-                {
-                    if ($row['count']==1)
-                    {
-                     $this->isLibrarian=true;
-                     $this->setLibrarianName($inID);
-                    }
-                }
-       }
-   public function setLibrarianName($inID)
+	public function setIsLibrarian($inID)
+		{
+			$dbc=$this->getConnection();
+//			$result = mysqli_query($dbc, $query) or die('gah!- query issues.'.mysqli_error($dbc).$query);
+			$stmt = mysqli_prepare($dbc, 'select exists(select 1 from librarianmap where libmuserID=?) as count');
+			mysqli_bind_param($stmt, 'i', $inID);
+			mysqli_stmt_execute($stmt) or die('Failed to see if librarian exists: ' . mysqli_error($dbc));
+			mysqli_stmt_store_result($stmt);
+			if (mysqli_stmt_num_rows($stmt)) {
+				$this->isLibrarian=true;
+				$this->setLibrarianName($inID);
+			}
+			mysqli_stmt_free_result($stmt);
+		}
+	public function setLibrarianName($inID)
+	{
+		$dbc = $this->getConnection();
+		$stmt = mysqli_prepare($dbc, 'select p.ppleLName as LName, p.ppleFName as FName, l.libmID as ID from people p, librarianmap l where l.libmuserID=? and p.ppleID=l.libmppleID');
+		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_execute($stmt) or die('Failed to retrieve librarian info: ' . mysqli_error($dbc));
+		mysqli_stmt_store_result($stmt);
+		mysqli_stmt_bind_result($stmt, $LName, $FName, $ID);
+		while (mysqli_stmt_fetch($stmt)) {
+			$this->lastName = $LName;
+			$this->firstName = $FName;
+			$this->librarianID = $ID;
+		}
+		mysqli_stmt_free_result($stmt);
+		$this->firstLastName = $this->firstName . ' ' . $this->lastName;
+	}
+
+	public function getMyAssessments($inID) {
+		$dbc = $this->getConnection();
+		$query = 'select
+								s.sesdID as SessionID,
+								cp.crspName as CoursePrefix,
+								s.sesdCourseNumber as CourseNumber,
+								s.sesdCourseSection as CourseSection,
+								s.sesdSessionSection as SessionSection,
+								s.sesdDate as Date,
+								ot.otctID as OutcomeTaughtID,
+								CONCAT(od.otcdotchID, od.otcdName) as OutcomeName,
+								oa.otcaID as OutcomeID,
+								oa.otcaMet as Met,
+								oa.otcaPartial as Partial,
+								oa.otcaNotMet as NotMet,
+								oa.otcaNotAssessed as NotAssessed
+							from
+								sessiondesc s,
+								courseprefix cp,
+								outcomestaught ot,
+								outcomedetail od,
+								outcomesassessed oa
+							where
+								s.sesdlibmID = ?
+								and s.sesdAssessed = "yes"
+								and s.sesdcrspID = cp.crspID
+								and ot.otctsesdID = s.sesdID
+								and ot.otctotcdID = od.otcdID
+								and oa.otcaotctID = ot.otctID
+							order by
+								CoursePrefix,
+								CourseNumber,
+								CourseSection,
+								outcomeName';
+
+		// 8 columns.
+		$output = '<table id="myAssessments"><thead id="myAssessmentsHead"><tr>' .
+						// *** for dataTables grouping addOn                  ***
+						'<th>Course</th>' .
+						// ***                                                ***
+						'<th>Semester</th>' .
+						// '<th>Course</th>'.
+						'<th>Outcome</th>' .
+						'<th>Met</th>' .
+						'<th>Partially Met</th>' .
+						'<th>Not Met</th>' .
+						'<th>Not Assessed</th>' .
+						'</tr></thead><tbody>';
+
+		$row = array();
+		$stmt = mysqli_prepare($dbc, $query);
+		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_execute($stmt) or die('Failed to retrieve assessments: ' . mysqli_error($dbc));
+		mysqli_stmt_store_result($stmt);
+		mysqli_stmt_bind_result($stmt, $row['SessionID'], $row['CoursePrefix'], $row['CourseNumber'], $row['CourseSection'], $row['SessionSection'],
+			$row['Date'], $row['OutcomeTaughtID'], $row['OutcomeName'], $row['OutcomeID'], $row['Met'], $row['Partial'], $row['NotMet'], $row['NotAssessed']);
+
+		while (mysqli_stmt_fetch($stmt)) {
+			$sessionID = $row['SessionID'];
+			$coursePrefix = $row['CoursePrefix'];
+			$courseNumber = $row['CourseNumber'];
+			$courseSection = $row['CourseSection'];
+			$sessionSection = $row['SessionSection'];
+
+			$date = $row['Date'];
+			$sessionDate = toUSDate($date);
+			$semester = toSemester($date);
+
+			$outcomeTaughtID = $row['OutcomeTaughtID'];
+			$outcomeName = $row['OutcomeName'];
+			$outcomeID = $row['OutcomeID'];
+			$met = $row['Met'];
+			$partial = $row['Partial'];
+			$notMet = $row['NotMet'];
+			$notAssessed = $row['NotAssessed'];
+
+			if ($notAssessed == '1') {
+				$notAssessed = "n/a";
+			} else {
+				$notAssessed = "Assessed";
+			}
+
+
+			$output.="<tr class='myAssessments'>" .
+							// *** for dataTables grouping addOn                 ***
+							"<td class='myAssessments otcdID$outcomeID coursePrefix'>$coursePrefix $courseNumber-$courseSection $sessionSection $semester</td>" .
+							// ***                                               ***
+							"<td class='myAssessments otcdID$outcomeID semester'>$semester</td>" .
+							// "<td class='myAssessments otcdID$outcomeID coursePrefix'>$coursePrefix $courseNumber-$courseSection $sessionSection</td>".
+							"<td class='myAssessments otcdID$outcomeID outcomeName'>$outcomeName</td>" .
+							"<td class='myAssessments otcdID$outcomeID met'>$met</td>" .
+							"<td class='myAssessments otcdID$outcomeID partial'>$partial</td>" .
+							"<td class='myAssessments otcdID$outcomeID notMet'>$notMet</td>" .
+							"<td class='myAssessments otcdID$outcomeID notAssessed'>$notAssessed</td></tr>";
+		}
+		$output.='</tbody></table>';
+		
+		mysqli_stmt_free_result($stmt);
+
+		return $output;
+	}
+
+	public function getMySessions($inID)
          {
-         $dbc=$this->getConnection();
-         $query = "select p.ppleLName as LName, p.ppleFName as FName, l.libmID as ID from people p, librarianmap l where  l.libmuserID= $inID and p.ppleID=l.libmppleID";
-         $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.$query.'<br>'.mysqli_error($dbc));
-          if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
-
-            while ( $row = mysqli_fetch_assoc( $result) )
-            {
-                $this->lastName=$row['LName'];
-                $this->firstName = $row['FName'];
-                $this->librarianID=$row['ID'];
-            }
-           $this->firstLastName=$this->firstName.' '.$this->lastName;
-           $this->closeConnection($dbc);
-
-         }
-
-     public function getMyAssessments($inID)
-         {
-            $dbc=$this->getConnection();
-             $query ='select '.
-                     's.sesdID as SessionID, '.
-                     'cp.crspName as CoursePrefix, '.
-                     's.sesdCourseNumber as CourseNumber, '.
-                     's.sesdCourseSection as CourseSection, '.
-                     's.sesdSessionSection as SessionSection, '.
-                     's.sesdDate as Date, '.
-                     'ot.otctID as OutcomeTaughtID, '.
-                     'CONCAT(od.otcdotchID, od.otcdName) as OutcomeName, '.
-                     'oa.otcaID as OutcomeID, '.
-                     'oa.otcaMet as Met, '.
-                     'oa.otcaPartial as Partial, '.
-                     'oa.otcaNotMet as NotMet, '.
-                     'oa.otcaNotAssessed as NotAssessed '.
-                     'from '.
-                     'sessiondesc s, '.
-                     'courseprefix cp, '.
-                     'outcomestaught ot, '.
-                     'outcomedetail od, '.
-                     'outcomesassessed oa '.
-                     'where '.
-                     's.sesdlibmID = '.$inID.
-                     ' and s.sesdAssessed = "yes" '.
-                     'and s.sesdcrspID = cp.crspID '.
-                     'and ot.otctsesdID = s.sesdID '.
-                     'and ot.otctotcdID = od.otcdID '.
-                     'and oa.otcaotctID = ot.otctID '.
-                     'order by '.
-                     'CoursePrefix, '.
-                     'CourseNumber, '.
-                     'CourseSection, '.
-                     'outcomeName';
-
-             // 8 columns.
-             $output = '<table id="myAssessments"><thead id="myAssessmentsHead"><tr>'.
-
-
-
-                    // *** for dataTables grouping addOn                  ***
-                    "<th>Course</th>".
-                    // ***                                                ***
-
-                     '<th>Semester</th>'.
-                    // '<th>Course</th>'.
-                     '<th>Outcome</th>'.
-                     '<th>Met</th>'.
-                     '<th>Partially Met</th>'.
-                     '<th>Not Met</th>'.
-                     '<th>Not Assessed</th>'.
-                     '</tr></thead><tbody>';
-
-             $result = mysqli_query($dbc, $query) or die('This is an outrage-in function getMyAssessment query issues.'.$query);
-                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n $query";}
-
-
-                while ( $row = mysqli_fetch_assoc( $result) )
-                {
-                    $sessionID=$row['SessionID'];
-                    $coursePrefix=$row['CoursePrefix'];
-                    $courseNumber=$row['CourseNumber'];
-                    $courseSection=$row['CourseSection'];
-                    $sessionSection=$row['SessionSection'];
-
-                    $date=$row['Date'];
-                    $sessionDate=  toUSDate($date);
-                    $semester=  toSemester($date);
-
-                    $outcomeTaughtID=$row['OutcomeTaughtID'];
-                    $outcomeName=$row['OutcomeName'];
-                    $outcomeID=$row['OutcomeID'];
-                    $met=$row['Met'];
-                    $partial=$row['Partial'];
-                    $notMet=$row['NotMet'];
-                    $notAssessed=$row['NotAssessed'];
-
-                    if($notAssessed=='1'){$notAssessed="n/a";}
-                        else {$notAssessed="Assessed";}
-
-
-                    $output.="<tr class='myAssessments'>".
-
-                            // *** for dataTables grouping addOn                 ***
-                            "<td class='myAssessments otcdID$outcomeID coursePrefix'>$coursePrefix $courseNumber-$courseSection $sessionSection    $semester</td>".
-                            // ***                                               ***
-
-                            "<td class='myAssessments otcdID$outcomeID semester'>$semester</td>".
-                           // "<td class='myAssessments otcdID$outcomeID coursePrefix'>$coursePrefix $courseNumber-$courseSection $sessionSection</td>".
-                            "<td class='myAssessments otcdID$outcomeID outcomeName'>$outcomeName</td>".
-                            "<td class='myAssessments otcdID$outcomeID met'>$met</td>".
-                            "<td class='myAssessments otcdID$outcomeID partial'>$partial</td>".
-                            "<td class='myAssessments otcdID$outcomeID notMet'>$notMet</td>".
-                            "<td class='myAssessments otcdID$outcomeID notAssessed'>$notAssessed</td></tr>";
-
-                }
-
-                $output.='</tbody></table>';
-                return $output;
-
-         }
-     public function getMySessions($inID)
-         {
+						// @FIXME parameterize
             $dbc=$this->getConnection();
              $query ='select '.
                      's.sesdID as sessionID, '.
@@ -278,24 +277,25 @@ class User
          {
          $dbc=$this->getConnection();
 
-         $query = "select  c.crspName as Name, count(s.sesdcrspID) as Count ".
-                        "from sessiondesc s, courseprefix c ".
-                        "where sesdlibmID= $inID and ".
-                        "sesdOutcomeDone='yes' and sesdAssessed='no' and s.sesdcrspID=c.crspID group by s.sesdcrspID";
+				$query = 'select c.crspName as Name, count(s.sesdcrspID) as Count
+					from sessiondesc s, courseprefix c
+					where sesdlibmID=? and sesdOutcomeDone="yes" and sesdAssessed="no" and s.sesdcrspID=c.crspID
+					group by s.sesdcrspID';
 
-                $result = mysqli_query($dbc, $query) or die('This is an outrage- in getNeedAssessment - query issues. <br>'.$query);
-                if(!$result){echo "this is an outrage -in getNeedAssessment-: ".mysqli_error($dbc)."\n".$query;}
-
-                //fill array with prefix as key and count needing outcomes as value
-                $counts = array();
-                while ( $row = mysqli_fetch_assoc( $result) )
-                {
-                    $counts[trim($row['Name'])]=$row['Count'];
-                }
-
-
-
-
+				$stmt = mysqli_prepare($dbc, $query);
+				mysqli_bind_param($stmt, 'i', $inID);
+				mysqli_stmt_execute($stmt) or die('Failed to retrieve number of outcomes to assess: ' . mysqli_error($dbc));
+				mysqli_stmt_store_result($stmt);
+				$row = array();
+				mysqli_stmt_bind_result($stmt, $row['Name'], $row['Count']);
+				// fill array with prefix as key and count needing outcomes as value
+				$counts = array();
+				while (mysqli_stmt_fetch($stmt)) {
+					$counts[trim($row['Name'])] = $row['Count'];
+				}
+				mysqli_stmt_free_result($stmt);
+								
+				// @FIXME parameterize
         $query ="select ".
                 "sd.sesdID as ID, ".
                 " sd.sesdcrspID as prefixID, ".
@@ -363,30 +363,23 @@ class User
         {
         $dbc=$this->getConnection();
 
-								// @FIXME parameterize
-                $query = "select  c.crspName as Name, count(s.sesdcrspID) as Count ".
-                        "from sessiondesc s, courseprefix c ".
-                        "where sesdlibmID= $inID and ".
-                        "sesdOutcomeDone='no' and s.sesdcrspID=c.crspID group by s.sesdcrspID";
+				$query = 'select c.crspName as Name, count(s.sesdcrspID) as Count
+					from sessiondesc s, courseprefix c
+					where sesdlibmID=? and sesdOutcomeDone="no" and s.sesdcrspID=c.crspID
+					group by s.sesdcrspID';
 
-                $result = mysqli_query($dbc, $query) or die('This is an outrage- query issues.');
-
-
-
-                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
-
-                //fill array with prefix as key and count needing outcomes as value
-                $counts = array();
-                while ( $row = mysqli_fetch_assoc( $result) )
-                {
-                    $counts[trim($row['Name'])]=$row['Count'];
-                }
-
-
-
-
-
-
+				$stmt = mysqli_prepare($dbc, $query);
+				mysqli_bind_param($stmt, 'i', $inID);
+				mysqli_stmt_execute($stmt) or die('Failed to retrieve number of outcomes needed: ' . mysqli_error($dbc));
+				mysqli_stmt_store_result($stmt);
+				$row = array();
+				mysqli_stmt_bind_result($stmt, $row['Name'], $row['Count']);
+				// fill array with prefix as key and count needing outcomes as value
+				$counts = array();
+				while (mysqli_stmt_fetch($stmt)) {
+					$counts[trim($row['Name'])] = $row['Count'];
+				}
+				mysqli_stmt_free_result($stmt);
 
 				// @FIXME parameterize
         $query ="select ".
