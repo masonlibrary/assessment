@@ -4,10 +4,12 @@ body {
 	font-size:10pt;
 	color:#000;
 }
+
 body#loginBody {
 	text-align: center;
 	margin: 100px;
 }
+
 h1#logo {
     float: none;
     width: 190px;
@@ -18,6 +20,7 @@ h1#logo {
 }
 
 #loginText {margin-top: 0px;}
+
 h1#logo a, h1#logo a:link, h1#logo a:visited, h1#logo a:hover {
     display: block;
     width: 190px;
@@ -38,7 +41,7 @@ input[type="hidden"] { border: 0; }
 
 .submit {
     font-family: Arial, Helvetica, sans-serif;
- 		margin:10px auto 10px auto;
+ 		margin:10px auto;
     text-shadow: #333 -1px -1px 0px;
     background-color: #3B6E8F;
     color: #FFF;
@@ -57,7 +60,6 @@ input[type="submit"]:focus {
 
 h1 { font-size: 0.9em; color: #3B6E8F; margin: 0; text-align: center;}
 
-
 div#loginBox {
 	width: 300px;
 	padding: 10px 20px 5px 20px;
@@ -65,7 +67,9 @@ div#loginBox {
 	background: #fff;
 	text-align: center;
 	border:5px solid #ddd;
+	border-radius: 10px;
 }
+
 div#copyRights {
 	font-size: 0.8em;
 	text-align: center;
@@ -79,12 +83,15 @@ div#copyRights {
     color:#666;
 }
 
-
 input { 
 	width: 175px;
     margin-left: 5px
 }
+
 input[type="submit"] { width: auto; margin:10px auto 10px auto; }
 
-
-table,form { margin-top:2px; padding: 0; }
+table, form {
+	/*margin-top: 2px;*/
+	margin: 2px auto;
+	/*padding: 0;*/
+}
