@@ -190,92 +190,63 @@ class User
 	}
 
 	public function getMySessions($inID)
-         {
-						// @FIXME parameterize
+				{
             $dbc=$this->getConnection();
-             $query ='select '.
-                     's.sesdID as sessionID, '.
-                     'cp.crspName as CoursePrefix, '.
-                     's.sesdCourseNumber as CourseNumber, '.
-                     's.sesdCourseSection as CourseSection, '.
-                     's.sesdCourseTitle as CourseTitle, '.
-                     's.sesdSessionSection as SessionNum, '.
-                     's.sesdDate as Date, '.
-                     's.sesdFaculty as Faculty, '.
-                     's.sesdOutcomeDone as OutcomeDone, '.
-                     's.sesdAssessed as AssessedDone '.
-                     'from '.
-                     'sessiondesc s, '.
-                     'courseprefix cp '.
-                     'where '.
-                     's.sesdlibmID = '.$inID.
-                     ' and s.sesdcrspID = cp.crspID '.
-                     'order by '.
-                     'CoursePrefix, '.
-                     'CourseNumber, '.
-                     'CourseSection';
 
+						$output = '<table id="mySessions"><thead id="mySessionsHead"><tr>
+							<th>Course</th>
+							<th>Title</th>
+							<th>Faculty</th>
+							<th>Session</th>
+							<th>Semester</th>
+							<th>Date</th>
+							<th>Date2</th>
+							<th>Outcomes</th>
+							<th>Assessed</th>
+							<th>Tools</th>
+							</tr></thead><tbody>';
+						$query = 'select 
+								s.sesdID as sessionID, 
+								cp.crspName as CoursePrefix, 
+								s.sesdCourseNumber as CourseNumber, 
+								s.sesdCourseSection as CourseSection, 
+								s.sesdCourseTitle as CourseTitle, 
+								s.sesdSessionSection as SessionNum, 
+								s.sesdDate as Date, 
+								s.sesdFaculty as Faculty, 
+								s.sesdOutcomeDone as OutcomeDone, 
+								s.sesdAssessed as AssessedDone 
+							from sessiondesc s, courseprefix cp 
+							where s.sesdlibmID=? and s.sesdcrspID=cp.crspID 
+							order by CoursePrefix, CourseNumber, CourseSection';
 
-             $output = '<table id="mySessions"><thead id="mySessionsHead"><tr>'.
-                     '<th>Course</th>'.
-                     '<th>Title</th>'.
-                     '<th>Faculty</th>'.
-                     '<th>Session</th>'.
-                     '<th>Semester</th>'.
-                     '<th>Date</th>'.
-					 '<th>Date2</th>'.
-                     '<th>Outcomes</th>'.
-                     '<th>Assessed</th>'.
-                     '<th>Tools</th>'.
-                     '</tr></thead><tbody>';
+						$stmt = mysqli_prepare($dbc, $query);
+						mysqli_bind_param($stmt, 'i', $inID);
+						mysqli_stmt_execute($stmt) or die('Failed to retrieve session info: ' . mysqli_error($dbc));
+						mysqli_stmt_store_result($stmt);
+						mysqli_stmt_bind_result($stmt, $sessionID, $coursePrefix, $courseNumber, $courseSection, $courseTitle, $sessionNumber, $date, $faculty, $outcomeDone, $AssessedDone);
+						while (mysqli_stmt_fetch($stmt)) {
+							$output.="<tr class='mySessions' id='$sessionID'>
+								<td class='coursePrefix'>$coursePrefix $courseNumber-$courseSection</td>
+								<td class='courseTitle' >$courseTitle</td>
+								<td>$faculty</td>
+								<td>$sessionNumber</td>
+								<td>".toSemester($date)."</td>
+								<td class='dateCell'>".toUSDate($date)."</td>
+								<td class='sqlDateCel'>$date</td>
+								<td>$outcomeDone</td>
+								<td>$AssessedDone</td>
+								<td><div id='d$sessionID' class='menu-div'><p>+</p></div></td>";
+						}
+						mysqli_stmt_free_result($stmt);
 
-             $result = mysqli_query($dbc, $query) or die('This is an outrage-in function getMySessions query issues.'.$query);
-                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n $query";}
+						$output.='</tbody></table>';
+						return $output;
+							
+				}
 
-
-                while ( $row = mysqli_fetch_assoc( $result) )
-                {
-                    $sessionID = $row['sessionID'];
-                    $coursePrefix=$row['CoursePrefix'];
-                    $courseNumber=$row['CourseNumber'];
-                    $courseSection=$row['CourseSection'];
-                    $courseTitle=$row['CourseTitle'];
-                    $sessionNumber=$row['SessionNum'];
-
-                    $date=$row['Date'];
-                    $sessionDate = toUSDate($date);
-                    $semester =  toSemester($date);
-
-                    $faculty=$row['Faculty'];
-                    $outcomeDone=$row['OutcomeDone'];
-                    $AssessedDone=$row['AssessedDone'];
-
-
-
-                    $output.="<tr class='mySessions' id='$sessionID'>".
-                            "<td class='coursePrefix'>$coursePrefix $courseNumber-$courseSection</td>".
-                            "<td class='courseTitle' >$courseTitle</td>".
-                            "<td>$faculty</td>".
-                            "<td>$sessionNumber</td>".
-                            "<td>$semester</td>".
-                            "<td class='dateCell'>$sessionDate</td>".
-                            "<td class='sqlDateCel'>$date</td>".
-                            "<td>$outcomeDone</td>".
-                            "<td>$AssessedDone</td>".
-//                            "<td><a href='enterSession.php?sesdID=$sessionID'>edit</a>&nbsp;<form method='post' action='deleteSession.php'>".
-//                            "<input  type='hidden' value='$sessionID' name='inID'>".
-//                            "<input class='areYouSure inID$sessionID' type='submit' value='X' name='deleteMe'></form></tr>";
-							"<td><div id='d$sessionID' class='menu-div'><p>+</p></div></td>";
-
-                }
-
-                $output.='</tbody></table>';
-                return $output;
-
-         }
-     public function getNeedAssessed($inID)
-         {
-         $dbc=$this->getConnection();
+     public function getNeedAssessed($inID) {
+				$dbc=$this->getConnection();
 
 				$query = 'select c.crspName as Name, count(s.sesdcrspID) as Count
 					from sessiondesc s, courseprefix c
@@ -294,79 +265,67 @@ class User
 					$counts[trim($row['Name'])] = $row['Count'];
 				}
 				mysqli_stmt_free_result($stmt);
-								
-				// @FIXME parameterize
-        $query ="select ".
-                "sd.sesdID as ID, ".
-                " sd.sesdcrspID as prefixID, ".
-                "cp.crspName as prefixName, ".
-                "sd.sesdCourseNumber as courseNumber, ".
-                "sd.sesdCourseTitle as courseTitle, ".
-                "sd.sesdCourseSection as courseSection, ".
-                "sd.sesdSessionSection as sessionSection, ".
-                "sd.sesdDate as sessionDate ".
-                "FROM sessiondesc sd, courseprefix cp ".
-                "where sd.sesdlibmID = $inID AND ".
-                "cp.crspID=sd.sesdcrspID AND ".
-                "sd.sesdAssessed='no' AND sd.sesdOutcomeDone='yes'".
-                "order by sd.sesdcrspID, sd.sesdCourseSection, sd.sesdDate";
-        $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysqli_error($dbc).$query);
-        if(!$result){echo "this is an outrage: ".mysqli_error($dbc).$query."\n";}
 
+				$query = 'select 
+						sd.sesdID as ID, 
+						cp.crspName as prefixName, 
+						sd.sesdCourseNumber as courseNumber, 
+						sd.sesdCourseTitle as courseTitle, 
+						sd.sesdCourseSection as courseSection, 
+						sd.sesdSessionSection as sessionSection, 
+						sd.sesdDate as sessionDate 
+					from sessiondesc sd, courseprefix cp 
+					where sd.sesdlibmID=? and cp.crspID=sd.sesdcrspID and sd.sesdAssessed="no" and sd.sesdOutcomeDone="yes"
+					order by sd.sesdcrspID, sd.sesdCourseSection, sd.sesdDate';
+				$stmt = mysqli_prepare($dbc, $query);
+				mysqli_bind_param($stmt, 'i', $inID);
+				mysqli_stmt_execute($stmt) or die('Failed to retrieve session info: ' . mysqli_error($dbc));
+				mysqli_stmt_store_result($stmt);
+				mysqli_stmt_bind_result($stmt, $id, $prefixName, $courseNumber, $courseTitle, $courseSection, $sessionSection, $sessionDate);
 
-        $output='<ul>DanaJamesPlaceholder</ul><div id="courseByPrefix" class="empty">';
-        $currentPrefixSection='none';
+				$output = '<ul>DanaJamesPlaceholder</ul><div id="courseByPrefix" class="empty">';
+				$currentPrefixSection = 'none';
 
-        while ( $row = mysqli_fetch_assoc( $result) )
-            {
-                $id=$row['ID'];
-                $prefixID=$row['prefixID'];
-                $prefixName=trim($row['prefixName']);
-                $courseNumber=$row['courseNumber'];
-                $courseSection=$row['courseSection'];
-                $courseTitle=$row['courseTitle'];
-                $sessionSection=$row['sessionSection'];
-                $sessionDate=date("m/d/Y", strtotime($row['sessionDate']));
+				while (mysqli_stmt_fetch($stmt)) {
+					if ($prefixName != $currentPrefixSection) {
+						$hrefString = '<li><a href="#'.$prefixName.'">'.$prefixName.'<span class="needAssessment">'.$counts[$prefixName].'</span></a></li>DanaJamesPlaceholder';
+						$output = str_replace('DanaJamesPlaceholder', $hrefString, $output);
 
-                if($prefixName!=$currentPrefixSection)
-                    {
-                    $hrefString='<li><a href="#'.$prefixName.'">'.$prefixName.'<span class="needAssessment">'.$counts[$prefixName].'</span></a></li>DanaJamesPlaceholder';
-                    $output = str_replace('DanaJamesPlaceholder', $hrefString, $output);
+						if ($currentPrefixSection == 'none') {
+							$output.='</div> <div id="'.$prefixName.'" class="assessmentList xxx">';
+						} else {
+							$output.='</tbody></table></div> <div id="'.$prefixName.'" class="assessmentList">';
+						}
 
+						$currentPrefixSection = $prefixName;
+						$output.='<table id="'.$prefixName.'Table" class="assessmentNeeded sortable">
+									<thead><tr><th>Course</th><th>Title</th><th>Session#</th><th>Date</th></tr></thead><tbody>';
+					}
 
-                    if ($currentPrefixSection=='none'){ $output.='</div> <div id="'.$prefixName.'" class="assessmentList xxx">';}
-                    else {$output.='</tbody></table></div> <div id="'.$prefixName.'" class="assessmentList">';}
+					$output.='<tr><td><span class="assessmentNeeded">'.$prefixName.$courseNumber.'-'.$courseSection.'</span></td>' .
+									'<td>'.$courseTitle.'</td>' .
+									'<td>'.$sessionSection.'</td>' .
+									'<td>'.date("m/d/Y", strtotime($sessionDate)).'</td>' .
+									'<td><form action="assessOutcome.php" method="post">' .
+									'<input type="hidden" name="assessID" class="assessmentNeeded '.$prefixName.'" value="'.$id.'" />' .
+									'<input type="submit" class="assessOutcomeButton" name="assessMe" value="Go" /></form></td></tr>';
+				}
+				mysqli_stmt_free_result($stmt);
 
+				$output.='</table></div>';
+				$output = str_replace('DanaJamesPlaceholder', '', $output);
 
-
-                    $currentPrefixSection=$prefixName;
-                     $output.='<table id="'.$prefixName.'Table" class="assessmentNeeded sortable">'.
-                            '<thead><tr><th>Course</th><th>Title</th><th>Session#</th><th>Date</th></tr></thead><tbody>';
-                    }
-
-                    $output.='<tr><td><span class="assessmentNeeded">'.$prefixName.''.$courseNumber.'-'.$courseSection.'</span></td>'.
-                            '<td>'.$courseTitle.'</td>'.
-                            '<td>'.$sessionSection.'</td>'.
-                            '<td>'.$sessionDate.'</td>'.
-                            '<td><form action="assessOutcome.php" method="post">'.
-                                '<input type="hidden" name="assessID" class="assessmentNeeded '.$prefixName.'" value="'.$id.'" />'.
-                                '<input type="submit" class="assessOutcomeButton" name="assessMe" value="Go" /></form></td></tr>';
-                           ;
-
-
-            }
-            $output.='</table></div>';
-            $output = str_replace('DanaJamesPlaceholder', '', $output);
-            return $output;
-         }
+				return $output;
+				}
+				
      public function getNeedOutcomes($inID)
         {
         $dbc=$this->getConnection();
 
 				$query = 'select c.crspName as Name, count(s.sesdcrspID) as Count
-					from sessiondesc s, courseprefix c
-					where sesdlibmID=? and sesdOutcomeDone="no" and s.sesdcrspID=c.crspID
-					group by s.sesdcrspID';
+							from sessiondesc s, courseprefix c
+							where sesdlibmID=? and sesdOutcomeDone="no" and s.sesdcrspID=c.crspID
+							group by s.sesdcrspID';
 
 				$stmt = mysqli_prepare($dbc, $query);
 				mysqli_bind_param($stmt, 'i', $inID);
@@ -381,72 +340,60 @@ class User
 				}
 				mysqli_stmt_free_result($stmt);
 
-				// @FIXME parameterize
-        $query ="select ".
-                "sd.sesdID as ID, ".
-                " sd.sesdcrspID as prefixID, ".
-                "cp.crspName as prefixName, ".
-                "sd.sesdCourseNumber as courseNumber, ".
-                "sd.sesdCourseTitle as courseTitle, ".
-                "sd.sesdCourseSection as courseSection, ".
-                "sd.sesdSessionSection as sessionSection, ".
-                "sd.sesdDate as sessionDate ".
-                "FROM sessiondesc sd, courseprefix cp ".
-                "where sd.sesdlibmID = $inID AND ".
-                "cp.crspID=sd.sesdcrspID AND ".
-                "sd.sesdOutcomeDone='no' ".
-                "order by sd.sesdcrspID, sd.sesdCourseSection, sd.sesdDate";
-        $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysqli_error($dbc).$query);
-        if(!$result){echo "this is an outrage: ".mysqli_error($dbc).$query."\n";}
+				$query = 'select 
+								sd.sesdID as ID, 
+								cp.crspName as prefixName, 
+								sd.sesdCourseNumber as courseNumber, 
+								sd.sesdCourseTitle as courseTitle, 
+								sd.sesdCourseSection as courseSection, 
+								sd.sesdSessionSection as sessionSection, 
+								sd.sesdDate as sessionDate 
+							from sessiondesc sd, courseprefix cp 
+							where sd.sesdlibmID=? and cp.crspID=sd.sesdcrspID and sd.sesdOutcomeDone="no"
+							order by sd.sesdcrspID, sd.sesdCourseSection, sd.sesdDate';
+				
+				$stmt = mysqli_prepare($dbc, $query);
+				mysqli_bind_param($stmt, 'i', $inID);
+				mysqli_stmt_execute($stmt) or die('Failed to retrieve session info: ' . mysqli_error($dbc));
+				mysqli_stmt_store_result($stmt);
+				mysqli_stmt_bind_result($stmt, $id, $prefixName, $courseNumber, $courseTitle, $courseSection, $sessionSection, $sessionDate);
 
+				$output = '<ul>DanaJamesPlaceholder</ul><div id="courseByPrefix" class="empty">';
+				$currentPrefixSection = 'none';
 
+				while (mysqli_stmt_fetch($stmt)) {
+					if ($prefixName != $currentPrefixSection) {
+						$hrefString = '<li><a href="#'.$prefixName.'">'.$prefixName.'<span id="span'.$prefixName.'" class="needOutcomes">'.$counts[$prefixName].'</span></a></li>DanaJamesPlaceholder';
+						$output = str_replace('DanaJamesPlaceholder', $hrefString, $output);
 
-        $output='<ul>DanaJamesPlaceholder</ul><div id="courseByPrefix" class="empty">';
-        $currentPrefixSection='none';
+						if ($currentPrefixSection == 'none') {
+							$output.='</div> <div id="'.$prefixName.'" class="outcomesList xxx">';
+						} else {
+							$output.='</tbody></table></div> <div id="'.$prefixName.'" class="outcomesList xxx">';
+						}
 
-        while ( $row = mysqli_fetch_assoc( $result) )
-            {
-                $id=$row['ID'];
-                $prefixID=$row['prefixID'];
-                $prefixName=trim($row['prefixName']);
-                $courseNumber=$row['courseNumber'];
-                $courseSection=$row['courseSection'];
-                $courseTitle=$row['courseTitle'];
-                $sessionSection=$row['sessionSection'];
-                $sessionDate=date("m/d/Y", strtotime($row['sessionDate']));
+						$output.='<h4 class="xxx outcomesList">'.$prefixName.' Courses</h4> ';
 
-                if($prefixName!=$currentPrefixSection)
-                    {
-                    $hrefString='<li><a href="#'.$prefixName.'">'.$prefixName.'<span id="span'.$prefixName.'" class="needOutcomes">'.$counts[$prefixName].'</span></a></li>DanaJamesPlaceholder';
-                    $output = str_replace('DanaJamesPlaceholder', $hrefString, $output);
+						$output.='<input type="checkbox" name="checkAll" class="checkAll '.$prefixName.'" value="'.$prefixName.'" />' .
+										'<span class="xxx outcomesNeeded">Check all '.$prefixName.' courses</span><br class="outcomesNeeded" /><br class="outcomesNeeded" />';
 
-                    if ($currentPrefixSection=='none'){ $output.='</div> <div id="'.$prefixName.'" class="outcomesList xxx">';}
-                    else {$output.='</tbody></table></div> <div id="'.$prefixName.'" class="outcomesList xxx">';}
+						$currentPrefixSection = $prefixName;
+						$output.='<table id="'.$prefixName.'Table" class="outcomesNeeded xxx sortable">' .
+										'<thead><tr><th>Course</th><th>Title</th><th>Session#</th><th>Date</th></tr></thead><tbody>';
+					}
 
-                    $output.='<h4 class="xxx outcomesList">'.$prefixName.' Courses</h4> ';
+					$output.='<tr><td><input type="checkbox" name="outcomesNeeded[]" class="outcomesNeeded '.$prefixName.'" value="'.$id.'" />' .
+									'<span class="outcomesList">'.$prefixName.''.$courseNumber.'-'.$courseSection.'</span></td>' .
+									'<td>'.$courseTitle.'</td>' .
+									'<td>'.$sessionSection.'</td>' .
+									'<td>'.date("m/d/Y", strtotime($sessionDate)).'</td></tr>';
+				}
+				$output.='</table></div>';
+				$output = str_replace('DanaJamesPlaceholder', '', $output);
 
-                    $output.='<input type="checkbox" name="checkAll" class="checkAll '.$prefixName.'" value="'.$prefixName.'" />'.
-                            '<span class="xxx outcomesNeeded">Check all '.$prefixName.' courses</span><br class="outcomesNeeded" /><br class="outcomesNeeded" />';
-
-                    $currentPrefixSection=$prefixName;
-                     $output.='<table id="'.$prefixName.'Table" class="outcomesNeeded xxx sortable">'.
-                            '<thead><tr><th>Course</th><th>Title</th><th>Session#</th><th>Date</th></tr></thead><tbody>';
-                    }
-
-                    $output.='<tr><td><input type="checkbox" name="outcomesNeeded[]" class="outcomesNeeded '.$prefixName.'" value="'.$id.'" />'.
-                    '<span class="outcomesList">'.$prefixName.''.$courseNumber.'-'.$courseSection.'</span></td>'.
-                            '<td>'.$courseTitle.'</td>'.
-                            '<td>'.$sessionSection.'</td>'.
-                            '<td>'.$sessionDate.'</td></tr>';
-                           ;
-
-
-            }
-            $output.='</table></div>';
-            $output = str_replace('DanaJamesPlaceholder', '', $output);
-            return $output;
-
-        }
+				return $output;
+				}
+				
     public function getUserID()
         {
         return $this->userID;

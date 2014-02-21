@@ -50,46 +50,35 @@ class InstructionSession {
         }
     public function insertOutcomesTaught()
         {
-        $success='query not completed.';
-        $query = $this->getOutcomesTaughtInsertQuery();
-
-        $dbc=$this->getConnection();
-        $result=mysqli_query($dbc, $query);
-        if(!$result){$success.='outcomes taught insert failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: -->'.$query.'<-- <br />';}
-        else
-            {
-                $success='Session insert success! <br />';
-
-								// @FIXME parameterize
-                $query="update sessiondesc set sesdOutcomeDone='yes' where sesdID=".$this->sessionID;
-                $this->outcomeDone='yes';
-                $result=mysqli_query($dbc, $query);
-                if(!$result){$success.='sesdOutcomeDone update failed: <br /> Error: '.mysqli_error($dbc).'<br />Query: '.$query.'<br />';}
-                else {$success.='sesdOutcomeDone update success! <br />';}
-             }
-
-
-        $this->closeConnection($dbc);
+				$success = 'Inserting outcomes taught:<br/>';
+				
+				$dbc=$this->getConnection();
+				$stmt = mysqli_prepare($dbc, 'insert into outcomestaught (otctsesdID, otctotcdID) values (?, ?)');
+				
+				$numOutcomes = count($this->outcomesTaught);
+				
+				for ($i=0; $i<$numOutcomes; $i++) {
+					mysqli_bind_param($stmt, 'ii', $this->sessionID, $this->outcomesTaught[$i]);
+					if (mysqli_stmt_execute($stmt)) {
+						
+						$success .= 'Successfully inserted session '.$this->sessionID.', outcome '.$this->outcomesTaught[$i].'<br/>';
+						$stmt2 = mysqli_prepare($dbc, 'update sessiondesc set sesdOutcomeDone="yes" where sesdID=?');
+						mysqli_bind_param($stmt2, 'i', $this->sessionID);
+						
+						if (mysqli_stmt_execute($stmt2)) {
+							$success .= 'Successfully updated session '.$this->sessionID.' to assessed<br/>';
+						} else {
+							$success .= 'Error: Failed to update session '.$this->sessionID.' to assessed: '.mysqli_error($dbc).'<br/>';
+						}
+						
+					} else {
+						$success .= 'Error: Failed to insert session '.$this->sessionID.', outcome '.$this->outcomesTaught[$i].': '.mysqli_error($dbc).'<br/>';
+					}
+				}
+						 
         return $success;
         }
 
-    public function getOutcomesTaughtInsertQuery()
-        {
-				// @FIXME parameterize
-        $query ="insert into outcomestaught (otctsesdID, otctotcdID) values ";
-
-        $x= count($this->outcomesTaught);
-
-        for ($i=0; $i<$x; $i++)
-            {
-            $query.="(".$this->sessionID.", ".$this->outcomesTaught[$i]."),";
-            }
-
-        $query = rtrim($query, ',');
-
-
-        return $query;
-        }
     public function setAndInsertOutcomesTaught($inArray)
         {
             $success='';
@@ -123,17 +112,21 @@ class InstructionSession {
 								$success .= 'Successfully assessed outcome '.$row['otctID'].'!<br/>';
 								
 								// Set assessed to 'yes'
-								if (mysqli_query($dbc, 'update sessiondesc set sesdAssessed="yes" where sesdID='.$this->sessionID)) {
+								
+								$stmt2 = mysqli_prepare($dbc, 'update sessiondesc set sesdAssessed="yes" where sesdID=?');
+								mysqli_bind_param($stmt2, 'i', $this->sessionID);
+								
+								if (mysqli_stmt_execute($stmt2)) {
 									$this->assessed='yes';
 									$success .= 'Successfully set session '.$this->sessionID.' to assessed!<br/>';
 								} else {
 									// Setting assessed to 'yes' failed
-									$success .= 'Failed to set session '.$this->sessionID.' as assessed: '.mysqli_error($dbc).'<br/>';
+									$success .= 'Error: Failed to set session '.$this->sessionID.' as assessed: '.mysqli_error($dbc).'<br/>';
 								}
 								
 							} else {
 								// Inserting assessment failed
-								$success .= 'Failed to insert outcome assessment '.$row['otctID'].': '.mysqli_error($dbc).'<br/>';
+								$success .= 'Error: Failed to insert outcome assessment '.$row['otctID'].': '.mysqli_error($dbc).'<br/>';
 							}
 						}
 
@@ -616,36 +609,31 @@ class InstructionSession {
 
      public function setCoursePrefix($inID)
          {
-         $dbc=$this->getConnection();
-				 // @FIXME parameterize
-         $query = "select crspName as prefixName from courseprefix where crspID= $inID";
-         $result = mysqli_query($dbc, $query) or die($query.' crustacean!- query issues.'.mysqli_error($dbc));
-          if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
+					$dbc = $this->getConnection();
+					$prefixName = "";
+					$stmt = mysqli_prepare($dbc, 'select crspName from courseprefix where crspID=?');
+					mysqli_bind_param($stmt, 'i', $inID);
+					mysqli_stmt_execute($stmt) or die('Failed to retrieve course prefix name: ' . mysqli_error($dbc));
+					mysqli_stmt_store_result($stmt);
+					mysqli_stmt_bind_result($stmt, $prefixName);
+					mysqli_stmt_fetch($stmt);
+					$this->coursePrefix = $prefixName;
+					$this->closeConnection($dbc);
+				 }
 
-            while ( $row = mysqli_fetch_assoc( $result) )
-            {
-                $prefix=$row['prefixName'];
-            }
-           $this->coursePrefix=$prefix;
-           $this->closeConnection($dbc);
-
-         }
      public function setLibrarianName($inID)
          {
-         $dbc=$this->getConnection();
-				 // @FIXME parameterize
-         $query = "select ppleLName as LName, ppleFName as FName from people p, librarianmap l where  libmID= $inID and p.ppleID=l.libmppleID";
-         $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error($dbc));
-          if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
-
-            while ( $row = mysqli_fetch_assoc( $result) )
-            {
-                $LName=$row['LName'];
-                $FName = $row['FName'];
-            }
-           $this->librarianName=$FName.' '.$LName;
-           $this->closeConnection($dbc);
-
+					$dbc = $this->getConnection();
+					$LName="";
+					$FName="";
+					$stmt = mysqli_prepare($dbc, 'select ppleLName, ppleFName from people p, librarianmap l where libmID=? and p.ppleID=l.libmppleID');
+					mysqli_bind_param($stmt, 'i', $inID);
+					mysqli_stmt_execute($stmt) or die('Failed to retrieve librarian name: ' . mysqli_error($dbc));
+					mysqli_stmt_store_result($stmt);
+					mysqli_stmt_bind_result($stmt, $LName, $FName);
+					mysqli_stmt_fetch($stmt);
+					$this->librarianName = $FName.' '.$LName;
+					$this->closeConnection($dbc);
          }
 
     public function getLocation()
@@ -665,19 +653,17 @@ class InstructionSession {
         }
 
     public function setLocationName($inID)
-        {
-        $dbc=$this->getConnection();
-				// @FIXME parameterize
-         $query = "select locaName as Name from location where  locaID= $inID ";
-         $result = mysqli_query($dbc, $query) or die('crappy crustacean!- query issues.'.mysqli_error($dbc));
-          if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
-
-            while ( $row = mysqli_fetch_assoc( $result) )
-            {
-                $Name=$row['Name'];
-            }
-           $this->locationName=$Name;
-           $this->closeConnection($dbc);
+        { 
+					$dbc = $this->getConnection();
+					$name = "";
+					$stmt = mysqli_prepare($dbc, 'select locaName from location where locaID=?');
+					mysqli_bind_param($stmt, 'i', $inID);
+					mysqli_stmt_execute($stmt) or die('Failed to retrieve location name: ' . mysqli_error($dbc));
+					mysqli_stmt_store_result($stmt);
+					mysqli_stmt_bind_result($stmt, $name);
+					mysqli_stmt_fetch($stmt);
+					$this->locationName = $name;
+					$this->closeConnection($dbc);
         }
     public function getDateOfSession()
         {
@@ -698,19 +684,16 @@ class InstructionSession {
 
     public function setLengthOfSessionName($inID)
         {
-        $dbc=$this->getConnection();
-				// @FIXME parameterize
-         $query = "select seslName as Name from sesslength where seslID= $inID ";
-         $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error($dbc));
-          if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
-
-
-            while ( $row = mysqli_fetch_assoc( $result) )
-            {
-                $Name=$row['Name'];
-            }
-           $this->lengthOfSessionName=$Name;
-           $this->closeConnection($dbc);
+					$dbc = $this->getConnection();
+					$name = "";
+					$stmt = mysqli_prepare($dbc, 'select seslName from sesslength where seslID=?');
+					mysqli_bind_param($stmt, 'i', $inID);
+					mysqli_stmt_execute($stmt) or die('Failed to retrieve session length name: ' . mysqli_error($dbc));
+					mysqli_stmt_store_result($stmt);
+					mysqli_stmt_bind_result($stmt, $name);
+					mysqli_stmt_fetch($stmt);
+					$this->lengthOfSessionName = $name;
+					$this->closeConnection($dbc);
         }
 
    public function setLengthOfSessionID($lengthOfSession)
@@ -810,24 +793,18 @@ class InstructionSession {
         }
     public function setResourcesIntroducedName($inResourcesIntroducedID)
         {
-
-        $dbc=$this->getConnection();
-
-        foreach($inResourcesIntroducedID as $value)
-            {
-
-					// @FIXME parameterize
-            $query = "select rsrpName as Name from resourcepool where rsrpID=$value";
-            $result = mysqli_query($dbc, $query) or die('crustacean!- query issues.'.mysqli_error($dbc).$query);
-            if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n";}
-            while ( $row = mysqli_fetch_assoc( $result) )
-                {
-                 $this->resourcesIntroducedName[$value] = $row['Name'];
-                }
-
-            }
-            $this->closeConnection($dbc);
-
+					$dbc = $this->getConnection();
+					$resourceName = "";
+					$stmt = mysqli_prepare($dbc, 'select rsrpName from resourcepool where rsrpID=?');
+					foreach($inResourcesIntroducedID as $value) {
+						mysqli_bind_param($stmt, 'i', $value);
+						mysqli_stmt_execute($stmt) or die('Failed to retrieve resource name: ' . mysqli_error($dbc));
+						mysqli_stmt_store_result($stmt);
+						mysqli_stmt_bind_result($stmt, $resourceName);
+						mysqli_stmt_fetch($stmt);
+						$this->resourcesIntroducedName[$value] = $resourceName;
+					}
+					$this->closeConnection($dbc);
         }
     public function getSessionNote()
         {
