@@ -1,52 +1,77 @@
 <?php
 
-    include('control/connectionVars.php');
-    include('classes/InstructionSession.php');
-    include('classes/User.php');
-    require_once('control/startSession.php');    
-    
-    
-  
- // $thisUser=$_SESSION['thisUser'];
-  
-  
-    $inID = $_POST['inID'];
-  
-  
-    $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
-                    or die('Error connecting to the goshdarned database');
-            
-             $query ="delete from outcomesassessed where otcaotctID in (select otctID from outcomestaught where otctsesdID = $inID)";
-                mysqli_query($dbc, $query) or die('This is an outrage- deleteSession.php:    '.$query);
-                $output='Assessments deleted <br />';
-               
-            $query = "delete from outcomestaught where otctsesdID = $inID";
-             mysqli_query($dbc, $query) or die('This is an outrage- deleteSession.php:    '.$query);
-             $output.='Outcomes deleted <br />';
-             
-             
-             $query = "delete from resourcesintroduced where rsrisesdID = $inID";
-                mysqli_query($dbc, $query) or die('This is an outrage- deleteSession.php:    '.$query);
-                $output.='Resources introduced deleted <br />';
-             
-             
-            $query = "delete from sessionnotes where sesnsesdID = $inID";
-                mysqli_query($dbc, $query) or die('This is an outrage- deleteSession.php:    '.$query);
-                $output.='Session notes deleted <br />';
-               
-               
-             
-            $query = "delete from sessiondesc where sesdID = $inID";
-                mysqli_query($dbc, $query) or die('This is an outrage- deleteSession.php:    '.$query);
-                $output.='Session deleted';
-               
-               
-                $_SESSION['dialogText']=$output;
-                $_SESSION['dialogTitle']="Result";
-                
-                header('Location: mySessions.php');
-             
-             
-             
-             
-  ?>
+	require_once ('control/connection.php');
+//	include('classes/InstructionSession.php');
+//	include('classes/User.php');
+	require_once('control/startSession.php');
+
+	if (isset($_POST['inID']) && is_numeric($_POST['inID'])) {
+		$inID = $_POST['inID'];
+	} else {
+		die('Non-numeric or nonexistant session ID!');
+	}
+
+	$output = 'Deleting session '.$inID.'...<br/>';
+
+	try {
+		mysqli_autocommit($dbc, false);
+
+		$stmt = mysqli_prepare($dbc, 'delete from outcomesassessed where otcaotctID in (select otctID from outcomestaught where otctsesdID=?)');
+		mysqli_bind_param($stmt, 'i', $inID);
+		if (mysqli_stmt_execute($stmt)) {
+			$output .= 'Outcomes assessed prepared for deletion<br/>';
+		} else {
+			throw new Exception('Failed to prepare outcomes assessed for deletion: ' . $stmt->error);
+		}
+
+		$stmt = mysqli_prepare($dbc, 'delete from outcomestaught where otctsesdID=?');
+		mysqli_bind_param($stmt, 'i', $inID);
+		if (mysqli_stmt_execute($stmt)) {
+			$output .= 'Outcomes taught prepared for deletion<br/>';
+		} else {
+			throw new Exception('Failed to prepare outcomes taught for deletion: ' . $stmt->error);
+		}
+
+		$stmt = mysqli_prepare($dbc, 'delete from resourcesintroduced where rsrisesdID=?');
+		mysqli_bind_param($stmt, 'i', $inID);
+		if (mysqli_stmt_execute($stmt)) {
+			$output .= 'Resources introduced prepared for deletion<br/>';
+		} else {
+			throw new Exception('Failed to prepare resources introduced for deletion: ' . $stmt->error);
+		}
+
+		$stmt = mysqli_prepare($dbc, 'delete from sessionnotes where sesnsesdID=?');
+		mysqli_bind_param($stmt, 'i', $inID);
+		if (mysqli_stmt_execute($stmt)) {
+			$output .= 'Session notes prepared for deletion<br/>';
+		} else {
+			throw new Exception('Failed to prepare session notes for deletion: ' . $stmt->error);
+		}
+
+		$stmt = mysqli_prepare($dbc, 'delete from sessiondesc where sesdID=?');
+		mysqli_bind_param($stmt, 'i', $inID);
+		if (mysqli_stmt_execute($stmt)) {
+			$output .= 'Session description prepared for deletion<br/>';
+		} else {
+			throw new Exception('Failed to prepare session description for deletion: ' . $stmt->error);
+		}
+
+		if (mysqli_commit($dbc)) {
+			$output .= 'Successfully deleted.<br/>';
+		} else {
+			throw new Exception('Failed to delete session and associated data: ' . mysqli_error($dbc));
+		}
+
+		mysqli_autocommit($dbc, true);
+	} catch (Exception $e) {
+		mysqli_rollback($dbc);
+		mysqli_autocommit($dbc, true);
+		die('Error: ' . $e->getMessage());
+	}
+
+	$_SESSION['dialogText'] = $output;
+	$_SESSION['dialogTitle'] = "Result";
+
+	header('Location: mySessions.php');
+
+?>
