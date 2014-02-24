@@ -54,7 +54,7 @@
 		}
 	}
 
-	$query = 'select userID, userName, roleName, libmStatus, ppleLName, ppleFName from users u
+	$query = 'select userID, userName, roleName, libmStatus, ppleLName, ppleFName, ppleEmail from users u
 		left outer join userroles ur on u.userID = ur.roleuserID
 		left outer join roles r on ur.roleroleID = r.roleID
 		left outer join librarianmap l on u.userID = l.libmuserID
@@ -83,16 +83,18 @@
 		<th>Status</th>
 		<th>Last name</th>
 		<th>First name</th>
+		<th>Email</th>
 		<th></th>
 		</tr></thead><tbody>
 	<?php
 	while ($row = mysqli_fetch_assoc($result)) {
 		echo '<tr><td><input type="checkbox" name="userIDs[]" id="userID'.$row['userID'].'" value="'.$row['userID'].'"/></td><td>'.
-			$row['userName']."</td><td>".
-			$row['roleName']."</td><td>".
-			$row['libmStatus']."</td><td>".
-			$row['ppleLName']."</td><td>".
-			$row['ppleFName']."</td><td>".
+			$row['userName'].'</td><td>'.
+			$row['roleName'].'</td><td>'.
+			$row['libmStatus'].'</td><td>'.
+			$row['ppleLName'].'</td><td>'.
+			$row['ppleFName'].'</td><td>'.
+			'<a href="mailto:'.$row['ppleEmail'].'">'.$row['ppleEmail'].'</a></td><td>'.
 			'<a href="userEdit.php?userID='.$row['userID'].'">edit</a></td></tr>';
 	}
 	echo '</tbody></table></form>';

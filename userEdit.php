@@ -25,9 +25,6 @@
 	mysqli_stmt_free_result($userDataStmt);
 //	$ppleID = $row['ppleID']; // used for setting real name below
 
-	$page_title = $row['userName'] . ' - User edit';
-	include('includes/header.php');
-
 	if($_POST) {
 		try {
 			mysqli_autocommit($dbc, false);
@@ -68,8 +65,10 @@
 			mysqli_autocommit($dbc, true);
 			echo "Error: " . $e->getMessage();
 		}
-
 	}
+
+	$page_title = $row['userName'] . ' - User edit';
+	include('includes/header.php');
 
 	// reuse $userDataStmt from above
 	mysqli_stmt_execute($userDataStmt) or die("Failed to get user data: " . mysqli_error($dbc));
