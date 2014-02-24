@@ -377,7 +377,7 @@ class InstructionSession {
 				// Note has been deleted. If note is blank, don't worry about inserting a row just for that.
 				if (isset($inNote) && trim($inNote) != '') {
 					$stmt = mysqli_prepare($dbc, 'insert into sessionnotes (sesnsesdID, sesnNote) values (?, ?)');
-					$stmt->bind_param('is', $inID, $inNote);
+					$stmt->bind_param('is', $inID, trim($inNote));
 					if(!$stmt->execute()) throw new Exception("Failed to insert note: " . $stmt->error);
 				}
 
