@@ -319,21 +319,6 @@ class InstructionSession {
 			$this->setResources($dbc, $id, $this->resourcesIntroducedID);
 	}
 
-    private function getResourcesQuery($inID, $inResources)
-        {
-
-        $resourceString="";
-        foreach ($inResources as $value)
-            {
-            $resourceString.= "($inID ,$value),";
-            }
-            //remove last comma
-            $resourceString = rtrim($resourceString, ',');
-
-        //TEST: handle the resources array.
-        return "insert into resourcesintroduced (rsrisesdID, rsrirsrpID) values $resourceString";
-        }
-
 		private function setResources($dbc, $inID, $inResources) {
 			// Potentially dangerous two-step operation, so we use a transaction to ensure both succeed, or both fail. -Webster
 			try {
@@ -360,11 +345,6 @@ class InstructionSession {
 			}
 		}
 
-    private function getNoteQuery()
-        {
-        return "insert into sessionnotes (sesnsesdID, sesnNote) values (?, ?)";
-        }
-
 		private function setNotes($dbc, $inID, $inNote) {
 			// Potentially dangerous two-step operation, so we use a transaction to ensure both succeed, or both fail. -Webster
 			try {
@@ -389,29 +369,6 @@ class InstructionSession {
 				die("Couldn't set note: " . $e->getMessage());
 			}
 		}
-
-    public function getSessionQuery($inID)
-        {
-		/*
-        $query="select sesdID, sesdUser, sesdlibmID, sesdDate, sesdseslID, ".
-              "sesdNumStudents, sesdcrspID, sesdCourseNumber, sesdCourseTitle, sesdCourseSection, ".
-               "sesdSessionSection, sesdFaculty, sesdlocaID, sesdOutcomeDone, sesdAssessed ".
-                "from sessiondesc where sesdID=$inID";
-		 */
-		// New query, includes notes. Does not handle resources, though it should. -Webster
-//		$query="select sd.sesdID, sd.sesdUser, sd.sesdlibmID, sd.sesdDate, sd.sesdseslID, ".
-//			"sd.sesdNumStudents, sd.sesdcrspID, sd.sesdCourseNumber, sd.sesdCourseTitle, sd.sesdCourseSection, ".
-//			"sd.sesdSessionSection, sd.sesdFaculty, sd.sesdlocaID, sd.sesdOutcomeDone, sd.sesdAssessed, ".
-//			"sn.sesnNote, ri.rsrirsrpID " .
-//			"from sessiondesc sd, sessionnotes sn, resourcesintroduced ri where sesdID = $inID and sesnsesdID = $inID and rsrisesdID = $inID";
-		// Even newer query, returns rows even when there's no notes. Don't think we do need resources here. Should be more efficient. -Webster
-		 $query="SELECT * FROM sessiondesc sd
-				LEFT OUTER JOIN sessionnotes sn
-					ON sd.sesdID = sn.sesnsesdID
-			WHERE sesdID=$inID;";
-//		echo $query;
-        return $query;
-        }
 
 	public function loadSession($inID) {
 		$dbc = $this->getConnection();
