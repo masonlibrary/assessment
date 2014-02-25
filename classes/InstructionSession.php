@@ -412,44 +412,42 @@ class InstructionSession {
 //		echo $query;
         return $query;
         }
-    public function loadSession($inID)
-        {
-        //TODO loadSession() needs to load resources introduced and notes still.
-        $query = $this->getSessionQuery($inID);
-        $dbc=$this->getConnection();
-        $result = mysqli_query($dbc, $query) or die("Error loading session: " . mysqli_error($dbc));
 
-         while ( $row = mysqli_fetch_assoc( $result) )
-            {
-            $this->sessionID=$row['sesdID'];
-            $this->user=$row['sesdUser'];
-            $this->librarianID=$row['sesdlibmID'];
-            $this->dateOfSession=$row['sesdDate'];
+	public function loadSession($inID) {
+		$dbc = $this->getConnection();
 
-            $this->lengthOfSessionID=$row['sesdseslID'];
-            $this->numberOfStudents=$row['sesdNumStudents'];
-            $this->setCoursePrefixID($row['sesdcrspID']);
-            $this->courseTitle=$row['sesdCourseTitle'];
-            $this->courseNumber=$row['sesdCourseNumber'];
-            $this->courseSection=$row['sesdCourseSection'];
-            $this->sessionNumber=$row['sesdSessionSection'];
+		$row = array();
+		$stmt = mysqli_prepare($dbc, 'SELECT sesdID, sesdUser, sesdlibmID, sesdDate, sesdseslID, sesdNumStudents, sesdcrspID, sesdCourseTitle,
+				sesdCourseNumber, sesdCourseSection, sesdSessionSection, sesdFaculty, sesdlocaID, sesdOutcomeDone, sesdAssessed, sesnNote
+			FROM sessiondesc sd LEFT OUTER JOIN sessionnotes sn
+			ON sd.sesdID = sn.sesnsesdID WHERE sesdID=?');
+		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_store_result($stmt);
+		mysqli_stmt_bind_result($stmt, $row['sesdID'], $row['sesdUser'], $row['sesdlibmID'], $row['sesdDate'], $row['sesdseslID'], $row['sesdNumStudents'],
+			$row['sesdcrspID'], $row['sesdCourseTitle'], $row['sesdCourseNumber'], $row['sesdCourseSection'], $row['sesdSessionSection'], $row['sesdFaculty'],
+			$row['sesdlocaID'], $row['sesdOutcomeDone'], $row['sesdAssessed'], $row['sesnNote']);
+		mysqli_stmt_fetch($stmt);
 
-            $this->faculty=$row['sesdFaculty'];
-            $this->setLocationID($row['sesdlocaID']);
-            $this->outcomeDone=$row['sesdOutcomeDone'];
-            $this->assessed=$row['sesdAssessed'];
+		$this->sessionID = $row['sesdID'];
+		$this->user = $row['sesdUser'];
+		$this->librarianID = $row['sesdlibmID'];
+		$this->dateOfSession = $row['sesdDate'];
+		$this->lengthOfSessionID = $row['sesdseslID'];
+		$this->numberOfStudents = $row['sesdNumStudents'];
+		$this->setCoursePrefixID($row['sesdcrspID']);
+		$this->courseTitle = $row['sesdCourseTitle'];
+		$this->courseNumber = $row['sesdCourseNumber'];
+		$this->courseSection = $row['sesdCourseSection'];
+		$this->sessionNumber = $row['sesdSessionSection'];
+		$this->faculty = $row['sesdFaculty'];
+		$this->setLocationID($row['sesdlocaID']);
+		$this->outcomeDone = $row['sesdOutcomeDone'];
+		$this->assessed = $row['sesdAssessed'];
+		$this->sessionNote = $row['sesnNote'];
 
-			$this->sessionNote=$row['sesnNote'];
-
-			//$this->resourcesIntroducedID=$row['rsrirsrpID'];
-            }
-            mysqli_free_result($result);
-        $this->closeConnection($dbc);
-
-
-
-        }
-
+		mysqli_stmt_free_result($stmt);
+	}
 
     public function getSessionInsertQuery()
         {
