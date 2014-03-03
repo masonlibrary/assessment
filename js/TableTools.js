@@ -2112,7 +2112,7 @@ TableTools.BUTTONS = {
 	"csv": $.extend( {}, TableTools.buttonBase, {
 		"sAction": "flash_save",
 		"sButtonClass": "DTTT_button_csv",
-		"sButtonText": "CSV",
+		"sButtonText": "Excel/CSV",
 		"sFieldBoundary": '"',
 		"sFieldSeperator": ",",
 		"fnClick": function( nButton, oConfig, flash ) {
@@ -2120,6 +2120,7 @@ TableTools.BUTTONS = {
 		}
 	} ),
 
+/*
 	"xls": $.extend( {}, TableTools.buttonBase, {
 		"sAction": "flash_save",
 		"sCharSet": "utf16le",
@@ -2130,6 +2131,7 @@ TableTools.BUTTONS = {
 			this.fnSetText( flash, this.fnGetTableData(oConfig) );
 		}
 	} ),
+	*/
 
 	"copy": $.extend( {}, TableTools.buttonBase, {
 		"sAction": "flash_copy",
@@ -2353,7 +2355,7 @@ TableTools.DEFAULTS = {
 	"fnPreRowSelect":  null,
 	"fnRowSelected":   null,
 	"fnRowDeselected": null,
-	"aButtons":        [ "copy", "csv", "xls", "pdf", "print" ],
+	"aButtons":        [ "copy", "csv", "pdf", "print" ],
 	"oTags": {
 		"container": "div",
 		"button": "a", // We really want to use buttons here, but Firefox and IE ignore the

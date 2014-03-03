@@ -58,7 +58,7 @@ $(function(){
                         "aButtons":[
                             {
                                 "sExtends": "csv",
-                                "sButtonText": "csv/Excel",
+                                "sButtonText": "Excel/CSV",
                                 "mColumns": [ 0, 1, 2,3,4,5,7,8 ]
                             },
                             {
@@ -142,7 +142,29 @@ $(function(){
                    "bPaginate": false,
 
                     "oTableTools":{
-                        "sSwfPath":"swf/copy_csv_xls_pdf.swf"
+                        "sSwfPath":"swf/copy_csv_xls_pdf.swf",
+                        "aButtons":[
+                            {
+                                "sExtends": "csv",
+                                "sButtonText": "Excel/CSV",
+                                "mColumns": [ 0,1,2,3,4,5,6 ]
+                            },
+                            {
+                                "sExtends": "pdf",
+                                "sButtonText": "PDF",
+                                "mColumns": [ 1,2,3,4,5,6 ]
+                            },
+                            {
+                                "sExtends": "print",
+                                "sButtonText": "Print",
+                                "mColumns": [ 0,1,2,3,4,5,6 ]
+                            },
+                            {
+                                "sExtends": "copy",
+                                "sButtonText": "Copy",
+                                "mColumns": [ 0,1,2,3,4,5,6 ]
+                            },
+                        ]
                     }
 
                 }).rowGrouping({
