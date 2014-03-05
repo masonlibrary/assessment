@@ -13,7 +13,7 @@
 		// Don't handle updating of resource names; maybe only let admin change?
 //		$stmt = mysqli_prepare($dbc, 'update resourcepool set rsrpName=? where rsrpID=?');
 //		foreach ($_POST['resources'] as $id=>$name) {
-//			if (!$name) { $name = "(blank)"; }
+//			if (trim($name) == '') { $name = "(blank)"; }
 //			mysqli_bind_param($stmt, 'si', $name, $id);
 //			mysqli_stmt_execute($stmt) or die('Failed to update existing resources: ' . mysqli_error($dbc));
 //		}
@@ -29,7 +29,7 @@
 		// Insert new rows (name and activeness)
 		$stmt = mysqli_prepare($dbc, 'insert into resourcepool (rsrpName, rsrpActive) values (?, ?)');
 		foreach ($_POST['newResources'] as $id=>$name) {
-			if (!$name) { continue; }
+			if (trim($name) == '') { continue; }
 			if (isset($_POST['newActive'][$id]) && $_POST['newActive'][$id] == 'on') { $active = 'yes'; } else { $active = 'no'; };
 			mysqli_bind_param($stmt, 'ss', $name, $active);
 			mysqli_stmt_execute($stmt) or die('Failed to insert new resources: ' . mysqli_error($dbc));

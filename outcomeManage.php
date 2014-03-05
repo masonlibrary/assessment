@@ -16,7 +16,7 @@
 	include('includes/header.php');
 	
 	if ($_POST) {
-		if(!isset($_POST['outcomeHeading']) || $_POST['outcomeHeading'] == '') {
+		if(!isset($_POST['outcomeHeading']) || trim($_POST['outcomeHeading']) == '') {
 			$_POST['outcomeHeading']='(blank)';
 		}
 		
@@ -41,7 +41,7 @@
 		
 		$stmt = mysqli_prepare($dbc, 'insert into outcomedetail (otcdotchID, otcdName) values (?, ?)');
 		foreach ($_POST['newOutcomeDetailName'] as $name) {
-			if(!$name) { continue; }
+			if(trim($name) == '') { continue; }
 			mysqli_bind_param($stmt, "is", $id, $name);
 			mysqli_stmt_execute($stmt) or die('Failed to insert new outcome details: ' . mysqli_error($dbc));
 		}
