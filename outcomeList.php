@@ -9,7 +9,9 @@
 	$page_title = 'Manage outcomes';
 	include('includes/header.php');
 	
-	echo '<h1>'.$page_title.'</h1><table class="dataTable">
+	echo '<h1>'.$page_title.'</h1>
+		<a href="outcomeAdd.php">Add new outcome</a>
+		<table class="dataTable">
 		<tr><th>#</th><th>Heading name</th><th>Active</th><th>Edit</th>';
 	
 	$evenodd = false;

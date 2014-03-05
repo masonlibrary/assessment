@@ -38,9 +38,8 @@
                         <li><a href="adminReports.php">Admin Reports</a></li>
 												<?php
 													if($_SESSION['roleID'] == 1) {
-														echo '<li><a href="userAdd.php">Add user</a></li>';
 														echo '<li><a href="userAdmin.php">Manage users</a></li>';
-														echo '<li><a href="outcomeAdd.php">Add outcome</a></li>';
+														echo '<li><a href="resourceManage.php">Manage resources</a></li>';
 														echo '<li><a href="outcomeList.php">Manage outcomes</a></li>';
 													}
 												?>

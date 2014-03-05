@@ -62,6 +62,7 @@
 	$result = mysqli_query($dbc, $query) or die('Error querying for users: ' . mysqli_error($dbc));
 
 	?>
+	<a href="userAdd.php">Add new user</a>
 	<form method="post">
 		<select id="bulkrole" name="bulkrole">
 			<option value="" selected="selected">Change roles</option>
