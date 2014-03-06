@@ -48,8 +48,7 @@
 
 
              foreach($otcHeadings as $IDValue) {
-				 // This isn't something we have to parameterize, right? There's
-				 // no user input into this data set, at least right now. -Webster
+				 // @FIXME parameterize
 				$query.='(select if((count(0) > 0),"x","") from outcomesview x where ((x.sesdID = ov.sesdID) and (x.otchID = '.$IDValue.'))) AS "Outcome '.$IDValue.'", ';
 			 }
              $query = substr($query, 0, -2); // Take off final comma, space
@@ -141,33 +140,32 @@
 
                 }
 				*/
-			 	$stmt = $mysqli->prepare($query) or die("Prepare failed: $mysqli->errno $mysqli->error;");
-				if($year != "any") {$stmt->bind_param("s", $year) or die("Bind failed: $mysqli->errno $mysqli->error;");}
-				$stmt->execute() or die("Execute failed: $mysqli->errno $mysqli->error;");
+				$row = array();
+			 	$stmt = mysqli_prepare($dbc, $query);
+				if ($year != "any") { mysqli_bind_param($stmt, 's', $year); }
+				mysqli_stmt_execute($stmt) or die('Failed to retrieve outcomes taught: ' . mysqli_error($dbc));
+				mysqli_stmt_store_result($stmt);
+				mysqli_stmt_bind_result($stmt, $row['Date'], $row['CourseNum'], $row['CourseFaculty'], $row['NumStudents'],
+					$row['Outcome1'], $row['Outcome2'], $row['Outcome3'], $row['Outcome5'], $row['Outcome6']);
 
-				$result = $stmt->get_result() or die("Get result failed: $mysqli->errno $mysqli->error;");
-				for ($row=0; $row<=($result->num_rows-1); $row++) {
-					$result->data_seek($row);
-					$data=$result->fetch_assoc();
-					$output.="<tr class='outcomesMap'>".
-
-                        // *** for dataTables grouping addOn                 ***
-                        // *** delete header and data line if not used       ***
-						"<td class='outcomesMap'>".toSemester($data['Date'])."</td>".
-                        // ***                                               ***
-
-                        "<td class='outcomesMap'>".$data['CourseNumber']."</td>".
-                        "<td class='outcomesMap'>".$data['Course Faculty']."</td>".
-                        "<td class='outcomesMap'>".toUSDate($data['Date'])."</td>".
-                        "<td class='outcomesMap'>".$data['Number of Students']."</td>".
-                        "<td class='outcomesMap'>".$data['Outcome 1']."</td>".
-                        "<td class='outcomesMap'>".$data['Outcome 2']."</td>".
-                        "<td class='outcomesMap'>".$data['Outcome 3']."</td>".
-                        "<td class='outcomesMap'>".$data['Outcome 5']."</td></tr>";
-
+				while (mysqli_stmt_fetch($stmt)) {
+				$output.="<tr class='outcomesMap'>" .
+					// *** for dataTables grouping addOn                 ***
+					// *** delete header and data line if not used       ***
+					"<td class='outcomesMap'>".toSemester($row['Date'])."</td>".
+					// ***                                               ***
+					"<td class='outcomesMap'>".$row['CourseNum']."</td>".
+					"<td class='outcomesMap'>".$row['CourseFaculty']."</td>".
+					"<td class='outcomesMap'>".toUSDate($row['Date'])."</td>".
+					"<td class='outcomesMap'>".$row['NumStudents']."</td>".
+					"<td class='outcomesMap'>".$row['Outcome1']."</td>".
+					"<td class='outcomesMap'>".$row['Outcome2']."</td>".
+					"<td class='outcomesMap'>".$row['Outcome3']."</td>".
+					"<td class='outcomesMap'>".$row['Outcome5']."</td></tr>";
 				}
-                $output.='</tbody></table>';
-                echo $output;
+
+				$output.='</tbody></table>';
+				echo $output;
 ?>
 
 
