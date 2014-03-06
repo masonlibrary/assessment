@@ -60,6 +60,7 @@
 		</select>
 		<label for="year">Academic year ending in</label>
 		<select name="year" id="year">
+			<option value="any">any</option>
 			<?php
 				// Should probably query the DB for range of years we have data for,
 				// but I'm not sure that'd be effective (nor which table I should query).

@@ -14,9 +14,6 @@
 
   ?>
 
-<h2>All Sessions - by Librarian</h2>
-
-
 <?php
             $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
                     or die('Error connecting to the stupid database');
@@ -64,13 +61,15 @@
 							}
 						}
 
-						if (isset($_GET['year']) && is_numeric($_GET['year'])) {
+						if (isset($_GET['year']) && is_numeric($_GET['year']) || $_GET['year'] == 'any') {
 							$year = $_GET['year'];
 						} else {
-							die('Non-numeric or nonexistant year!');
+							die('Invalid value for year!');
 						}
 						
-						$query .= "and YEAR(s.sesdDate) = " . $year . " ";
+						if ($year != "any") {$query .= "and YEAR(s.sesdDate) = " . $year . " "; }
+
+						echo '<h2>All Sessions by Librarian - '.htmlspecialchars($_GET['semester']).' semester, AY '.$year.'</h2>';
 
 						$query .= 'order by '.
                         'LastName, '.
