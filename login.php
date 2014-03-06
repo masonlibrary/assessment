@@ -90,7 +90,7 @@
 				<input class="submit" type="submit" name="submit" value="Login" />
 			</form>
     </div>
-    <div id="copyRights">Copyright &copy; notice goes here</div>
+    <div id="copyRights"><?php echo 'Copyright &copy; 2013-' . date('Y') . ' Keene State College'; ?></div>
     </body>
     </html>
 
