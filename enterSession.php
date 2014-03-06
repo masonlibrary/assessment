@@ -216,7 +216,8 @@
 					if(isset($_GET['sesdID'])) {
 						$query = "select rsrpID, rsrpName, rsrirsrpID from resourcepool rp
 							left outer join resourcesintroduced ri
-							on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = ?)";
+							on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = ?)
+							where rp.rsrpActive='yes'";
 						$stmt = mysqli_prepare($dbc, $query);
 						mysqli_bind_param($stmt, "i", $_GET['sesdID']);
 						mysqli_stmt_execute($stmt) or die('Error querying for resource checkboxes: ' . mysqli_error($dbc));
@@ -231,7 +232,7 @@
 						}
 						mysqli_stmt_free_result($stmt);
 					} else {
-						$query = "select rsrpID as ID, rsrpName as Name from resourcepool";
+						$query = "select rsrpID as ID, rsrpName as Name from resourcepool where rsrpActive='yes'";
 						$result = mysqli_query($dbc, $query) or die('Error querying for resource checkboxes: ' . mysqli_error($dbc));
 
 						$isNone='none'; // Add 'none' class for first row
