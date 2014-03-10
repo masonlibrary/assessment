@@ -15,6 +15,14 @@ th {font-weight: bold; padding: 3px;}
 
 .headerContainer {background-color: #ffffff;}
 
+a {
+	text-decoration: none;
+	color: #479;
+}
+
+a:hover, a img:hover {
+	opacity: 0.66;
+}
 
 #content{margin-top: 0;  padding-top: 20px; }
 
