@@ -175,7 +175,7 @@ $(function(){
 
                      // new version to attempt to use row grouping plugin
                 var qTable = $('#outcomesMap').dataTable({
-                    "sDom":'T<"clear">lfrtip',
+                    "sDom":'T<"clear">lrtip',
                     "bStateSave":true,
                    "bLengthChange": false,
                    "bPaginate": false,
@@ -188,6 +188,20 @@ $(function(){
                     bExpandableGrouping: true/*,
                     asExpandedGroups: []*/
                     });
+								$.fn.dataTableExt.afnFiltering.push(
+									function(oSettings, aData, iDataIndex) {
+										var searchstr = $('div.dataTables_filter input').val().toLowerCase(); // The string to search for
+										var invert = $('#outcomesMap_invert').prop('checked'); // Whether or not to invert the result
+										var hasMatch = false; // Whether or not the row matches the string
+										for (var i=0; i<aData.length; i++) { // Loop through each data-element in the row-array
+											if (aData[i].toLowerCase().indexOf(searchstr) >= 0) { hasMatch = true; } // If a data-element in the row-array matches, it's true
+										}
+										return (invert ? !hasMatch : hasMatch); // If inverted, return negated result, else return regular result (effective boolean XOR)
+									}
+								);
+								$("#outcomesMap_filter").keyup( function() { qTable.fnDraw(); } );
+								$("#outcomesMap_invert").change( function() { qTable.fnDraw(); } );
+
                 var rTable = $('#outcomesMapa').dataTable({
                     "sDom":'T<"clear">lfrtip',
                     "bStateSave":true,

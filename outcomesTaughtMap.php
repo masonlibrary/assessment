@@ -85,8 +85,12 @@
 
 
 
-             // 9 columns.
-             $output = '<br><table id="outcomesMap"><thead id="outcomesMapHead"><tr>'.
+							// 9 columns.
+							$output = '<div class="dataTables_filter" id="outcomesMap_filter">
+							<label>Filter <input type="text" aria-controls="outcomesMap" class="ui-widget"></label>
+							<label>Invert <input type="checkbox" id="outcomesMap_invert"/></label>
+							</div>
+							<table id="outcomesMap"><thead id="outcomesMapHead"><tr>'.
 
 
 
