@@ -165,9 +165,14 @@
             <div id="ITWetcChart"></div>
         </div>
 
-
-
-  <?php
+<?php
+$jsOutput .= '
+	var oTable = $("#aySS").dataTable({
+		"sDom": "T<\'clear\'>lfrtip",
+		"bSort": false,
+		"bPaginate": false,
+		"oTableTools": { "sSwfPath":"swf/copy_csv_xls_pdf.swf" }
+	});';
 
   include('includes/reportsFooter.php');
-  ?>
+?>

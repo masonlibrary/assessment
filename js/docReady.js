@@ -18,67 +18,21 @@ $(function(){
                     if ($('#slider').hasClass('open'))
                         {
                             $('#tabzilla-contents').slideUp(400);
-                            $('body').animate(
-                            {"margin-top": ['-=193px', 'swing']},
-                                "400");
+														$('.fixedHeader').animate({top:"-=212"}, "400")
+//                            $('body').animate(
+//                            {"margin-top": ['-=193px', 'swing']},
+//                                "400");
                             $('#slider').removeClass('open').addClass('closed')
                         }
                      else
                          {
                              $('#tabzilla-contents').slideDown(400);
-                             $('body').animate(
-                                {"margin-top":['+=193px', 'swing']},
-                                '400');
+														 $('.fixedHeader').animate({top:"+=212"}, "400")
+//                             $('body').animate(
+//                                {"margin-top":['+=193px', 'swing']},
+//                                '400');
                              $('#slider').removeClass('closed').addClass('open');
                          }
-                });
-
-
-
-               var oTable = $('#mySessions').dataTable({
-                    "sDom":'T<"clear">lfrtip',
-                    "bStateSave":true,
-                    "iDisplayLength": -1,
-                    "aLengthMenu":[[25, 50, 100, -1], [25, 50, 100, "All"]],
-                    "aoColumns" : [
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        {"iDataSort":6},
-                        {"bVisible":false},
-
-                        null,
-                        null,
-                        null
-                    ],
-                    "oTableTools":{
-                        "sSwfPath":"swf/copy_csv_xls_pdf.swf",
-                        "aButtons":[
-                            {
-                                "sExtends": "csv",
-                                "sButtonText": "Excel/CSV",
-                                "mColumns": [ 0, 1, 2,3,4,5,7,8 ]
-                            },
-                            {
-                                "sExtends": "pdf",
-                                "sButtonText": "PDF",
-                                "mColumns": [ 0, 1, 2,3,4,5,7,8 ]
-                            },
-                            {
-                                "sExtends": "print",
-                                "sButtonText": "Print",
-                                "mColumns": [ 0, 1, 2 ,3 ,4 ,5 ,7 , 8 ]
-                            },
-                            {
-                                "sExtends": "copy",
-                                "sButtonText": "Copy",
-                                "mColumns": [ 0, 1, 2,3,4,5,7,8 ]
-                            },
-                        ]
-                    }
-
                 });
 
 				$( document ).delegate( "a.menu-link", "click", function(e) {
@@ -88,7 +42,9 @@ $(function(){
 //				return false;
 			});
 
-
+			new $.fn.dataTable.FixedHeader(oTable, {"offsetTop":-2});
+			$("#outcomesMap_filter").keyup( function() { oTable.fnDraw(); } );
+			$("#outcomesMap_invert").change( function() { oTable.fnDraw(); } );
 
 			$("tr.mySessions").click( function(event){
 						//event.preventDefault();
@@ -133,138 +89,6 @@ $(function(){
 							}
 							return ;
 						});
-
-                // new version to attempt to use row grouping plugin
-                var pTable = $('#myAssessments').dataTable({
-                    "sDom":'T<"clear">lfrtip',
-                    "bStateSave":true,
-                   "bLengthChange": false,
-                   "bPaginate": false,
-
-                    "oTableTools":{
-                        "sSwfPath":"swf/copy_csv_xls_pdf.swf",
-                        "aButtons":[
-                            {
-                                "sExtends": "csv",
-                                "sButtonText": "Excel/CSV",
-                                "mColumns": [ 0,1,2,3,4,5,6 ]
-                            },
-                            {
-                                "sExtends": "pdf",
-                                "sButtonText": "PDF",
-                                "mColumns": [ 1,2,3,4,5,6 ]
-                            },
-                            {
-                                "sExtends": "print",
-                                "sButtonText": "Print",
-                                "mColumns": [ 0,1,2,3,4,5,6 ]
-                            },
-                            {
-                                "sExtends": "copy",
-                                "sButtonText": "Copy",
-                                "mColumns": [ 0,1,2,3,4,5,6 ]
-                            },
-                        ]
-                    }
-
-                }).rowGrouping({
-                    bExpandableGrouping: true,
-                    asExpandedGroups: []
-                    });
-
-
-                     // new version to attempt to use row grouping plugin
-                var qTable = $('#outcomesMap').dataTable({
-                    "sDom":'T<"clear">lrtip',
-                    "bStateSave":true,
-                   "bLengthChange": false,
-                   "bPaginate": false,
-
-                    "oTableTools":{
-                        "sSwfPath":"swf/copy_csv_xls_pdf.swf"
-                    }
-
-                }).rowGrouping({
-                    bExpandableGrouping: true/*,
-                    asExpandedGroups: []*/
-                    });
-								$.fn.dataTableExt.afnFiltering.push(
-									function(oSettings, aData, iDataIndex) {
-										var searchstr = $('div.dataTables_filter input').val().toLowerCase(); // The string to search for
-										var invert = $('#outcomesMap_invert').prop('checked'); // Whether or not to invert the result
-										var hasMatch = false; // Whether or not the row matches the string
-										for (var i=0; i<aData.length; i++) { // Loop through each data-element in the row-array
-											if (aData[i].toLowerCase().indexOf(searchstr) >= 0) { hasMatch = true; } // If a data-element in the row-array matches, it's true
-										}
-										return (invert ? !hasMatch : hasMatch); // If inverted, return negated result, else return regular result (effective boolean XOR)
-									}
-								);
-								$("#outcomesMap_filter").keyup( function() { qTable.fnDraw(); } );
-								$("#outcomesMap_invert").change( function() { qTable.fnDraw(); } );
-
-                var rTable = $('#outcomesMapa').dataTable({
-                    "sDom":'T<"clear">lfrtip',
-                    "bStateSave":true,
-                   "bLengthChange": false,
-                   "bPaginate": false,
-
-                    "oTableTools":{
-                        "sSwfPath":"swf/copy_csv_xls_pdf.swf"
-                    }
-
-                }).rowGrouping({
-                    bExpandableGrouping: true /*,
-                    asExpandedGroups: []        */
-                    });
-
-
-               var sTable = $('#aySS').dataTable({
-                    "sDom":'T<"clear">lfrtip',
-                    "bFilter": false,
-                    "bPaginate": false,
-                    aaSorting: [],
-                    "oTableTools":{
-                        "sSwfPath":"swf/copy_csv_xls_pdf.swf"
-                    }
-
-                });
-
-                 var tTable = $('#assessmentSummary').dataTable({
-                    "sDom":'T<"clear">lfrtip',
-                    "bFilter" :false,
-                    "bSort":false,
-                    "bStateSave":true,
-                   "bLengthChange": false,
-                   "bPaginate": false,
-
-                    "oTableTools":{
-                        "sSwfPath":"swf/copy_csv_xls_pdf.swf"
-                    }
-
-                }).rowGrouping({
-                    bExpandableGrouping: true /*,
-                    asExpandedGroups: []        */
-                    });
-
-
-
-               var uTable = $('#allSessions').dataTable({
-                    "sDom":'T<"clear">lfrtip',
-                    "bFilter" :true,
-                    "bSort":false,
-                    "bStateSave":true,
-                   "bLengthChange": false,
-                   "bPaginate": false,
-                   "bProcessing" : true,
-                    "oTableTools":{
-                        "sSwfPath":"swf/copy_csv_xls_pdf.swf"
-                    }
-
-                }).rowGrouping({
-                    bExpandableGrouping: true /*,
-                    asExpandedGroups: []        */
-                    });
-
 
                // **********************************************************
                /*THIS WORKS FOR OBTAINING FILTERED DATA FROM dataTables*/

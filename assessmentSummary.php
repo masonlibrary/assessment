@@ -105,7 +105,7 @@
                    $lastHeadingID ='reset';
                     $output='';
                     $output.='<table id="assessmentSummary">';
-                    $output.='<thead><tr><th>Heading</th><th>Outcome</th><th>Met</th><th>Partially Met</th><th>Not Met</th><th>Total</th></tr>';
+                    $output.='<thead><tr><th>Heading</th><th>Outcome</th><th>Met</th><th>Partially Met</th><th>Not Met</th><th>Total</th></tr></thead>';
                     $output.='<tbody>';
                    foreach( $uniqueOutcomes as $value)
                        {
@@ -202,14 +202,36 @@
 
                 echo $output;
 
-
-?>
-
-
-
-  <?php
+$jsOutput .= '
+	var oTable = $("#assessmentSummary").dataTable({
+		"sDom": "T<\'clear\'>lfrtip",
+		"bPaginate": false,
+		"oTableTools": {
+			"sSwfPath":"swf/copy_csv_xls_pdf.swf",
+			"aButtons":[
+				{
+					"sExtends": "csv",
+					"sButtonText": "Excel/CSV",
+					"mColumns": [0, 1, 2, 3, 4, 5]
+				}, {
+					"sExtends": "pdf",
+					"sButtonText": "PDF",
+					"mColumns": [   1, 2, 3, 4, 5]
+				}, {
+					"sExtends": "print",
+					"sButtonText": "Print",
+					"mColumns": [0, 1, 2, 3, 4, 5]
+				}, {
+					"sExtends": "copy",
+					"sButtonText": "Copy",
+					"mColumns": [0, 1, 2, 3, 4, 5]
+				}
+			]
+		}
+	}).rowGrouping({
+		bExpandableGrouping: true /*,
+		asExpandedGroups: []        */
+	});';
 
   include('includes/reportsFooter.php');
   ?>
-<?php
-

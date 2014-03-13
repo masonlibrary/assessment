@@ -171,12 +171,28 @@
 				}
                 $output.='</tbody></table>';
                 echo $output;
-?>
+	$jsOutput .= '
+		var oTable = $("#outcomesMap").dataTable({
+			"sDom":"T<\'clear\'>lrtip",
+			"bPaginate": false,
+			"oTableTools":{ "sSwfPath":"swf/copy_csv_xls_pdf.swf" }
+		});
 
+		$.fn.dataTableExt.afnFiltering.push(
+			function(oSettings, aData, iDataIndex) {
+				var searchstr = $("div.dataTables_filter input").val().toLowerCase(); // The string to search for
+				var invert = $("#outcomesMap_invert").prop("checked"); // Whether or not to invert the result
+				var hasMatch = false; // Whether or not the row matches the string
+				for (var i=0; i<aData.length; i++) { // Loop through each data-element in the row-array
+					if (aData[i].toLowerCase().indexOf(searchstr) >= 0) { hasMatch = true; } // If a data-element in the row-array matches, we want this row
+				}
+				return (invert ? !hasMatch : hasMatch); // If inverted, return negated result, else return regular result (effective boolean XOR)
+			}
+		);
 
-
-
-  <?php
+		new $.fn.dataTable.FixedHeader(oTable, {"offsetTop":-2});
+		$("#outcomesMap_filter").keyup( function() { oTable.fnDraw(); } );
+		$("#outcomesMap_invert").change( function() { oTable.fnDraw(); } );';
 
   include('includes/reportsFooter.php');
   ?>

@@ -42,6 +42,46 @@
 
   
   <?php
-  
-  include('includes/reportsFooter.php');
+
+		$jsOutput .= 'var oTable = $("#mySessions").dataTable({
+				"sDom": "T<\'clear\'>lfrtip",
+				"iDisplayLength": -1,
+				"aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+				"aoColumns": [
+					null,
+					null,
+					null,
+					null,
+					null,
+					{"iDataSort": 6},
+					{"bVisible": false},
+					null,
+					null,
+					null
+				],
+				"oTableTools": {
+					"sSwfPath": "swf/copy_csv_xls_pdf.swf",
+					"aButtons": [
+						{
+							"sExtends": "csv",
+							"sButtonText": "Excel/CSV",
+							"mColumns": [ 0, 1, 2, 3, 4, 5, 7, 8 ]
+						},{
+							"sExtends": "pdf",
+							"sButtonText": "PDF",
+							"mColumns": [ 0, 1, 2, 3, 4, 5, 7, 8 ]
+						},{
+							"sExtends": "print",
+							"sButtonText": "Print",
+							"mColumns": [ 0, 1, 2, 3, 4, 5, 7, 8 ]
+						},{
+							"sExtends": "copy",
+							"sButtonText": "Copy",
+							"mColumns": [ 0, 1, 2, 3, 4, 5, 7, 8 ]
+						}
+					]
+				}
+			});';
+
+		include('includes/reportsFooter.php');
   ?>

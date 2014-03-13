@@ -1,5 +1,5 @@
-<div id="tabzilla-panel" class="tabzilla-closed open" tabindex="-1" style="height: auto;">
-    <div id="tabzilla-contents">
+<div id="tabzilla-panel" class="tabzilla-closed" tabindex="-1" style="height: auto;">
+    <div id="tabzilla-contents" class="closed" style="display:none;">
         <div id="tabzilla-promo">
             <div id="tabzilla-promo-mobile" class="snippet">
                 <a href="#">     <h4>Assessment</h4>

@@ -1,6 +1,10 @@
 <?php
 	// For all pages, make sure the user is logged in before going any further.
 	if (!isset($_SESSION['userID'])) { header("Location: login.php"); exit('Not logged in'); }
+
+	// Initialize for inclusion of JavaScript snippets, will be included in
+	// footer after loading of all JS libraries
+	$jsOutput = '';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -62,7 +66,7 @@
        // if($page_title!='Home'){include('assessmentMenu.php');} ?>
 
 
-        <div id="slider" class="open"><?PHP include('includes/tabzillaMenu1.php') ?></div> <a href="#" id="tabzilla">mozilla</a>
+        <div id="slider" class="closed"><?PHP include('includes/tabzillaMenu1.php') ?></div> <a href="#" id="tabzilla">mozilla</a>
     </div><!-- header-->
     <div id="content">
 

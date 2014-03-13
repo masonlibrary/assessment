@@ -7,7 +7,7 @@
 ------------------------*/
 * {margin:0;padding:0;line-height:1.4; font-style:normal;font-weight:normal;}
 body { font:normal 100% Helvetica,Arial,sans-serif;min-width:960px;  width: 960px; margin-left: auto; margin-right: auto; }
-body { margin-top:  /*105*/ 320px;  }
+//body { margin-top:  /*105*/ 320px;  }
 #slider {background-color: #ffffff;}
 h4 {font-size: 18px; color: #000000;}
 th {font-weight: bold; padding: 3px;}
@@ -64,8 +64,8 @@ input, select {margin-top: 2px; margin-right:5px;}
 
 #completionStatusDiv {width: 300px; float: right; border: 1px solid red; margin-left: 30px; }
 
-#spacer {position: fixed; top: 0; width: 960px; background-color: #ffffff;height: 35px; z-index: 5; }
-#header {position: fixed; top: 0; margin:auto; z-index: 1000; width: 960px; }
+/*#spacer {position: fixed; top: 0; width: 960px; background-color: #ffffff;height: 35px; z-index: 5; }*/
+#header {/*position: fixed;*/ top: 0; margin:auto; z-index: 1000; width: 960px; }
 
 div.assessmentList { margin-left: auto; margin-right: auto; margin-top: 4px; padding-left: 100px;}
 /*div.assessmentList table {margin-left: auto; margin-right: auto; }*/
@@ -236,6 +236,9 @@ span.value{font-weight: normal !important;}
 span.explode{color: #000000; margin-left: -30px; font-size: 14px; margin-right: 10px; border: 1px solid #000000;
     border-radius: 15px 15px 15px 15px;}
 
+thead {
+	background-color: #fff;
+}
 table#mySessions {font-size: 12px;}
 thead#mySessionsHead th{font-size: 12px;}
 

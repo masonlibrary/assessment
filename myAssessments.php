@@ -28,15 +28,13 @@
               
                 echo $output;
                 }
-   
-  
-  
-     ?>
-  
-  
-   
-  
-  <?php
-  
-  include('includes/reportsFooter.php');
+
+$jsOutput .= '
+	var oTable = $("#myAssessments").dataTable({
+		"sDom": "T<\'clear\'>lfrtip",
+		"bPaginate": false,
+		"oTableTools": { "sSwfPath":"swf/copy_csv_xls_pdf.swf" }
+	});';
+
+  include('includes/footer.php');
   ?>

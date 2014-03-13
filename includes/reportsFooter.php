@@ -10,6 +10,7 @@
 <script type="text/javascript" src="js/jquery-ui.js"></script>
 <script type="text/javascript" src="js/jquery.ui.selectmenu.js"></script>
 <script src="js/dataTables.js" type="text/javascript"></script>
+<script src="js/dataTables.fixedHeader.js" type="text/javascript"></script>
 <script src="js/TableTools.js" type="text/javascript"></script>
 <script src="js/ZeroClipboard.js" type="text/javascript"></script>
 
@@ -17,17 +18,14 @@
 
 <script src="js/pageStart.js" type="text/javascript"></script>
 <script src="js/sessionInput.js" type="text/javascript"></script>
-<script src="js/hoverIntent.js"></script>
+<!--<script src="js/hoverIntent.js"></script>-->
 <script src="js/docReady.js" type="text/javascript"></script>
 
 <script src="js/highcharts.js"></script>
 <script src="js/exporting.js"></script>
 <!--<script src="js/reportDocReady.js"></script>-->
 
-<?php  if (isset($jsOutput)) { ?>
-<script><?php echo $jsOutput; ?></script>
-
-<?php } ?>
+<?php if (isset($jsOutput)) { echo "<script>$jsOutput</script>"; } ?>
 
 </body>
 </html>

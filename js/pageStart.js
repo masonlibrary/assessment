@@ -7,10 +7,11 @@ function pageStart(){
                         pageUpdate();
                         if ($('#slider').hasClass('open') && window.location.pathname!='/assessment/index.php')
                         {
-                            $('#tabzilla-contents').slideUp(400);
-                            $('body').animate(
-                            {"margin-top": ['-=193px', 'swing']},
-                                "400");
+//                            $('#tabzilla-contents').slideUp(400);
+//                            $('#tabzilla-contents').hide();
+//                            $('body').animate(
+//                            {"margin-top": ['-=193px', 'swing']},
+//                                "400");
                             $('#slider').removeClass('open').addClass('closed')
                         }
 

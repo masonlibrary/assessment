@@ -12,10 +12,10 @@
 
  // $thisUser=$_SESSION['thisUser'];
 
-  ?>
+	(isset($_GET['semester']) && $_GET['semester'] != "") ? $semester = $_GET['semester'] : $semester = "any";
+	(isset($_GET['year']) && $_GET['year'] != "") ? $year = $_GET['year'] : $year = "any";
 
-<?php
-            $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
+	$dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
                     or die('Error connecting to the stupid database');
 
 
@@ -61,15 +61,15 @@
 							}
 						}
 
-						if (isset($_GET['year']) && is_numeric($_GET['year']) || $_GET['year'] == 'any') {
+						if (isset($_GET['year']) && (is_numeric($_GET['year']) || $_GET['year'] == 'any')) {
 							$year = $_GET['year'];
 						} else {
-							die('Invalid value for year!');
+							$year = 'any';
 						}
 						
 						if ($year != "any") {$query .= "and YEAR(s.sesdDate) = " . $year . " "; }
 
-						echo '<h2>All Sessions by Librarian - '.htmlspecialchars($_GET['semester']).' semester, AY '.$year.'</h2>';
+						echo '<h2>All Sessions by Librarian - '.htmlspecialchars($semester).' semester, AY '.$year.'</h2>';
 
 						$query .= 'order by '.
                         'LastName, '.
@@ -138,12 +138,36 @@
                 $output.='</tbody></table>';
                 echo $output;
 
-
-?>
-
-
-
-  <?php
+$jsOutput .= '
+	var oTable = $("#allSessions").dataTable({
+		"sDom": "T<\'clear\'>lfrtip",
+		"bPaginate": false,
+		"oTableTools": {
+			"sSwfPath":"swf/copy_csv_xls_pdf.swf",
+			"aButtons":[
+				{
+					"sExtends": "csv",
+					"sButtonText": "Excel/CSV",
+					"mColumns": [0, 1, 2, 3, 4, 5, 6]
+				}, {
+					"sExtends": "pdf",
+					"sButtonText": "PDF",
+					"mColumns": [   1, 2, 3, 4, 5, 6]
+				}, {
+					"sExtends": "print",
+					"sButtonText": "Print",
+					"mColumns": [0, 1, 2, 3, 4, 5, 6]
+				}, {
+					"sExtends": "copy",
+					"sButtonText": "Copy",
+					"mColumns": [0, 1, 2, 3, 4, 5, 6]
+				}
+			]
+		}
+	}).rowGrouping({
+		bExpandableGrouping: true /*,
+		asExpandedGroups: []        */
+	});';
 
   include('includes/reportsFooter.php');
   ?>

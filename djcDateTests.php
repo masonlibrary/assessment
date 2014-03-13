@@ -85,6 +85,18 @@
 
 ?>
 
+<script type="text/javascript">
+	var oTable = $('#outcomesMapa').dataTable({
+			"sDom": 'T<"clear">lfrtip',
+			"bStateSave": true,
+			"bLengthChange": false,
+			"bPaginate": false,
+			"oTableTools": { "sSwfPath":"swf/copy_csv_xls_pdf.swf" }
+		}).rowGrouping({
+			bExpandableGrouping: true /*,
+			asExpandedGroups: []        */
+		});
+</script>
 
  <?php
   
