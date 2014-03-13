@@ -32,8 +32,6 @@ a:hover, a img:hover {
 #loginLine {float: right;}
 #userlinks {float: right;clear: right;}
 #userlinks a {color: #3B6E8F;}
-#header{padding-top: 20px;}
-
 
 #pageTitleDiv{width: 40%; float: left;}
 #pageTitleDiv h3{margin: 0;}
@@ -64,8 +62,14 @@ input, select {margin-top: 2px; margin-right:5px;}
 
 #completionStatusDiv {width: 300px; float: right; border: 1px solid red; margin-left: 30px; }
 
-/*#spacer {position: fixed; top: 0; width: 960px; background-color: #ffffff;height: 35px; z-index: 5; }*/
-#header {/*position: fixed;*/ top: 0; margin:auto; z-index: 1000; width: 960px; }
+#header {
+	/*position: fixed;*/
+	top: 0;
+	margin:auto;
+	padding-top:10px;
+	z-index: 1000;
+	width: 960px;
+}
 
 div.assessmentList { margin-left: auto; margin-right: auto; margin-top: 4px; padding-left: 100px;}
 /*div.assessmentList table {margin-left: auto; margin-right: auto; }*/

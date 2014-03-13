@@ -27,7 +27,6 @@
 </head>
 <body>
 
-    <div id="spacer">&nbsp;</div>
     <div id="header">
         <div class="headerContainer">
        <div class="logo-block">
