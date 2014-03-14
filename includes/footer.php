@@ -21,7 +21,7 @@
 <script type="text/javascript" src="js/pageStart.js" ></script>
 <script type="text/javascript" src="js/docReady.js" ></script>
 
-<?php if (isset($jsOutput)) { echo "<script>$jsOutput</script>"; } ?>
+<?php if (isset($jsOutput)) { echo '<script type="text/javascript">'.$jsOutput.'</script>'; } ?>
 
 </body>
 </html>
