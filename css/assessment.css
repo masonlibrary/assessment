@@ -33,6 +33,19 @@ a:hover, a img:hover {
 #userlinks {float: right;clear: right;}
 #userlinks a {color: #3B6E8F;}
 
+#messagebox {
+	border: 1px solid #9af;
+	border-radius: 5px;
+	background-color: #bdf;
+	width: 80%;
+	margin: 15px;
+	padding: 10px;
+}
+
+strong {
+	font-weight: bold;
+}
+
 #pageTitleDiv{width: 40%; float: left;}
 #pageTitleDiv h3{margin: 0;}
 #loginDiv{width: 40%; float: right; }

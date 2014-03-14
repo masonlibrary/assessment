@@ -16,12 +16,12 @@ function pageStart(){
                         }
 
 
-                       $('#dialog').dialog({
-                                            modal: true,
-                                            minWidth: 400,
-                                            maxWidth: 700,
-                                            maxHeight: 200,
-                                            position: [500,350]});
+//                       $('#dialog').dialog({
+//                                            modal: true,
+//                                            minWidth: 400,
+//                                            maxWidth: 700,
+//                                            maxHeight: 200,
+//                                            position: [500,350]});
 			}
 
 

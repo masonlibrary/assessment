@@ -69,4 +69,13 @@
     </div><!-- header-->
     <div id="content">
 
-
+		<?php
+			if (isset($_SESSION['dialogTitle']) || isset($_SESSION['dialogText'])) {
+				// Ensure we don't have an undefined var
+				$_SESSION['dialogTitle'] .= '';
+				$_SESSION['dialogText'] .= '';
+				echo '<div id="messagebox" class=""><strong>'.$_SESSION['dialogTitle'].'</strong><br/>'.$_SESSION['dialogText'].'</div>';
+//				unset($_SESSION['dialogTitle']);
+//				unset($_SESSION['dialogText']);
+			}
+		?>

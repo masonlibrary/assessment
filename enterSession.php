@@ -9,8 +9,6 @@
 	$page_title = 'Enter Session Data';
 	include('includes/header.php');
 
-	if ($_SESSION['dialogText'] != '') { include('includes/dialogDiv.php'); }
-
 	$currentSession = new InstructionSession();
 	if (isset($_GET["sesdID"])) {
 		$currentSession->loadSession($_GET["sesdID"]);

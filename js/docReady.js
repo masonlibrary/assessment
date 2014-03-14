@@ -42,7 +42,13 @@ $(function(){
 //				return false;
 			});
 
-			new $.fn.dataTable.FixedHeader(oTable, {"offsetTop":-2});
+			try {
+				new $.fn.dataTable.FixedHeader(oTable, {"offsetTop":-2});
+			} catch (e) {
+				console.log('Exception: '+e);
+				console.log('(If the page has no table, oTable not being defined is normal)');
+			}
+
 			$("#outcomesMap_filter").keyup( function() { oTable.fnDraw(); } );
 			$("#outcomesMap_invert").change( function() { oTable.fnDraw(); } );
 

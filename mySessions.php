@@ -11,7 +11,6 @@
     // Insert the page header
   $page_title = 'My Sessions';
   include('includes/header.php');
-  if ($_SESSION['dialogText']!=''){include('includes/dialogDiv.php');}
   
   $thisUser=$_SESSION['thisUser'];
   

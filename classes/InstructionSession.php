@@ -485,7 +485,7 @@ class InstructionSession {
                             $output.='&nbsp;&nbsp;&nbsp;&nbsp;'.$this->resourcesIntroducedName[$x].'<br />';
                             }
                         }
-                    $output.='</span><br /><br /></p>';
+                    $output.='</span></p>';
 
                     return $output;
         }

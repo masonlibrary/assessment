@@ -21,8 +21,5 @@
 	echo '<br /><br /><input id="chooseCoursesOTCT" type="submit" name="submitOTCT" value="Add outcomes to selected sessions" disabled="disabled" /><br />
 		</div></form><br />';
 
-	if ($_SESSION['dialogText'] != '') {
-		include('includes/dialogDiv.php');
-	}
 	include('includes/footer.php');
 ?>

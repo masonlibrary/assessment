@@ -9,8 +9,6 @@ require_once('control/startSession.php');
   $page_title = 'Assess Outcomes Taught';
   include('includes/header.php');
   
-   if ($_SESSION['dialogText']!=''){include('includes/dialogDiv.php');}
-   
 ?>
 
 <div id="message" class="hidden"><p>Assessment successfully updated!</p></div>
