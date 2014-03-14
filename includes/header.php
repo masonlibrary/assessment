@@ -75,7 +75,7 @@
 				$_SESSION['dialogTitle'] .= '';
 				$_SESSION['dialogText'] .= '';
 				echo '<div id="messagebox" class=""><strong>'.$_SESSION['dialogTitle'].'</strong><br/>'.$_SESSION['dialogText'].'</div>';
-//				unset($_SESSION['dialogTitle']);
-//				unset($_SESSION['dialogText']);
+				unset($_SESSION['dialogTitle']);
+				unset($_SESSION['dialogText']);
 			}
 		?>
