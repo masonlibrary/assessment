@@ -49,8 +49,23 @@ $(function(){
 				console.log('(If the page has no table, oTable not being defined is normal)');
 			}
 
-			$("#outcomesMap_filter").keyup( function() { oTable.fnDraw(); } );
-			$("#outcomesMap_invert").change( function() { oTable.fnDraw(); } );
+			$.fn.dataTableExt.afnFiltering.push(
+				function(oSettings, aData, iDataIndex) {
+					var searchstr = $("#dataTables_filter").val().toLowerCase(); // The string to search for
+					var invert = $("#dataTables_invert").prop("checked"); // Whether or not to invert the result
+					var hasMatch = false; // Whether or not the row matches the string
+					for (var i=0; i<aData.length; i++) { // Loop through each data-element in the row-array
+						if (aData[i].toLowerCase().indexOf(searchstr) >= 0) {
+							hasMatch = true; // If a data-element in the row-array matches, we want to display this row
+							break; // So stop processing the row (for performance)
+						}
+					}
+					return (invert ? !hasMatch : hasMatch); // If inverted, return negated result, else return regular result (effective boolean XOR)
+				}
+			);
+
+			$("#dataTables_filter").keyup( function() { oTable.fnDraw(); } );
+			$("#dataTables_invert").change( function() { oTable.fnDraw(); } );
 
 			$("tr.mySessions").click( function(event){
 						//event.preventDefault();

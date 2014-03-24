@@ -86,9 +86,9 @@
 
 
 							// 9 columns.
-							$output = '<div class="dataTables_filter" id="outcomesMap_filter">
-							<label>Filter <input type="text" aria-controls="outcomesMap" class="ui-widget"></label>
-							<label>Invert <input type="checkbox" id="outcomesMap_invert"/></label>
+							$output = '<div class="dataTables_filter">
+								<label for="dataTables_filter">Filter</label><input type="text" id="dataTables_filter" class="ui-widget" />
+								<label for="dataTables_invert">Invert</label><input type="checkbox" id="dataTables_invert" />
 							</div>
 							<table id="outcomesMap"><thead id="outcomesMapHead"><tr>'.
 
@@ -176,19 +176,7 @@
 			"sDom":"T<\'clear\'>lrtip",
 			"bPaginate": false,
 			"oTableTools":{ "sSwfPath":"swf/copy_csv_xls_pdf.swf" }
-		});
-
-		$.fn.dataTableExt.afnFiltering.push(
-			function(oSettings, aData, iDataIndex) {
-				var searchstr = $("div.dataTables_filter input").val().toLowerCase(); // The string to search for
-				var invert = $("#outcomesMap_invert").prop("checked"); // Whether or not to invert the result
-				var hasMatch = false; // Whether or not the row matches the string
-				for (var i=0; i<aData.length; i++) { // Loop through each data-element in the row-array
-					if (aData[i].toLowerCase().indexOf(searchstr) >= 0) { hasMatch = true; } // If a data-element in the row-array matches, we want this row
-				}
-				return (invert ? !hasMatch : hasMatch); // If inverted, return negated result, else return regular result (effective boolean XOR)
-			}
-		);';
+		});';
 
   include('includes/reportsFooter.php');
   ?>

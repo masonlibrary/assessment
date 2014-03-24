@@ -50,7 +50,11 @@
 				outcomeName';
 
 		// 8 columns.
-		echo '<table id="myAssessments"><thead id="myAssessmentsHead"><tr>' .
+		echo '<div class="dataTables_filter">
+				<label for="dataTables_filter">Filter</label><input type="text" id="dataTables_filter" class="ui-widget" />
+				<label for="dataTables_invert">Invert</label><input type="checkbox" id="dataTables_invert" />
+			</div>
+			<table id="myAssessments"><thead id="myAssessmentsHead"><tr>' .
 			// *** for dataTables grouping addOn                  ***
 			'<th>Course</th>' .
 			// ***                                                ***
@@ -115,7 +119,7 @@
 	}
 
 	$jsOutput .= 'var oTable = $("#myAssessments").dataTable({
-			"sDom": "T<\'clear\'>lfrtip",
+			"sDom": "T<\'clear\'>lrtip",
 			"bPaginate": false,
 			"oTableTools": { "sSwfPath":"swf/copy_csv_xls_pdf.swf" }
 		});';

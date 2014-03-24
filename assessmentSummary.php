@@ -104,6 +104,10 @@
                    $rowTotal = 0;
                    $lastHeadingID ='reset';
                     $output='';
+										$output.='<div class="dataTables_filter">
+												<label for="dataTables_filter">Filter</label><input type="text" id="dataTables_filter" class="ui-widget" />
+												<label for="dataTables_invert">Invert</label><input type="checkbox" id="dataTables_invert" />
+											</div>';
                     $output.='<table id="assessmentSummary">';
                     $output.='<thead><tr><th>Heading</th><th>Outcome</th><th>Met</th><th>Partially Met</th><th>Not Met</th><th>Total</th></tr></thead>';
                     $output.='<tbody>';
@@ -204,7 +208,7 @@
 
 $jsOutput .= '
 	var oTable = $("#assessmentSummary").dataTable({
-		"sDom": "T<\'clear\'>lfrtip",
+		"sDom": "T<\'clear\'>lrtip",
 		"bPaginate": false,
 		"oTableTools": {
 			"sSwfPath":"swf/copy_csv_xls_pdf.swf",

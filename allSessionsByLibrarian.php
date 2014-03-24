@@ -79,7 +79,11 @@
 
 
              // 9 columns.
-             $output = '<table id="allSessions"><thead id="allSessionsHead"><tr>'.
+             $output = '<div class="dataTables_filter">
+								<label for="dataTables_filter">Filter</label><input type="text" id="dataTables_filter" class="ui-widget" />
+								<label for="dataTables_invert">Invert</label><input type="checkbox" id="dataTables_invert" />
+							</div>
+							<table id="allSessions"><thead id="allSessionsHead"><tr>'.
 
                     // *** for dataTables grouping addOn                  ***
                     // *** delete header and data lines if not used       ***
@@ -140,7 +144,7 @@
 
 $jsOutput .= '
 	var oTable = $("#allSessions").dataTable({
-		"sDom": "T<\'clear\'>lfrtip",
+		"sDom": "T<\'clear\'>lrtip",
 		"bPaginate": false,
 		"oTableTools": {
 			"sSwfPath":"swf/copy_csv_xls_pdf.swf",

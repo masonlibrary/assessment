@@ -55,7 +55,7 @@ strong {
 .copyOptions{width: 95%;}
 
 .assessmentDiv{ padding-top: 20px; margin-bottom: 40px; width: 100%;}
-input, select {margin-top: 2px; margin-right:5px;}
+input, select, label {margin-top: 2px; margin-right:5px;}
 .coursePrefixColumn {width: 145px;}
 #coursePrefixSelectContainer{width: 135px;}
 

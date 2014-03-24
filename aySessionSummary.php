@@ -82,10 +82,14 @@
 
 
              // 9 columns.
-             $output = '<table id="aySS"><thead id="aySSHead"><tr>'.
-                        '<th>Count</th>'.
-                         '<th>Description</th>'.
-                         '<th>Percent</th></thead>';
+             $output = '<div class="dataTables_filter">
+								<label for="dataTables_filter">Filter</label><input type="text" id="dataTables_filter" class="ui-widget" />
+								<label for="dataTables_invert">Invert</label><input type="checkbox" id="dataTables_invert" />
+							</div>
+							<table id="aySS"><thead id="aySSHead"><tr>
+							<th>Count</th>
+							<th>Description</th>
+							<th>Percent</th></thead>';
 
              $result = mysqli_query($dbc, $query) or die('This is an outrage-in aySS.    '.$query);
                 if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n $query";}
@@ -168,7 +172,7 @@
 <?php
 $jsOutput .= '
 	var oTable = $("#aySS").dataTable({
-		"sDom": "T<\'clear\'>lfrtip",
+		"sDom": "T<\'clear\'>lrtip",
 		"bSort": false,
 		"bPaginate": false,
 		"oTableTools": { "sSwfPath":"swf/copy_csv_xls_pdf.swf" }
