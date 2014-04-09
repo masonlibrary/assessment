@@ -13,6 +13,16 @@
 	if (isset($_GET["sesdID"])) {
 		$currentSession->loadSession($_GET["sesdID"]);
 	}
+
+	if (isset($_GET['action'])){
+		$action = $_GET['action'];
+	} else {
+		if (isset($_GET['sesdID'])) {
+			$action = 'view';
+		} else {
+			$action = 'insert';
+		}
+	}
 ?>
 
 <form id="assessmentForm" method="post" action="submitData.php">
@@ -87,7 +97,7 @@
 			<h4>Number</h4> <div id="courseNumberContainer"><input id="courseNumber" name="courseNumber" type="text" size="15" value="<?php echo $currentSession->getCourseNumber(); ?>" class="mustHave" title="You must have a course number." /></div>
 		</div>
 		<div class="courseSectionColumn">
-			<h4>Section</h4> <div id="courseSectionContainer"><input id="courseSection" name="courseSection" type="text" size="10" value="<?php echo $currentSession->getCourseSection(); ?>" class="mustHave" title="You must provide a section number." /></div>
+			<h4>Section</h4> <div id="courseSectionContainer"><input id="courseSection" name="courseSection" type="text" size="10" value="<?php if ($action!='duplicate'){echo $currentSession->getCourseSection();} ?>" class="mustHave" title="You must provide a section number." /></div>
 		</div>
 		<div class="courseTitleColumn">
 			<h4>Title</h4> <div id="courseTitleContainer"><input id="courseTitle" name="courseTitle" type="text" size="15" value="<?php echo $currentSession->getCourseTitle(); ?>" class="mustHave" title="You must have a course title." /></div>
@@ -259,16 +269,7 @@
 
 	<?php /****** Submit button ******/ ?>
 	<?php
-		if (isset($_GET['action'])){
-			$action = $_GET['action'];
-		} else {
-			if (isset($_GET['sesdID'])) {
-				$action = 'view';
-			} else {
-				$action = 'insert';
-			}
-		}
-		
+
 		if (isset($_GET['sesdID'])) {
 			$session = $_GET['sesdID'];
 		} else {
