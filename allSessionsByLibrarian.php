@@ -67,7 +67,9 @@
 							$year = 'any';
 						}
 						
-						if ($year != "any") {$query .= "and YEAR(s.sesdDate) = " . $year . " "; }
+						if ($year != 'any') {
+							$query .= 'and ((YEAR(s.sesdDate)=' . $year . ' and MONTH(s.sesdDate)<=4) or (YEAR(s.sesdDate)=' . ($year-1) . ' and MONTH(s.sesdDate)>=8)) ';
+						}
 
 						echo '<h2>All Sessions by Librarian - '.htmlspecialchars($semester).' semester, AY '.$year.'</h2>';
 

@@ -12,13 +12,15 @@
 
  // $thisUser=$_SESSION['thisUser'];
 
-	if (isset($_GET['year']) && is_numeric($_GET['year'])) {
-		$year = $_GET['year'];
-	} else {
-		die('Non-numeric or nonexistant year!');
+	(isset($_GET['semester']) && $_GET['semester'] != "") ? $semester = $_GET['semester'] : $semester = "any";
+	(isset($_GET['year']) && $_GET['year'] != "") ? $year = $_GET['year'] : $year = "any";
+
+	if ($year == 'any') {
+		$desiredAY = 'AY 2012-' . date('Y');
+	}	else {
+		$desiredAY = 'AY ' . ($year-1) . '-' . ($year);
 	}
 	
-	$desiredAY = 'AY ' . ($year-1) . '-' . ($year);
 	$AYQueryString = inAcademicYear($desiredAY);
 
 ?>

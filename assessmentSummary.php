@@ -10,13 +10,14 @@
   $page_title = 'Assessment Summary';
   include('includes/header.php');
 
-	if (isset($_GET['year']) && is_numeric($_GET['year'])) {
-		$year = $_GET['year'];
-	} else {
-		die('Non-numeric or nonexistant year!');
+	(isset($_GET['semester']) && $_GET['semester'] != "") ? $semester = $_GET['semester'] : $semester = "any";
+	(isset($_GET['year']) && $_GET['year'] != "") ? $year = $_GET['year'] : $year = "any";
+
+	if ($year == 'any') {
+		$reportRange = 'AY 2012-' . date('Y');
+	}	else {
+		$reportRange = 'AY ' . ($year-1) . '-' . ($year);
 	}
-	
-	$reportRange = 'AY ' . ($year-1) . '-' . ($year);
  // $thisUser=$_SESSION['thisUser'];
 
   ?>

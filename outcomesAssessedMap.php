@@ -77,7 +77,9 @@
 							break;
 					 }
 
-					 if($year != "any") { $query .= "and YEAR(Date) = ? "; }
+					 if ($year != 'any') {
+						 $query .= "and ((YEAR(Date)=? and MONTH(Date)<=4) or (YEAR(Date)=? and MONTH(Date)>=8))";
+					 }
 
                      $query .= 'group by concat(ov.prefix," ",ov.number,"-",ov.section) '.
                      'order by ov.Date,concat(ov.prefix," ",ov.number,"-",ov.section)';
@@ -148,7 +150,8 @@
 
 				$row = array();
 				$stmt = mysqli_prepare($dbc, $query);
-				if ($year != "any") { mysqli_bind_param($stmt, 's', $year); }
+				$yearMinusOne = $year-1; // can use only variable in mysqli_bind_param()
+				if ($year != "any") { mysqli_bind_param($stmt, 'ii', $year, $yearMinusOne); }
 				mysqli_stmt_execute($stmt) or die('Failed to retrieve outcomes taught: ' . mysqli_error($dbc));
 				mysqli_stmt_store_result($stmt);
 				mysqli_stmt_bind_result($stmt, $row['Date'], $row['CourseNum'], $row['CourseFaculty'], $row['NumStudents'],
