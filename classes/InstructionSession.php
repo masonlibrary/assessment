@@ -288,8 +288,7 @@ class InstructionSession {
 				$this->faculty,
 				$this->locationID);
 		$stmt->execute() or die("Failed to insert session: " . mysqli_error($dbc));
-		$stmt->close;
-		$this->setSessionID(mysqli_insert_id($dbc));
+		$this->setSessionID($stmt->insert_id);
 
 		$this->setNotes($dbc, $this->sessionID, $this->sessionNote);
 		$this->setResources($dbc, $this->sessionID, $this->resourcesIntroducedID);

@@ -28,9 +28,14 @@ require_once('control/startSession.php');
         
         }
     $_SESSION['currentSessions']=$currentSessions;
-}
-  
-  
+	} else if (isset($_GET['session'])) {
+
+		$currentSessions = array();
+		$currentSessions[0] = new InstructionSession();
+		$currentSessions[0]->loadSession($_GET['session']);
+		$_SESSION['currentSessions'] = $currentSessions;
+
+	}
   
   
   

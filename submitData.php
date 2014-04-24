@@ -41,7 +41,7 @@ if(isset($_POST['action']) && $_POST['action'] == "edit") {
 	$InstructionSession->insertSession();
 }
 $output.= "<br />";
-$output.="<span class='immediateOutcomeEntry'><a id='immediateOutcomeEntry'class='ui-corner-all' href='/assessment/control/dispatch.php?gotoNext=enterCurrentOutcomes&returnTo=enterSession' >Enter Outcomes Taught for these sessions</a></span><br /><br />";
+$output.="<span class='immediateOutcomeEntry'><a id='immediateOutcomeEntry'class='ui-corner-all' href='enterCurrentOutcomes.php?session=".$InstructionSession->getSessionID()."'>Enter Outcomes Taught for these sessions</a></span><br /><br />";
 $output.= "<h3>Original Session</h3>".$InstructionSession->toString();
 
 $_SESSION['dialogText']=$output;
