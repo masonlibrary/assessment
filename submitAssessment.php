@@ -8,12 +8,12 @@ require_once('control/startSession.php');
 
 // Insert the page header
   $page_title = 'Submit Assessment';
-  include('includes/header.php');
+//  include('includes/header.php');
   
-echo"<h1>Submit assessments</h1>";
+//echo"<h1>Submit assessments</h1>";
  
  $assessedCount=$_POST['assessedCount'];
- echo $assessedCount;
+// echo $assessedCount;
  
  $met=$_POST['Met'];
  $partial=$_POST['Partial'];
@@ -26,7 +26,7 @@ echo"<h1>Submit assessments</h1>";
  $NOTMET=array();
  $NOTASSESSED=array();
  $assessed=array();
-echo "<br />";
+//echo "<br />";
 
 //break apart the otctID and count data from the POST['met, partial, notmet'] arrays. 
  for ($x=0;$x<$assessedCount;$x++)
@@ -58,13 +58,13 @@ echo "<br />";
   
      foreach($assessed as $row)
          {
-         echo "ID:".$row['otctID']."  Met:".$row['Met']."  Partial:".$row['Partial']."  NotMet:".$row['NotMet']."<br />";
+//         echo "ID:".$row['otctID']."  Met:".$row['Met']."  Partial:".$row['Partial']."  NotMet:".$row['NotMet']."<br />";
          }
      
 		 $currentSession = new InstructionSession();
 		 $currentSession->loadSession($_POST['sessionID']);
      $output = $currentSession->setAndInsertOutcomesAssessed($assessed);
-		 echo $output;
+//		 echo $output;
     
      header('Location: assessOutcomes.php');
      
