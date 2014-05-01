@@ -9,6 +9,11 @@
     $_SESSION['dialogText']='';
     $_SESSION['dialogTitle']='';
 
+	// If the user is already logged in, log them out (will redirect back here)
+	if (isset($_SESSION['userID'])) {
+		include('logout.php');
+	}
+
   // If the user isn't logged in, try to log them in
 	if (!isset($_SESSION['userID']) && $_POST) {
 		// Connect to the database
