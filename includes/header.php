@@ -70,13 +70,10 @@
     <div id="content">
 
 		<?php
-			if ((isset($_SESSION['dialogTitle']) && trim($_SESSION['dialogTitle'])) || (isset($_SESSION['dialogText']) && trim($_SESSION['dialogText']))) {
-				// Ensure we don't have an undefined var
-				$_SESSION['dialogTitle'] .= '';
-				$_SESSION['dialogText'] .= '';
+			if (isset($_SESSION['dialogTitle']) || isset($_SESSION['dialogText'])) {
 				echo '<div id="messagebox" class="">';
-				if ($_SESSION['dialogTitle']) { echo '<strong>'.$_SESSION['dialogTitle'].'</strong><br/>'; }
-				if ($_SESSION['dialogText'])  { echo $_SESSION['dialogText']; }
+				if (isset($_SESSION['dialogTitle'])) { echo '<strong>' . $_SESSION['dialogTitle'] . '</strong><br/>'; }
+				if (isset($_SESSION['dialogText'])) { echo $_SESSION['dialogText']; }
 				echo '</div>';
 			}
 			unset($_SESSION['dialogTitle']);
