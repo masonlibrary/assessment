@@ -9,6 +9,8 @@
 	include('includes/header.php');
 ?>
 
+
+
 <script type="text/javascript">
 	function formFunction() {
 		semester = $('#semester').val();
