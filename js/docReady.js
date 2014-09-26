@@ -43,11 +43,19 @@ $(function(){
 			});
 
 			try {
-				new $.fn.dataTable.FixedHeader(oTable, {"offsetTop":-2});
+				var fh = new $.fn.dataTable.FixedHeader(oTable, {"offsetTop":-2});
 			} catch (e) {
 				console.log('Exception: '+e);
 				console.log('(If the page has no table, oTable not being defined is normal)');
 			}
+
+			$("#messagebox-close").click(function(){
+				$('.fixedHeader').hide();
+				$("#messagebox").hide("blind", {}, 400, function(){
+					fh.fnUpdate();
+					$('.fixedHeader').show();
+				});
+			});
 
 			$.fn.dataTableExt.afnFiltering.push(
 				function(oSettings, aData, iDataIndex) {

@@ -72,10 +72,11 @@
 		<?php
 			if (isset($_SESSION['dialogTitle']) || isset($_SESSION['dialogText'])) {
 				echo '<div id="messagebox" class="">';
+				echo '<a id="messagebox-close" class="right">&#10006;</a>';
 				if (isset($_SESSION['dialogTitle'])) { echo '<strong>' . $_SESSION['dialogTitle'] . '</strong><br/>'; }
 				if (isset($_SESSION['dialogText'])) { echo $_SESSION['dialogText']; }
 				echo '</div>';
 			}
-			unset($_SESSION['dialogTitle']);
-			unset($_SESSION['dialogText']);
+//			unset($_SESSION['dialogTitle']);
+//			unset($_SESSION['dialogText']);
 		?>
