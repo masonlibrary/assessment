@@ -76,6 +76,10 @@ $(function(){
 			$("#dataTables_invert").change( function() { oTable.fnDraw(); } );
 
 			$("tr.mySessions").click( function(event){
+
+						// Credit: http://stackoverflow.com/a/3550649/217374
+						if($(event.target).is('a')) return;
+
 						//event.preventDefault();
 						var rowID = $(this).attr('id');
 						var menuFinder='#d'+rowID;
@@ -104,13 +108,10 @@ $(function(){
 										$('#'+this.id+' p').html('-');
 										$(this).append('\
 											<div class="removable-menu" > \
-												<a href="enterSession.php?sesdID='+rowID+'&action=view" style="margin-top:4px;" class="menu-link">View</a> \
-												<a href="enterSession.php?sesdID='+rowID+'&action=edit" class="menu-link">Edit</a> \
-												<a href="enterSession.php?sesdID='+rowID+'&action=duplicate" class="menu-link">Duplicate</a> \
-												<form id="delete'+rowID+'" method="post" action="deleteSession.php"> \
-													<input type="hidden" value="'+rowID+'" name="inID"> \
-													<a href="#" class="menu-link" onclick="javascript:$(\'#delete'+rowID+'\').submit()">Delete</a> \
-												</form> \
+												<a class="menu-link" onclick="rowdialog('+rowID+', \'view\')">View</a> \
+												<a class="menu-link" onclick="rowdialog('+rowID+', \'edit\')">Edit</a> \
+												<a class="menu-link" onclick="rowdialog('+rowID+', \'duplicate\')">Duplicate</a> \
+												<a class="menu-link" onclick="rowdialog('+rowID+', \'delete\')">Delete</a> \
 											</div>');
 
 								});
@@ -588,6 +589,28 @@ $(function(){
 									}
 								})
 
-
-
 });
+
+function rowdialog(row, action) {
+
+	$('#dialog').html('Loading...');
+	$("#dialog").dialog({
+		width: 800,
+		height: 600
+	});
+
+	var req;
+
+	if (action === 'delete') {
+		req = $.get("deleteSession.php?sesdID="+row);
+	} else {
+		req = $.get("enterSession.php?sesdID="+row+"&action="+action);
+	}
+
+	req.done(function(data){
+		$('#dialog').html(data);
+		$('input').change( function(){checkCompletion(); });
+		$('.ui-widget-overlay').click(function(){ $('#dialog').dialog('close'); });
+	});
+
+}

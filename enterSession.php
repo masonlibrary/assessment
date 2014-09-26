@@ -6,8 +6,8 @@
 	//djc added 2014
 	include('classes/User.php');
 	
-	$page_title = 'Enter Session Data';
-	include('includes/header.php');
+//	$page_title = 'Enter Session Data';
+//	include('includes/header.php');
 
 	$currentSession = new InstructionSession();
 	if (isset($_GET["sesdID"])) {
@@ -312,4 +312,4 @@
 
 <script type="text/javascript">$(document).ready( function(){noneOrSome(); checkCompletion();} );</script>
 
-<?php include('includes/footer.php'); ?>
+<?php // include('includes/footer.php'); ?>

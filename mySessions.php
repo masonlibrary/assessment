@@ -114,6 +114,8 @@
 			}
 		});';
 
+	echo '<div id="dialog"><div class="vcenter">Loading...</div></div>';
+
 	include('includes/reportsFooter.php');
 
 ?>

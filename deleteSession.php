@@ -5,6 +5,8 @@
 //	include('classes/User.php');
 	require_once('control/startSession.php');
 
+	if ($_POST) {
+
 	if (isset($_POST['inID']) && is_numeric($_POST['inID'])) {
 		$inID = $_POST['inID'];
 	} else {
@@ -72,6 +74,18 @@
 	$_SESSION['dialogText'] = $output;
 	$_SESSION['dialogTitle'] = "Result";
 
+	echo $output;
 	header('Location: mySessions.php');
+	exit();
+
+	}
+
+	$sesdID = htmlspecialchars($_GET['sesdID']);
+	echo '
+		<form method="post" action="deleteSession.php">
+			Really delete session '.$sesdID.'?
+			<input type="hidden" value="'.$sesdID.'" name="inID">
+			<input type="submit">
+		</form>';
 
 ?>
