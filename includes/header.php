@@ -77,6 +77,6 @@
 				if (isset($_SESSION['dialogText'])) { echo $_SESSION['dialogText']; }
 				echo '</div>';
 			}
-//			unset($_SESSION['dialogTitle']);
-//			unset($_SESSION['dialogText']);
+			unset($_SESSION['dialogTitle']);
+			unset($_SESSION['dialogText']);
 		?>
