@@ -96,7 +96,7 @@
              $result = mysqli_query($dbc, $query) or die('This is an outrage-in aySS.    '.$query);
                 if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n $query";}
 
-
+								$total = 0;
                 while ( $row = mysqli_fetch_assoc( $result) )
                 {
                     $count=$row['Count'];
@@ -119,24 +119,28 @@
                         break;
 
                       case 'ITW':
+												$total += $count;
                             $output.='<td class="aySS byPrefix byPrefixCount count ITWCount">'.$count.'</td>'.
                                '<td class="aySS byPrefix byPrefixDesciption description ITWdescription">'.$description.'</td>'.
                                '<td class="aySS byPrefix percent ITWpercent">'.$percent.'</td>';
                         break;
 
                     case 'IQL':
+											$total += $count;
                             $output.='<td class="aySS byPrefix byPrefixCount count IQLCount">'.$count.'</td>'.
                                '<td class="aySS byPrefix byPrefixDesciption description IQLdescription">'.$description.'</td>'.
                                '<td class="aySS percent byPrefix IQLpercent">'.$percent.'</td>';
                         break;
 
                     case 'HLSC':
+											$total += $count;
                             $output.='<td class="aySS byPrefix byPrefixCount count HLSCCount">'.$count.'</td>'.
                                '<td class="aySS byPrefix byPrefixDesciption description HLSCdescription">'.$description.'</td>'.
                                '<td class="aySS percent byPrefix HLSCpercent">'.$percent.'</td>';
                         break;
 
                     case 'IHCOMM171':
+											$total += $count;
                             $output.='<td class="aySS byPrefix byPrefixCount count IHCOMM171Count">'.$count.'</td>'.
                                '<td class="aySS byPrefix byPrefixDesciption description IHCOMM171description">'.$description.'</td>'.
                                '<td class="aySS percent byPrefix IHCOMM171percent">'.$percent.'</td>';
@@ -144,7 +148,12 @@
 
 
                     case 'Total sessions for':
-                            $output.='<td class="aySS byTotal totalCount count totalSessionsCount">'.$count.'</td>'.
+											$otherCount = $count-$total;
+                            $output.='<td class="aySS count byOther byOtherCount">'.$otherCount.'</td>'.
+                               '<td class="aySS description byOther byOtherDescription">All other</td>'.
+                               '<td class="aySS percent byOhter byOtherPercent">'.round(($otherCount/$count)*100, 2).'</td>'.
+                               '</tr><tr>'.
+                               '<td class="aySS byTotal totalCount count totalSessionsCount">'.$count.'</td>'.
                                '<td class="aySS byTotal byTotalDesciption totalSessions ">'.$description.'</td>'.
                                '<td class="aySS byLevel fyValue">'.$percent.'</td>';
                         break;

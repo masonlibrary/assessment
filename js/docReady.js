@@ -187,9 +187,7 @@ $(function(){
                       IQLCount = parseInt($('.IQLCount').html(), 10);
                       HLSCCount = parseInt($('.HLSCCount').html(), 10);
                       IHCOMM171Count = parseInt($('.IHCOMM171Count').html(), 10);
-
-                      totalMinusOthersCount = totalCount-ITWCount-IQLCount-HLSCCount-IHCOMM171Count;
-
+                      totalMinusOthersCount = parseInt($('.byOtherCount').html(), 10);
 
                      aySSchartData1.push(['All Others', totalMinusOthersCount]);
                      aySSchartData1.push(['ITW', ITWCount]);
