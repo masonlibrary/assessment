@@ -139,7 +139,7 @@ div.floatLeft{ margin-right: 5px;}
 
 
 
-div.item {    clear: both; /*width: 70%;*/ border: 1px solid #cdcdcd; border-left: 2px solid #E51937;  margin-bottom: 20px;    padding: 5px; }
+div.item {    clear: both; width: 730px; border: 1px solid #cdcdcd; border-left: 2px solid #E51937;  margin-bottom: 20px;    padding: 5px; }
 div.item div {display: inline-block;}
 div.item h2 {color: #484848; background-color: #ffffff; padding: 4px; width: 42%; border-bottom: 2px solid #cdcdcd; border-top: 2px solid #cdcdcd; margin-bottom: 10px;}
 div.complete{ border: 1px solid #cdcdcd; border-bottom: 4px solid #cdcdcd; background-color: #bce4e5; /*#55E0D9*/   margin-left: 0px;

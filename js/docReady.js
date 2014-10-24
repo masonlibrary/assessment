@@ -600,9 +600,9 @@ function rowdialog(row, action) {
 	var req;
 
 	if (action === 'delete') {
-		req = $.get("deleteSession.php?sesdID="+row);
+		req = $.get("deleteSession.php?lite&sesdID="+row);
 	} else {
-		req = $.get("enterSession.php?sesdID="+row+"&action="+action);
+		req = $.get("enterSession.php?lite&sesdID="+row+"&action="+action);
 	}
 
 	req.done(function(data){
