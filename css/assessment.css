@@ -101,7 +101,6 @@ table {margin-top: 10px; margin-bottom: 10px;
       /* -moz-box-shadow: 4px 4px 4px #000000;
        -webkit-box-shadow: 4px 4px 4px #000000; box-shadow: 4px 4px 4px #000000;*/}
 table.dataTable thead th { padding: 0 16px 0 4px !important; }
-table.dataTable td { padding: 3px 5px !important; }
 th {color: #484848; font-size: 16px;}
 td { border: 1px solid #484848; }
 

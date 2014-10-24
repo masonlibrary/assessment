@@ -18,7 +18,8 @@
 		$('#linklist').html(" \
 			<li><a href='outcomesTaughtMap.php?semester="+semester+"&year="+year+"'>Outcomes Map - Taught</a></li> \
 			<li><a href='outcomesAssessedMap.php?semester="+semester+"&year="+year+"'>Outcomes Map - Assessed</a></li> \
-			<li><a href='allSessionsByLibrarian.php?semester="+semester+"&year="+year+"'>All Sessions By Librarian (test)</a></li> \
+			<li><a href='allSessionsByLibrarian.php?semester="+semester+"&year="+year+"'>All Sessions By Librarian</a></li> \
+			<li><a href='allSessionsByCoursePrefix.php?semester="+semester+"&year="+year+"'>All Sessions By Course Prefix</a></li> \
 			<li><a href='assessmentSummary.php?semester="+semester+"&year="+year+"'>Assessment Summary</a></li> \
 			<li><a href='aySessionSummary.php?semester="+semester+"&year="+year+"'>Academic Year Session Summary</a></li>");
 	}
