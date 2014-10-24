@@ -26,6 +26,7 @@
 			<th>Course</th>
 			<th>Title</th>
 			<th>Faculty</th>
+			<th>Fellow Present</th>
 			<th>Session</th>
 			<th>Semester</th>
 			<th>Date</th>
@@ -41,6 +42,7 @@
 				s.sesdCourseSection as CourseSection,
 				s.sesdCourseTitle as CourseTitle,
 				s.sesdSessionSection as SessionNum,
+				s.sesdFellowPresent as FellowPresent,
 				s.sesdDate as Date,
 				s.sesdFaculty as Faculty,
 				s.sesdOutcomeDone as OutcomeDone,
@@ -53,12 +55,14 @@
 		mysqli_bind_param($stmt, 'i', $thisUser->getLibrarianID());
 		mysqli_stmt_execute($stmt) or die('Failed to retrieve session info: ' . mysqli_error($dbc));
 		mysqli_stmt_store_result($stmt);
-		mysqli_stmt_bind_result($stmt, $sessionID, $coursePrefix, $courseNumber, $courseSection, $courseTitle, $sessionNumber, $date, $faculty, $outcomeDone, $AssessedDone);
+		mysqli_stmt_bind_result($stmt, $sessionID, $coursePrefix, $courseNumber, $courseSection,
+			$courseTitle, $sessionNumber, $fellowPresent, $date, $faculty, $outcomeDone, $AssessedDone);
 		while (mysqli_stmt_fetch($stmt)) {
 			echo "<tr class='mySessions' id='$sessionID'>
 				<td class='coursePrefix'>$coursePrefix $courseNumber-$courseSection</td>
 				<td class='courseTitle' >$courseTitle</td>
 				<td>$faculty</td>
+				<td>$fellowPresent</td>
 				<td>$sessionNumber</td>
 				<td>" . toSemester($date) . "</td>
 				<td class='dateCell'>" . toUSDate($date) . "</td>
@@ -79,6 +83,7 @@
 			"iDisplayLength": -1,
 			"aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
 			"aoColumns": [
+				null,
 				null,
 				null,
 				null,
@@ -114,7 +119,7 @@
 			}
 		});';
 
-	echo '<div id="dialog"><div class="vcenter">Loading...</div></div>';
+	echo '<div id="dialog" style="display:none;"><div class="vcenter">Loading...</div></div>';
 
 	include('includes/reportsFooter.php');
 

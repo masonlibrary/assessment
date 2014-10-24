@@ -7,6 +7,7 @@ class InstructionSession {
     private $sessionID=0;
     private $user='';
     private $librarianID = 0;
+		private $fellowPresent = 'no';
     private $dateOfSession = '';
 
     private $lengthOfSessionID =0;
@@ -242,8 +243,13 @@ class InstructionSession {
         {
 
         $this->setLibrarianID($inPost['librarianID']);
-
-
+				
+				if (isset($inPost['fellowPresent']) && $inPost['fellowPresent'] == 'on') {
+					$this->setFellowPresent('yes');
+				} else {
+					$this->setFellowPresent('no');
+				}
+				
         $this->setDateOfSession(date("Y-m-d", strtotime($inPost['dateOfSession'.$inSuffix])));
 
         $this->setLengthOfSessionID($inPost['lengthID'.$inSuffix]);
@@ -274,9 +280,10 @@ class InstructionSession {
         $dbc=$this->getConnection();
 
 		$stmt = mysqli_prepare($dbc, $this->getSessionInsertQuery());
-		$stmt->bind_param("sisiiiisissi",
+		$stmt->bind_param("sissiiiisissi",
 				$this->user,
 				$this->librarianID,
+				$this->fellowPresent,
 				$this->dateOfSession,
 				$this->lengthOfSessionID,
 				$this->numberOfStudents,
@@ -297,9 +304,10 @@ class InstructionSession {
 	public function updateSession($id) {
 			$dbc = $this->getConnection();
 			$stmt = mysqli_prepare($dbc, $this->getSessionUpdateQuery());
-			$stmt->bind_param("sisiiiisissii",
+			$stmt->bind_param("sissiiiisissii",
 				$this->user,
 				$this->librarianID,
+				$this->fellowPresent,
 				$this->dateOfSession,
 				$this->lengthOfSessionID,
 				$this->numberOfStudents,
@@ -373,14 +381,14 @@ class InstructionSession {
 		$dbc = $this->getConnection();
 
 		$row = array();
-		$stmt = mysqli_prepare($dbc, 'SELECT sesdID, sesdUser, sesdlibmID, sesdDate, sesdseslID, sesdNumStudents, sesdcrspID, sesdCourseTitle,
+		$stmt = mysqli_prepare($dbc, 'SELECT sesdID, sesdUser, sesdlibmID, sesdFellowPresent, sesdDate, sesdseslID, sesdNumStudents, sesdcrspID, sesdCourseTitle,
 				sesdCourseNumber, sesdCourseSection, sesdSessionSection, sesdFaculty, sesdlocaID, sesdOutcomeDone, sesdAssessed, sesnNote
 			FROM sessiondesc sd LEFT OUTER JOIN sessionnotes sn
 			ON sd.sesdID = sn.sesnsesdID WHERE sesdID=?');
 		mysqli_bind_param($stmt, 'i', $inID);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_store_result($stmt);
-		mysqli_stmt_bind_result($stmt, $row['sesdID'], $row['sesdUser'], $row['sesdlibmID'], $row['sesdDate'], $row['sesdseslID'], $row['sesdNumStudents'],
+		mysqli_stmt_bind_result($stmt, $row['sesdID'], $row['sesdUser'], $row['sesdlibmID'], $row['fellowPresent'], $row['sesdDate'], $row['sesdseslID'], $row['sesdNumStudents'],
 			$row['sesdcrspID'], $row['sesdCourseTitle'], $row['sesdCourseNumber'], $row['sesdCourseSection'], $row['sesdSessionSection'], $row['sesdFaculty'],
 			$row['sesdlocaID'], $row['sesdOutcomeDone'], $row['sesdAssessed'], $row['sesnNote']);
 		mysqli_stmt_fetch($stmt);
@@ -388,6 +396,7 @@ class InstructionSession {
 		$this->sessionID = $row['sesdID'];
 		$this->user = $row['sesdUser'];
 		$this->librarianID = $row['sesdlibmID'];
+		$this->fellowPresent = $row['fellowPresent'];
 		$this->dateOfSession = $row['sesdDate'];
 		$this->lengthOfSessionID = $row['sesdseslID'];
 		$this->numberOfStudents = $row['sesdNumStudents'];
@@ -420,15 +429,16 @@ class InstructionSession {
 //             "$this->locationID)";
 
 			return "insert into sessiondesc".
-				"(sesdUser, sesdlibmID, sesdDate, sesdseslID, sesdNumStudents, sesdcrspID, ".
+				"(sesdUser, sesdlibmID, sesdFellowPresent, sesdDate, sesdseslID, sesdNumStudents, sesdcrspID, ".
 				"sesdCourseNumber, sesdCourseTitle, sesdCourseSection, sesdSessionSection, sesdFaculty, sesdlocaID)".
-				"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
 	public function getSessionUpdateQuery() {
 		return "update sessiondesc set
 				sesdUser=?,
 				sesdlibmID=?,
+				sesdFellowPresent=?,
 				sesdDate=?,
 				sesdseslID=?,
 				sesdNumStudents=?,
@@ -554,6 +564,16 @@ class InstructionSession {
         $this->librarianID = (int)$librarian;
         $this->setLibrarianName($this->librarianID);
         }
+
+		public function getFellowPresent()
+				{
+					return $this->fellowPresent;
+				}
+				
+		public function setFellowPresent($fellowPresent)
+				{
+					$this->fellowPresent = $fellowPresent;
+				}
 
      public function getLibrarianName()
          {

@@ -59,6 +59,11 @@
 					mysqli_free_result($result);
 				?>
 				</select>
+				<br>
+				<?php
+					echo '<input type="checkbox" id="fellowPresent" name="fellowPresent"'.(($currentSession->getFellowPresent()=='yes')?' checked':'').'>
+						<label for="fellowPresent">Fellow was present</label>';
+				?>
 			</div>
 		</div>
 	</div>
