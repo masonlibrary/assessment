@@ -112,22 +112,40 @@ $jsOutput .= '
 	ulchart = new Highcharts.Chart({
 		title: { text: "Sessions by level ("+$("#daterange").text()+")" },
 		chart: { renderTo: "upperLowerChart" },
+		tooltip: { enabled: false },
 		series: [{
 			type: "pie",
 			data: uldata,
 			animation: false
-		}]
+		}],
+		plotOptions: {
+			pie: {
+				dataLabels:{
+					enabled: true,
+					formatter: function(){ return "<b>"+this.point.name+"</b><br>"+this.y+" ("+Highcharts.numberFormat(this.percentage, 2)+"%)"; }
+				}
+			}
+		}
 	});
 
 	var sdata = tableToArray("subjectsession", 0, 2);
 	schart = new Highcharts.Chart({
 		title: { text: "Sessions by course ("+$("#daterange").text()+")" },
 		chart: { renderTo: "ITWetcChart" },
+		tooltip: { enabled: false },
 		series: [{
 			type: "pie",
 			data: sdata,
 			animation: false
-		}]
+		}],
+		plotOptions: {
+			pie: {
+				dataLabels:{
+					enabled: true,
+					formatter: function(){ return "<b>"+this.point.name+"</b><br>"+this.y+" ("+Highcharts.numberFormat(this.percentage, 2)+"%)"; }
+				}
+			}
+		}
 	});
 	';
 
