@@ -22,9 +22,7 @@
 
   ?>
 
-<h2>Assessment Summary for <?php echo $reportRange; ?></h2>
-
-<br />
+<?php echo '<h2>Assessment Summary - '.$semester.' semester, '.$reportRange.'</h2>'; ?>
 
 <?php
             $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
@@ -144,7 +142,12 @@
                             }
 
                        $query ="select sum(Met) as Met, sum(Partial) as Partial, sum(NotMet) as NotMet ".
-                               "from outcomesassessedview where date ".inAcademicYear($reportRange)." and abbr = '$currentABBR'";
+                               "from outcomesassessedview where ";
+
+												$query .= inSemester($semester, 'date');
+												$query .= ' and ';
+												$query .= inAcademicYear($year, 'date');
+												$query .= ' and abbr = "'.$currentABBR.'"';
 
                         $result = mysqli_query($dbc, $query) or die('dang it to heck!- query issues.'.mysqli_error($dbc).$query);
                         if(!$result){echo "this is an outrage: ".mysqli_error($dbc).$query."\n";}
@@ -154,7 +157,7 @@
 
                               $MetResults = intval ($row['Met']) ;
                               $PartialResults = intval ($row['Partial']) ;
-                              $NotMetResultsMetResults = intval ($row['NotMet']) ;
+                              $NotMetResults = intval ($row['NotMet']) ;
 
                               $Met[$currentABBR] += $MetResults;
                               $Partial[$currentABBR] += $PartialResults;

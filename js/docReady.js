@@ -120,132 +120,6 @@ $(function(){
 							return ;
 						});
 
-               // **********************************************************
-               /*THIS WORKS FOR OBTAINING FILTERED DATA FROM dataTables*/
-               // **********************************************************
-
-               $('.chartUpperLower').click(function(){
-
-
-                      aySSchartData=[];
-
-                     aySSchartData.push(['Upper Level', +$('.upperLevelCount').html()]);
-                     aySSchartData.push(['Lower Level', +$('.lowerLevelCount').html()]);
-
-                    // alert(aySSchartData);
-
-                      aySSChart= new Highcharts.Chart({
-                            chart: {
-                                renderTo: 'upperLowerChart',
-                                plotBackgrountColor: null,
-                                plotBorderWidth: null,
-                                plotShadow: false
-                            },
-                            credits:{
-                                enabled: false
-                                },
-                            title:{
-                                text: 'Session by Upper/Lower Level <br />'+$('.fyValue').html()
-                                },
-                            tooltip: {
-                                formatter: function() {
-                                    return '<b>'+this.point.name+'</b>: '+ this.point.y+' sessions';
-                                    }
-                                },
-                            plotOptions: {
-                                pie: {
-                                    showInLegend: true,
-                                    allowPointSelect: true,
-                                    cursor: 'pointer',
-                                    dataLabels:{
-                                        enabled: true,
-                                        color: '#000000',
-                                        connectorColor: '#000000',
-                                        formatter: function(){
-                                            return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage,2 )+'%';
-                                            }
-                                        }
-                                    }
-                                },
-                            series: [{
-                            type: 'pie',
-                            name: 'Session by Level',
-                            data: aySSchartData
-                            }]
-                            });
-                            });
-
-
-
-            $('.chartITWetc').click(function(){
-
-
-                      aySSchartData1=[];
-
-                      totalCount = parseInt($('.totalSessionsCount').html(), 10);
-                      ITWCount = parseInt($('.ITWCount').html(), 10);
-                      IQLCount = parseInt($('.IQLCount').html(), 10);
-                      HLSCCount = parseInt($('.HLSCCount').html(), 10);
-                      IHCOMM171Count = parseInt($('.IHCOMM171Count').html(), 10);
-                      totalMinusOthersCount = parseInt($('.byOtherCount').html(), 10);
-
-                     aySSchartData1.push(['All Others', totalMinusOthersCount]);
-                     aySSchartData1.push(['ITW', ITWCount]);
-                     aySSchartData1.push(['IQL', IQLCount]);
-                     aySSchartData1.push(['HLSC', HLSCCount]);
-                     aySSchartData1.push(['IHCOMM171', IHCOMM171Count]);
-
-                     //alert(aySSchartData1);
-
-                      aySSChart= new Highcharts.Chart({
-                            chart: {
-                                renderTo: 'ITWetcChart',
-                                plotBackgrountColor: null,
-                                plotBorderWidth: null,
-                                plotShadow: false
-                            },
-                            credits:{
-                                enabled: false
-                                },
-                            title:{
-                                text: 'Session by specific course of '+totalCount+' sessions '+$('.fyValue').html()
-                                },
-                            tooltip: {
-                                formatter: function() {
-                                    return '<b>'+this.point.name+'</b>: '+this.point.y+' sessions';
-                                    }
-                                },
-                            plotOptions: {
-                                pie: {
-                                    showInLegend: true,
-                                    allowPointSelect: true,
-                                    cursor: 'pointer',
-                                    dataLabels:{
-                                        enabled: true,
-                                        color: '#000000',
-                                        connectorColor: '#000000',
-                                        formatter: function(){
-                                            return '<b>'+ this.point.name +'</b>: '+Highcharts.numberFormat(this.percentage,2 )+'%';
-                                            }
-                                        }
-                                    }
-                                },
-                            series: [{
-                            type: 'pie',
-                            name: 'Session by Level',
-                            data: aySSchartData1
-                            }]
-                            });
-                            });
-
-
-
-
-
-
-
-
-
                 $('.test').click(function(){
                   var data = oTable._('td.coursePrefix', {"filter":"applied"});
 
@@ -588,6 +462,27 @@ $(function(){
 								})
 
 });
+
+// Returns a multidimensional array from a table with id "tableid"
+// between column numbers mincol and maxcol
+function tableToArray(tableid, mincol, maxcol) {
+	var data = Array();
+	$('#'+tableid+' tbody tr').each(function(i, v){
+		data[i] = Array();
+		$(this).children('td').slice(mincol, maxcol).each(function(ii, vv){
+			var str = $(this).text();
+			var num = parseInt(str);
+			// Load into array as string or integer
+			// parseInt() returned NaN if this isn't an integer
+			if (isNaN(num)) {
+				data[i][ii] = str;
+			} else {
+				data[i][ii] = num;
+			}
+		});
+	});
+	return data;
+}
 
 function rowdialog(row, action) {
 

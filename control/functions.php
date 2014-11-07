@@ -132,30 +132,26 @@ function toHours($inMinutes){
 }
 
 
-function inSemester($inSemester){
-    
-    $inSemester=explode(" ", $inSemester);
-    $inSemesterSeason= $inSemester[0];
-    $inSemesterYear = $inSemester[1];
-    
-    $dateBetweenString ="initialValue";
+function inSemester($semester, $colname) {
+	
+	$semester = strtolower($semester);
 
-    switch ($inSemesterSeason){
-       
-        case "Fall": $dateBetweenString = " between '".$inSemesterYear."-".FALL_START_MMDD."' and '".$inSemesterYear."-".FALL_END_MMDD."' ";
-            return $dateBetweenString;
-            break;
-        case "Spring": $dateBetweenString = " between '".$inSemesterYear."-".SPRING_START_MMDD."' and '".$inSemesterYear."-".SPRING_END_MMDD."' "; 
-            return $dateBetweenString;
-            break;
-        case "Summer": $dateBetweenString = " between '".$inSemesterYear."-".SUMMER_START_MMDD."' and '".$inSemesterYear."-".SUMMER_END_MMDD."' ";
-            return $dateBetweenString;
-            break;
-          
+	switch ($semester) {
+		case 'fall':
+			return ' DAYOFYEAR('.$colname.') between DAYOFYEAR("0000-' . FALL_START_MMDD . '") and DAYOFYEAR("0000-' . FALL_END_MMDD . '") ';
+			break;
+		case 'spring':
+			return ' DAYOFYEAR('.$colname.') between DAYOFYEAR("0000-' . SPRING_START_MMDD . '") and DAYOFYEAR("0000-' . SPRING_END_MMDD . '") ';
+			break;
+		case 'summer':
+			return ' DAYOFYEAR('.$colname.') between DAYOFYEAR("0000-' . SUMMER_START_MMDD . '") and DAYOFYEAR("0000-' . SUMMER_END_MMDD . '") ';
+			break;
+		case 'any':
+		default:
+			return ' true ';
+			break;
+	}
 
-    }
-    
-        
 }
 
 function inFiscalYear($inFiscalYear){
@@ -173,21 +169,25 @@ function inFiscalYear($inFiscalYear){
     return $dateBetweenString;
 }
 
-function inAcademicYear($inAcademicYear){
-    $academicYears = explode(" ", $inAcademicYear);
-    $inAcademicYears = $academicYears[1];
-    
-    //return date-between clause for sql queries
-    $dateBetweenString = 'initialValue';
+function inAcademicYearOld($inAcademicYear){
+	$academicYears = explode(" ", $inAcademicYear);
+	$inAcademicYears = $academicYears[1];
+
+	//return date-between clause for sql queries
+	$dateBetweenString = 'initialValue';
     $inAcademicYears = explode("-",$inAcademicYears);
     $ayYear1 =$inAcademicYears[0];
-    $ayYear2 = $inAcademicYears[1];
-    
+	$ayYear2 = $inAcademicYears[1];
+
     $dateBetweenString = " between '".$ayYear1."-".AY_START_MMDD."' and '".$ayYear2."-".AY_END_MMDD."' ";
-    
-    return $dateBetweenString;
+
+	return $dateBetweenString;
 }
 
+function inAcademicYear($year, $colname){
+	if ($year == 'any') { return ' true '; }
+	return ' '.$colname.' between "'.($year-1).'-'.AY_START_MMDD.'" and "'.$year.'-'.AY_END_MMDD.'" ';
+}
 
 
 ?>
