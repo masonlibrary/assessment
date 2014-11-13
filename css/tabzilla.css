@@ -98,7 +98,6 @@
 }
 
 #tabzilla-contents {
-    width: 960px;
     margin: 0 auto;
     padding: 0;
     text-align: left;
@@ -127,7 +126,7 @@
 #tabzilla-promo {
     float: left;
     display: inline;
-    width: 300px;
+    width: 24%;
     height: 210px;
     margin: 0;
     background: #f8f8f8;
@@ -162,8 +161,7 @@
 #tabzilla-panel #tabzilla-nav {
     float: left;
     display: inline;
-    width: 620px;
-    margin: 0 10px;
+    width: 74%;
 }
 
 #tabzilla-promo .snippet h4 {
@@ -190,7 +188,7 @@
     display: inline;
     list-style-type: none;
     width: 22%;
-    margin: 20px 3% 0 0;
+    margin: 15px 0 0 15px;
     padding: 0;
     background-color: transparent;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABfCAMAAAAeT108AAAABlBMVEX////W1tZkFI+EAAAAAXRSTlMAQObYZgAAABdJREFUeNrVwwENAAAAwiDev7Q5ZEP8HhKOADGMXVvVAAAAAElFTkSuQmCC);

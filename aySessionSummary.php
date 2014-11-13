@@ -89,8 +89,8 @@ echo '<h2>Academic Year - Session Summary for <span id="daterange">'.$semester.'
 ?>
 
         <div id="chartContainer" style="clear: both; margin-top: 40px;">
-            <div id="upperLowerChart"></div>
-            <div id="ITWetcChart"></div>
+            <div style="width:50%; float:left;" id="upperLowerChart"></div>
+            <div style="width:50%; float:left;" id="ITWetcChart"></div>
         </div>
 
 <?php
