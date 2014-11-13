@@ -44,6 +44,7 @@
                      'ov.Date as "Date", '.
                      'concat(ov.prefix," ",ov.number,"-",ov.section) AS "CourseNumber", '.
                      'ov.faculty AS "Course Faculty", '.
+										 'ov.fellowpresent AS "Fellow Present", '.
                      'ov.students AS "Number of Students", ';
 
 
@@ -104,6 +105,7 @@
 
                      '<th>Course Number</th>'.
                      '<th>Course Faculty</th>'.
+                     '<th>Fellow Present</th>'.
                      '<th>Session Held</th>'.
                      '<th># of Students</th>'.
                      '<th>Outcome 1</th>'.
@@ -154,8 +156,8 @@
 				if ($year != "any") { mysqli_bind_param($stmt, 'ii', $year, $yearMinusOne); }
 				mysqli_stmt_execute($stmt) or die('Failed to retrieve outcomes taught: ' . mysqli_error($dbc));
 				mysqli_stmt_store_result($stmt);
-				mysqli_stmt_bind_result($stmt, $row['Date'], $row['CourseNum'], $row['CourseFaculty'], $row['NumStudents'],
-					$row['Outcome1'], $row['Outcome2'], $row['Outcome3'], $row['Outcome5'], $row['Outcome6']);
+				mysqli_stmt_bind_result($stmt, $row['Date'], $row['CourseNum'], $row['CourseFaculty'], $row['FellowPresent'],
+					$row['NumStudents'], $row['Outcome1'], $row['Outcome2'], $row['Outcome3'], $row['Outcome5'], $row['Outcome6']);
 
 				while (mysqli_stmt_fetch($stmt)) {
 				$output.="<tr class='outcomesMap'>" .
@@ -165,6 +167,7 @@
 					// ***                                               ***
 					"<td class='outcomesMap'>".$row['CourseNum']."</td>".
 					"<td class='outcomesMap'>".$row['CourseFaculty']."</td>".
+					"<td class='outcomesMap'>".$row['FellowPresent']."</td>".
 					"<td class='outcomesMap'>".toUSDate($row['Date'])."</td>".
 					"<td class='outcomesMap'>".$row['NumStudents']."</td>".
 					"<td class='outcomesMap'>".$row['Outcome1']."</td>".

@@ -30,6 +30,7 @@
                         's.sesdCourseTitle as CourseTitle, '.
                         's.sesdDate as Date, '.
                         's.sesdFaculty as Faculty, '.
+                        's.sesdFellowPresent as FellowPresent, '.
                         'sl.seslName as SessionLength, '.
                         'sl.seslMinutes as SessionMinutes, '.
                         's.sesdNumStudents as StudentCount, '.
@@ -94,6 +95,7 @@
 
                      '<th>Course Number</th>'.
                      '<th>Course Faculty</th>'.
+										 '<th>Fellow Present</th>'.
                      '<th>Session Held</th>'.
                      '<th>Semester</th>'.
                      '<th>Week</th>'.
@@ -110,6 +112,7 @@
                     $librarian=$row['LastName'].", ".$row['FirstName'];
                     $courseNumber=$row['CoursePrefix'].$row['CourseNumber'].'-'.$row['CourseSection'];
                     $courseFaculty=$row['Faculty'];
+										$fellowPresent=$row['FellowPresent'];
                     $sessionDate=$row['Date'];
                     $semester= toSemester($sessionDate);
                     $weekNumber=  toWeekNumber($sessionDate);
@@ -130,6 +133,7 @@
 
                         "<td class='allSessions'>$courseNumber</td>".
                         "<td class='allSessions'>$courseFaculty</td>".
+                        "<td class='allSessions'>$fellowPresent</td>".
                         "<td class='allSessions'>$sessionDate</td>".
                         "<td class='allSessions'>$semester</td>".
                         "<td class='allSessions'>$weekNumber</td>".
