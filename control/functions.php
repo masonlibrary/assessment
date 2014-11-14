@@ -185,7 +185,9 @@ function inAcademicYearOld($inAcademicYear){
 }
 
 function inAcademicYear($year, $colname){
-	if ($year == 'any') { return ' true '; }
+	// Be aware that $year may be passed directly into an SQL query string, so
+	// keep SQL injections in mind. is_numeric() should take care of us here.
+	if (!is_numeric($year)) { return ' true '; }
 	return ' '.$colname.' between "'.($year-1).'-'.AY_START_MMDD.'" and "'.$year.'-'.AY_END_MMDD.'" ';
 }
 

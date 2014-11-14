@@ -60,29 +60,12 @@
                      'where '.
                      'ov.prefix <>"ITW" '.
                      'and ov.prefix <>"IQL" '.
-                     'and ov.assessed = "yes" ';
-
-					 // FIXME probably should use existing date<->semester functions (in includes/functions.php)
-					 switch($semester) {
-						case "spring":
-							$query .= "and MONTH(Date) <= 4 ";
-							break;
-						case "fall":
-							$query .= "and MONTH(Date) >= 8 ";
-							break;
-						case "summer":
-							$query .= "and MONTH(Date) > 4 AND MONTH(Date) < 8 ";
-							break;
-						case "any":
-						default:
-							break;
-					 }
-
-					 if ($year != 'any') {
-						 $query .= "and ((YEAR(Date)=? and MONTH(Date)<=4) or (YEAR(Date)=? and MONTH(Date)>=8))";
-					 }
-
-                     $query .= 'group by concat(ov.prefix," ",ov.number,"-",ov.section) '.
+										 'and ov.assessed = "yes"'.
+										 'and' . inSemester($semester, 'Date').
+										 'and' . inAcademicYear($year, 'Date').
+										 // fix the following group-by statement to also concatenate date
+										 // otherwise duplicate course/sections accross semesters disappear.
+										 'group by concat(ov.prefix," ",ov.number,"-",ov.section) '.
                      'order by ov.Date,concat(ov.prefix," ",ov.number,"-",ov.section)';
 
 
@@ -114,46 +97,8 @@
                      '<th>Outcome 5</th>'.
                      '</tr></thead><tbody>';
 
-
-//             $result = mysqli_query($dbc, $query) or die('This is an outrage-in outcomesMap.    '.mysqli_error($dbc));
-//                if(!$result){echo "this is an outrage: ".mysqli_error($dbc)."\n $query";}
-//
-//                while ( $row = mysqli_fetch_assoc( $result) )
-//                {
-//                    $semester= toSemester($row['Date']);
-//                    $courseNumber=$row['CourseNumber'];
-//                    $courseFaculty=$row['Course Faculty'];
-//                    $sessionDate=  toUSDate($row['Date']);
-//                    $numberOfStudents=$row['Number of Students'];
-//                    $outcome1=$row['Outcome 1'];
-//                    $outcome2=$row['Outcome 2'];
-//                    $outcome3=$row['Outcome 3'];
-//                    $outcome5=$row['Outcome 5'];
-//
-//
-//                    $output.="<tr class='outcomesMap'>".
-//
-//
-//                        // *** for dataTables grouping addOn                 ***
-//                        // *** delete header and data line if not used       ***
-//                        "<td class='outcomesMap'>$semester</td>".
-//                        // ***                                               ***
-//
-//                        "<td class='outcomesMap'>$courseNumber</td>".
-//                        "<td class='outcomesMap'>$courseFaculty</td>".
-//                        "<td class='outcomesMap'>$sessionDate</td>".
-//                        "<td class='outcomesMap'>$numberOfStudents</td>".
-//                        "<td class='outcomesMap'>$outcome1</td>".
-//                        "<td class='outcomesMap'>$outcome2</td>".
-//                        "<td class='outcomesMap'>$outcome3</td>".
-//                        "<td class='outcomesMap'>$outcome5</td></tr>";
-//
-//                }
-
 				$row = array();
 				$stmt = mysqli_prepare($dbc, $query);
-				$yearMinusOne = $year-1; // can use only variable in mysqli_bind_param()
-				if ($year != "any") { mysqli_bind_param($stmt, 'ii', $year, $yearMinusOne); }
 				mysqli_stmt_execute($stmt) or die('Failed to retrieve outcomes taught: ' . mysqli_error($dbc));
 				mysqli_stmt_store_result($stmt);
 				mysqli_stmt_bind_result($stmt, $row['Date'], $row['CourseNum'], $row['CourseFaculty'], $row['FellowPresent'],
