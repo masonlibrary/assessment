@@ -68,7 +68,7 @@
   
   <?php
   
-  include('includes/reportsFooter.php');
+  include('includes/footer.php');
   ?>
 <?php
 

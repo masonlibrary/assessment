@@ -66,7 +66,7 @@ require_once('control/startSession.php');
 <?PHP
    
 $jsOutput='';
-  include('includes/reportsFooter.php');
+  include('includes/footer.php');
 ?>
 
 

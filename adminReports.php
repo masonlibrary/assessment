@@ -7,28 +7,23 @@
 	// Insert the page header
 	$page_title = 'IL Summary Reports';
 	include('includes/header.php');
+
+	$jsOutput .= '
+		function formFunction() {
+			semester = $("#semester").val();
+			year = $("#year").val();
+			$("#linklist").html(\' \
+				<li><a href="outcomesTaughtMap.php?semester=\'+semester+\'&year=\'+year+\'">Outcomes Map - Taught</a></li> \
+				<li><a href="outcomesAssessedMap.php?semester=\'+semester+\'&year=\'+year+\'">Outcomes Map - Assessed</a></li> \
+				<li><a href="allSessionsByLibrarian.php?semester=\'+semester+\'&year=\'+year+\'">All Sessions By Librarian</a></li> \
+				<li><a href="allSessionsByCoursePrefix.php?semester=\'+semester+\'&year=\'+year+\'">All Sessions By Course Prefix</a></li> \
+				<li><a href="assessmentSummary.php?semester=\'+semester+\'&year=\'+year+\'">Assessment Summary</a></li> \
+				<li><a href="aySessionSummary.php?semester=\'+semester+\'&year=\'+year+\'">Academic Year Session Summary</a></li>\');
+		}
+		$("#semester").change(function(){formFunction()})
+		$("#year").change(function(){formFunction()})
+		formFunction();';
 ?>
-
-
-
-<script type="text/javascript">
-	function formFunction() {
-		semester = $('#semester').val();
-		year = $('#year').val();
-		$('#linklist').html(" \
-			<li><a href='outcomesTaughtMap.php?semester="+semester+"&year="+year+"'>Outcomes Map - Taught</a></li> \
-			<li><a href='outcomesAssessedMap.php?semester="+semester+"&year="+year+"'>Outcomes Map - Assessed</a></li> \
-			<li><a href='allSessionsByLibrarian.php?semester="+semester+"&year="+year+"'>All Sessions By Librarian</a></li> \
-			<li><a href='allSessionsByCoursePrefix.php?semester="+semester+"&year="+year+"'>All Sessions By Course Prefix</a></li> \
-			<li><a href='assessmentSummary.php?semester="+semester+"&year="+year+"'>Assessment Summary</a></li> \
-			<li><a href='aySessionSummary.php?semester="+semester+"&year="+year+"'>Academic Year Session Summary</a></li>");
-	}
-	$(document).ready(function(){
-		$('#semester').change(function(){formFunction()})
-		$('#year').change(function(){formFunction()})
-		formFunction();
-	});
-</script>
 
 <h2 id="introduction">Reports</h2>
 <p>Please note: these reports are samples.</p>

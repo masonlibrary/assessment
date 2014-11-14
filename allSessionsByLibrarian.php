@@ -179,5 +179,5 @@ $jsOutput .= '
 		asExpandedGroups: []        */
 	});';
 
-  include('includes/reportsFooter.php');
+  include('includes/footer.php');
   ?>

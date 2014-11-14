@@ -23,7 +23,6 @@
     <link rel="stylesheet" type="text/css" href="css/dataTables.css" />
     <link rel="stylesheet" type="text/css" href="css/TableTools.css" />
     <!--<link rel="stylesheet" type="text/css" href="css/dataTables_themeroller.css" />-->
-	<script type="text/javascript" src="js/jquery.js"></script>
 </head>
 <body>
 

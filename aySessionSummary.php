@@ -120,8 +120,8 @@ $jsOutput .= '
 		}],
 		plotOptions: {
 			pie: {
+				enableMouseTracking: false,
 				dataLabels:{
-					enabled: true,
 					formatter: function(){ return "<b>"+this.point.name+"</b><br>"+this.y+" ("+Highcharts.numberFormat(this.percentage, 2)+"%)"; }
 				}
 			}
@@ -140,8 +140,8 @@ $jsOutput .= '
 		}],
 		plotOptions: {
 			pie: {
+				enableMouseTracking: false,
 				dataLabels:{
-					enabled: true,
 					formatter: function(){ return "<b>"+this.point.name+"</b><br>"+this.y+" ("+Highcharts.numberFormat(this.percentage, 2)+"%)"; }
 				}
 			}

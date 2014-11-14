@@ -129,5 +129,5 @@
 			"oTableTools":{ "sSwfPath":"swf/copy_csv_xls_pdf.swf" }
 		});';
 
-  include('includes/reportsFooter.php');
+  include('includes/footer.php');
   ?>

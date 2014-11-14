@@ -13,7 +13,6 @@
 	$thisUser = $_SESSION['thisUser'];
 
 	echo '<h2>'.$page_title.'</h2>';
-	echo '<a href="#" class="test">Test: Chart filtered sessions by prefix</a>';
 
 	$dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die('Error connecting to the stupid database');
 
@@ -76,12 +75,17 @@
 		echo '</tbody></table>';
 	}
 
-	echo '<div id="chartContainer" style="clear: both; margin-top: 40px;"> <div id="testChart"></div> </div>';
+	echo '
+		<div id="chartContainer" style="clear: both; margin-top: 40px;">
+			<a href="#" id="test" style="display:none;">Test: Chart filtered sessions by prefix</a>
+			<div id="testChart"></div>
+		</div>';
 
 	$jsOutput .= 'var oTable = $("#mySessions").dataTable({
 			"sDom": "T<\'clear\'>lrtip",
 			"iDisplayLength": -1,
 			"aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+			"fnDrawCallback": function(){ $("#test").click(); },
 			"aoColumns": [
 				null,
 				null,
@@ -117,10 +121,50 @@
 					}
 				]
 			}
-		});';
+		});
+
+		$("#test").click(function(e){
+			e.preventDefault();
+
+			var data = oTable._("td.coursePrefix", {"filter": "applied"});
+			var associativeData = [];
+			var chartData = [];
+			var filterString = "<br />" + $("div.dataTables_filter input").val();
+
+			for (var x = 1; x < data.length; x++)
+			{
+				prefix = data[x].split(" ")[0];
+				if (associativeData[prefix] == null) {
+					associativeData[prefix] = 1;
+				} else {
+					associativeData[prefix]++;
+				}
+			}
+
+			for (var key in associativeData) { chartData.push([key, associativeData[key]]); }
+
+			testChart = new Highcharts.Chart({
+				chart: {renderTo: "testChart"},
+				title: {text: "Sessions by prefix" + filterString},
+				plotOptions: {
+					pie: {
+						animation: false,
+						enableMouseTracking: false,
+						dataLabels: {
+							formatter: function(){ return "<b>" + this.point.name + "</b><br>" + this.y + " (" + Highcharts.numberFormat(this.percentage, 2) + "%)"; }
+						}
+					}
+				},
+				series: [{
+					type: "pie",
+					data: chartData
+				}]
+			});
+		});
+		$("#test").click();';
 
 	echo '<div id="dialog" style="display:none;"><div class="vcenter">Loading...</div></div>';
 
-	include('includes/reportsFooter.php');
+	include('includes/footer.php');
 
 ?>
