@@ -411,6 +411,22 @@ class InstructionSession {
 		$this->assessed = $row['sesdAssessed'];
 		$this->sessionNote = $row['sesnNote'];
 
+		$row = array();
+		$stmt = mysqli_prepare($dbc, 'select rsrpName, rsrirsrpID from resourcepool rp
+			left outer join resourcesintroduced ri
+			on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = ?)
+			where rp.rsrpActive="yes"');
+		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_execute($stmt) or die('Failed to execute query: ' . mysqli_error($dbc));
+		mysqli_stmt_store_result($stmt);
+		mysqli_stmt_bind_result($stmt, $row['name'], $row['id']);
+		while (mysqli_stmt_fetch($stmt)) {
+			if($row['id']) {
+				$this->resourcesIntroducedID[$row['id']] = $row['id'];
+				$this->resourcesIntroducedName[$row['id']] = $row['name'];
+			}
+		}
+
 		mysqli_stmt_free_result($stmt);
 	}
 
@@ -484,16 +500,13 @@ class InstructionSession {
                     "<span class='name'>Session Notes: </span><span class='value'>$this->sessionNote</span><br />".
                     "<span class='name'>Resources Introduced: </span><br /><span class='value'>";
 
-                   //TODO work on loading session to include notes and resources introduced
-                    if($this->resourcesIntroducedID=='none')
-                        {$output.='&nbsp;&nbsp;&nbsp;&nbsp;None introduced<br />';}
-                    else
-                        {
-                        foreach ($this->resourcesIntroducedID as $x)
-                            {
-                            $output.='&nbsp;&nbsp;&nbsp;&nbsp;'.$this->resourcesIntroducedName[$x].'<br />';
-                            }
-                        }
+                    if($this->resourcesIntroducedID) {
+                      foreach ($this->resourcesIntroducedID as $x) {
+                        $output.='&nbsp;&nbsp;&nbsp;&nbsp;'.$x.': '.$this->resourcesIntroducedName[$x].'<br />';
+                      }
+                    } else {
+                      $output .= '&nbsp;&nbsp;&nbsp;&nbsp;None<br />';
+                    }
                     $output.='</span></p>';
 
                     return $output;
@@ -521,16 +534,13 @@ class InstructionSession {
                     "<strong>Session Notes: </strong>$this->sessionNote<br />".
                     "<strong>Resources Introduced: </strong><br />";
 
-                   //TODO work on loading session to include notes and resources introduced
-                    if($this->resourcesIntroducedID=='none')
-                        {$output.='&nbsp;&nbsp;&nbsp;&nbsp;None introduced<br />';}
-                    else
-                        {
-                        foreach ($this->resourcesIntroducedID as $x)
-                            {
-                            $output.='&nbsp;&nbsp;&nbsp;&nbsp;'.$x.' '.$this->resourcesIntroducedName[$x].'<br />';
-                            }
-                        }
+                    if($this->resourcesIntroducedID) {
+                      foreach ($this->resourcesIntroducedID as $x) {
+                        $output.='&nbsp;&nbsp;&nbsp;&nbsp;'.$x.': '.$this->resourcesIntroducedName[$x].'<br />';
+                      }
+                    } else {
+                      $output .= '&nbsp;&nbsp;&nbsp;&nbsp;None<br />';
+                    }
                     $output.='</p>';
 
                     return $output;
