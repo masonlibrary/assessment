@@ -35,4 +35,3 @@ function pageUpdate() {
 
 
 }
-//TODO: set up messaging variable in footer include so there is a per-page message of either *nothing* or a string to display

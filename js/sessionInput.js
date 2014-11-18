@@ -87,11 +87,6 @@
             else
             {
                 $('#resourcesSelect').removeClass('complete');
-
-                //TODO: Fix this quick fix. Not ideal. see bug in docReady.js for details.
-				// Probably fixed -Webster
-
-//                $('#submitButton').attr('disabled', true);
                 $('#submitButtonDiv').removeClass('complete');
 				return false;
 

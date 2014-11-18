@@ -322,9 +322,8 @@ $(function(){
 			});
 
 
-                   //TODO: Fix this BUG!
-                   // can click a resource, complete form, enable submit then unclick a resource and submit still enabled.
-				   // Changed it so that the button is always live, but won't go unless checkCompletion() returns true; should fix this. -Webster
+				   // The button is always live, but won't go unless checkCompletion() returns true
+					 // Should fix the "complete then uncomplete but can still submit" bug
                   $('.resourcesBox.xxx').change(function(){
                        if($('#sameResources').is(':checked')){updateResources();}
                       checkCompletion();
