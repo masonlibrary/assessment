@@ -428,16 +428,6 @@
 									return false;
 								}
 							}
-
-                                                       //alert('change');
-                                                    //TODO: look at this ugly fix and better-fix
-                                                    if (window.location.pathname=='/assessment/assessOutcome.php')
-                                                        {
-
-                                                          assessmentDropdown();
-                                                        }
-
-
 						} //end Change detect;
 					})
 					.addClass( "ui-widget ui-widget-content ui-corner-left" );
