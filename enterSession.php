@@ -219,7 +219,6 @@
 				   name="numberOfStudents" type="text" value="<?php echo $currentSession->getNumberOfStudents(); ?>"/>
 		</div>
 	</div>
-	<?php // TODO make select number of students into a dropdown. ?>
 
 	<?php /****** Resources checkboxes ******/ ?>
 	<div id="resourcesSelect" class="item ui-corner-all">

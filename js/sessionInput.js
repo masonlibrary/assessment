@@ -328,6 +328,8 @@
         checkCompletion();
     }
 
+			// This function is unused (assessOutcome dropdowns default to 0)
+			// see getOutcomesToAssess() in InstructionSession.php
       function assessmentDropdown()
       {
             var mustHave = $('.assessmentDropDown')

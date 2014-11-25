@@ -193,6 +193,7 @@ class InstructionSession {
                                 $currentOutcomeHeading=$headingName;
                             }
 
+                    // Since these default to 0 assessOutcomes() in sessionInput.js is unused
                     $output.='<tr><td>'.$headingID.$outcomeName.'<input type="hidden" name="otctIDS[]" value="'.$taughtID.'" /></td>';
                     $output.='<td class="assessmentInput"><select name="Met[]" class="assessmentDropDown outcome'.$taughtID.'"><!--<option value=""></option>-->';
                             for($x=0; $x<101; $x++)
