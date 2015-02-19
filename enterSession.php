@@ -316,8 +316,7 @@
 </form>
 <br />
 
-<script type="text/javascript">$(document).ready( function(){noneOrSome(); checkCompletion();} );</script>
-
 <?php
+	$jsOutput .= '$(document).ready( function(){noneOrSome(); checkCompletion();} );';
 	if (!isset($_GET['lite'])) { include('includes/footer.php'); }
 ?>
