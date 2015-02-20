@@ -53,7 +53,11 @@
 				<br />
 			</div><!--loginDiv-->
 
-			<div id="slider" class="closed"><?PHP include('includes/tabzillaMenu1.php') ?></div> <a href="#" id="tabzilla">mozilla</a>
+			<div id="slider" class="closed">
+				<?php include('includes/tabzillaMenu.php') ?>
+			</div>
+			<a href="#" id="tabzilla">mozilla</a>
+			
 		</div><!-- header-->
 		<div id="content">
 
