@@ -7,33 +7,41 @@ var sySSChartData1;
 var asInitVals = new Array();
 $(function(){
 
-		jQuery.event.add(window, "load", pageStart);
-                // **************************************
-                //slide down menu code. Remove if unused.
-                // **************************************
-                // open body-top-margin=320   closed: body-top-margin=127
-                $('#tabzilla').click(function(e){
-                    e.preventDefault();
+	jQuery.event.add(window, "load", pageStart);
+	// **************************************
+	//slide down menu code. Remove if unused.
+	// **************************************
+	$('.tab.menu').click(function (e) {
+		e.preventDefault();
+		if ($('#tabzilla-contents').hasClass('open')) {
+			$('#tabzilla-contents').slideUp(400);
+			$('#tabzilla-contents').removeClass('open').addClass('closed');
+		} else {
+			$('#notifications-contents').slideUp(400);
+			$('#notifications-contents').removeClass('open').addClass('closed');
+			$('#tabzilla-contents').slideDown(400);
+			$('#tabzilla-contents').removeClass('closed').addClass('open');
+		}
+	});
 
-                    if ($('#slider').hasClass('open'))
-                        {
-                            $('#tabzilla-contents').slideUp(400);
-														$('.fixedHeader').animate({top:"-=212"}, "400")
-//                            $('body').animate(
-//                            {"margin-top": ['-=193px', 'swing']},
-//                                "400");
-                            $('#slider').removeClass('open').addClass('closed')
-                        }
-                     else
-                         {
-                             $('#tabzilla-contents').slideDown(400);
-														 $('.fixedHeader').animate({top:"+=212"}, "400")
-//                             $('body').animate(
-//                                {"margin-top":['+=193px', 'swing']},
-//                                '400');
-                             $('#slider').removeClass('closed').addClass('open');
-                         }
-                });
+	$('.tab.notifications').click(function (e) {
+		e.preventDefault();
+		if ($('#notifications-contents').hasClass('open')) {
+			$('#notifications-contents').slideUp(400);
+			$('#notifications-contents').removeClass('open').addClass('closed');
+		} else {
+			// Use the tab click to update last active time
+			$.ajax({
+				url: 'updateActiveTime.php',
+				type: 'PUT',
+			});
+			$('#tabzilla-contents').slideUp(400);
+			$('#tabzilla-contents').removeClass('open').addClass('closed');
+			$('#notifications-contents').slideDown(400);
+			$('#notifications-contents').removeClass('closed').addClass('open');
+		}
+	});
+
 
 				$( document ).delegate( "a.menu-link", "click", function(e) {
 				e.stopPropagation();

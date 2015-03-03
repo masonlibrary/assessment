@@ -25,7 +25,7 @@ a:hover, a img:hover {
 	opacity: 0.66;
 }
 
-#content{margin-top: 0;  padding-top: 20px; }
+#content{margin-top: 0; /* padding-top: 20px; */ }
 
 #title {color: #484848; text-align: right;}
 #container {margin-left: auto; margin-right: auto; margin-top: 200px; }
@@ -33,6 +33,61 @@ a:hover, a img:hover {
 #loginLine {float: right;}
 #userlinks {float: right;clear: right;}
 #userlinks a {color: #3B6E8F;}
+
+#tabzilla-contents {
+	/* Fix double border */
+	border-bottom: 0px;
+}
+
+#notifications-panel {
+	overflow: hidden;
+}
+
+.tab {
+	color: #fff;
+	line-height: normal;
+	float: right;
+	font-size: 133%;
+	border-radius: 16px;
+	border: 5px solid;/* #e13;*/
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+}
+
+.tab > div {
+	padding: 0px 8px 5px;
+	border-radius: 12px;
+	border-bottom: 4px solid white;
+	opacity: 1;
+}
+
+.tab.menu {
+	background-color: #e13;
+	border-color: #e13;
+}
+
+.tab.notifications {
+	background-color: #53f;
+	border-color: #53f;
+}
+
+#notification-list {
+	width: 76%;
+	height: 210px;
+	overflow: auto;
+}
+
+.notification-item {
+	display: block;
+	padding: 10px;
+	border-bottom: 1px solid #ccc;
+	background-color: #fafafa;
+	color: black;
+}
+
+.notification-unread {
+	background-color: #e8e8f8;
+}
 
 #messagebox {
 	border: 1px solid #9af;
@@ -51,6 +106,32 @@ a:hover, a img:hover {
 
 strong {
 	font-weight: bold;
+}
+
+.light {
+	color: #888;
+	font-size: 14px;
+}
+
+.symbol {
+	font-family: 'Segoe UI Symbol';
+}
+
+@-webkit-keyframes glow {
+	0%   { opacity: 1.0;}
+	45%  { opacity: 0.6;}
+	100% { opacity: 1.0;}
+}
+
+@keyframes glow {
+	0%   { opacity: 1.0; }
+	45%  { opacity: 0.6; }
+	100% { opacity: 1.0; }
+}
+
+.glow {
+	-webkit-animation: glow 2.5s infinite;
+	animation: glow 2.5s infinite;
 }
 
 #pageTitleDiv{width: 40%; float: left;}
@@ -89,6 +170,7 @@ input, select, label {margin-top: 2px; margin-right:5px;}
 	padding-top:10px;
 	z-index: 1000;
 	/*width: 960px;*/
+	overflow: hidden;
 }
 
 div.assessmentList { margin-left: auto; margin-right: auto; margin-top: 4px; padding-left: 100px;}
@@ -100,6 +182,7 @@ table {margin-top: 10px; margin-bottom: 10px;
 
       /* -moz-box-shadow: 4px 4px 4px #000000;
        -webkit-box-shadow: 4px 4px 4px #000000; box-shadow: 4px 4px 4px #000000;*/}
+.dataTables_wrapper { clear: none !important; }
 table.dataTable thead th { padding: 0 16px 0 4px !important; }
 th {color: #484848; font-size: 16px;}
 td { border: 1px solid #484848; }

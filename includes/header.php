@@ -41,23 +41,20 @@
 						?>
 					</div>
 				</div>
+				<div id="loginDiv">
+					<h3 id="title"><?php echo $page_title; ?></h3>
+					<?PHP
+						if (isset($_SESSION['userID'])) {
+							echo '<div id="loginLine" class="login">You are logged in as <strong>' . $_SESSION['userName'] . '</strong>.</div>';
+							echo '<div id="userlinks"><a href="userEdit.php">Account</a> &bull; <a href="logout.php">Logout</a></div>';
+						}
+					?>
+					<br />
+				</div><!--loginDiv-->
 			</div>
-			<div id="loginDiv">
-				<h3 id="title"><?php echo $page_title; ?></h3>
-				<?PHP
-					if (isset($_SESSION['userID'])) {
-						echo '<div id="loginLine" class="login">You are logged in as <strong>' . $_SESSION['userName'] . '</strong>.</div>';
-						echo '<div id="userlinks"><a href="userEdit.php">Account</a> &bull; <a href="logout.php">Logout</a></div>';
-					}
-				?>
-				<br />
-			</div><!--loginDiv-->
 
-			<div id="slider" class="closed">
-				<?php include('includes/tabzillaMenu.php') ?>
-			</div>
-			<a href="#" id="tabzilla">mozilla</a>
-			
+			<?php include('includes/tabzillaMenu.php') ?>
+				
 		</div><!-- header-->
 		<div id="content">
 

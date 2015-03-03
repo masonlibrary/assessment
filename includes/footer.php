@@ -1,5 +1,5 @@
 		</div>
-		<div id="footer">
+		<div id="footer" class="light right">
 			<?php echo 'Copyright &copy; 2013-' . date('Y') . ' Keene State College'; ?>
 		</div>
 
