@@ -13,21 +13,32 @@ $(function(){
 	// **************************************
 	$('.tab.menu').click(function (e) {
 		e.preventDefault();
+		$('.fixedHeader').hide();
 		if ($('#tabzilla-contents').hasClass('open')) {
-			$('#tabzilla-contents').slideUp(400);
+			$('#tabzilla-contents').slideUp(400, function(){
+				if(fh) { fh.fnUpdate(); }
+				$('.fixedHeader').show();
+			});
 			$('#tabzilla-contents').removeClass('open').addClass('closed');
 		} else {
 			$('#notifications-contents').slideUp(400);
 			$('#notifications-contents').removeClass('open').addClass('closed');
-			$('#tabzilla-contents').slideDown(400);
+			$('#tabzilla-contents').slideDown(400, function(){
+				if(fh) { fh.fnUpdate(); }
+				$('.fixedHeader').show();
+			});
 			$('#tabzilla-contents').removeClass('closed').addClass('open');
 		}
 	});
 
 	$('.tab.notifications').click(function (e) {
 		e.preventDefault();
+		$('.fixedHeader').hide();
 		if ($('#notifications-contents').hasClass('open')) {
-			$('#notifications-contents').slideUp(400);
+			$('#notifications-contents').slideUp(400, function(){
+				if(fh) { fh.fnUpdate(); }
+				$('.fixedHeader').show();
+			});
 			$('#notifications-contents').removeClass('open').addClass('closed');
 		} else {
 			// Use the tab click to update last active time
@@ -37,7 +48,10 @@ $(function(){
 			});
 			$('#tabzilla-contents').slideUp(400);
 			$('#tabzilla-contents').removeClass('open').addClass('closed');
-			$('#notifications-contents').slideDown(400);
+			$('#notifications-contents').slideDown(400, function(){
+				if(fh) { fh.fnUpdate(); }
+				$('.fixedHeader').show();
+			});
 			$('#notifications-contents').removeClass('closed').addClass('open');
 		}
 	});
