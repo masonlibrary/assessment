@@ -9,6 +9,8 @@
 	if (!isset($_GET['lite'])) {
 		$page_title = 'Enter Session Data';
 		include('includes/header.php');
+	} else {
+		$jsOutput = '';
 	}
 
 	$currentSession = new InstructionSession();
