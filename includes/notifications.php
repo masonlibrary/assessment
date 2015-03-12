@@ -2,7 +2,7 @@
 
 	include('control/connection.php');
 
-	function notify($target, $text, $longtext) {
+	function notify($userid, $text, $longtext, $link) {
 
 		global $dbc;
 
@@ -12,7 +12,7 @@
 				left outer join librarianmap l on u.userID = l.libmuserID
 				left outer join people p on l.libmppleID = p.ppleID
 				where u.userID = ?');
-		mysqli_stmt_bind_param($stmt, 'i', $target);
+		mysqli_stmt_bind_param($stmt, 'i', $userid);
 		mysqli_stmt_execute($stmt) or die('Failed to retrieve email address: ' . mysqli_error($dbc));
 		mysqli_stmt_store_result($stmt);
 		mysqli_stmt_bind_result($stmt, $email);
@@ -22,8 +22,8 @@
 
 		mysqli_stmt_free_result($stmt);
 
-		$stmt = mysqli_prepare($dbc, 'insert into notifications (target, text, datetime) values (?, ?, now())');
-		mysqli_stmt_bind_param($stmt, 'is', $target, $text);
+		$stmt = mysqli_prepare($dbc, 'insert into notifications (target, text, link, datetime) values (?, ?, ?, now())');
+		mysqli_stmt_bind_param($stmt, 'iss', $userid, $text, $link);
 		mysqli_stmt_execute($stmt) or die('Failed to add notification: ' . mysqli_error($dbc));
 
 	}
