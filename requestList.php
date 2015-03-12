@@ -12,22 +12,23 @@
 		</div>';
 	echo '<table id="requestList"><thead><tr>';
 		echo '<th>Name</th>';
-		echo '<th>Department</th>';
-		echo '<th>Course</th>';
+		echo '<th>Course number</th>';
+		echo '<th>Course name</th>';
 		echo '<th>Meets</th>';
 		echo '<th>Assignment</th>';
 		echo '<th>Syllabus</th>';
 		echo '<th>Requested</th>';
+		echo '<th>Status</th>';
 		echo '<th></th>';
 	echo '</tr></thead><tbody>';
-	$result = mysqli_query($dbc, 'select name, department, course, meets,
-		assignment_fileid, syllabus_fileid, requested
-		from sessionreqs order by id desc') or die('Failed to execute query:' . mysqli_error($dbc));
+	$result = mysqli_query($dbc, 'select id, name, cp.crspName, coursenumber, coursesection,
+		coursename, meets, assignment_fileid, syllabus_fileid, requested, status
+		from sessionreqs sr left join courseprefix cp on sr.courseprefixid = cp.crspID order by id desc') or die('Failed to execute query:' . mysqli_error($dbc));
 	while ($row = mysqli_fetch_assoc($result)) {
 		echo '<tr>';
 			echo '<td>'.$row['name'].'</td>';
-			echo '<td>'.$row['department'].'</td>';
-			echo '<td>'.$row['course'].'</td>';
+			echo '<td>'.$row['crspName'].'-'.$row['coursenumber'].'-'.$row['coursesection'].'</td>';
+			echo '<td>'.$row['coursename'].'</td>';
 			echo '<td>'.$row['meets'].'</td>';
 			if ($row['assignment_fileid']) {
 				echo '<td><a class="symbol" href="requestFile?id='.$row['assignment_fileid'].'">&#128196;</a></td>';
@@ -40,7 +41,13 @@
 				echo '<td></td>';
 			}
 			echo '<td>'.$row['requested'].'</td>';
-			echo '<td>View &raquo;</td>';
+			switch($row['status']) {
+				case 'u': echo '<td>Unassigned</td>'; break;
+				case 'a': echo '<td>Assigned</td>'; break;
+				case 'x': echo '<td>Accepted</td>'; break;
+				case 'c': echo '<td>Canceled</td>'; break;
+			}
+			echo '<td><a href="requestAssign.php?id='.$row['id'].'">View &raquo;</a></td>';
 		echo '</tr>';
 	}
 	echo '</tbody></table>';

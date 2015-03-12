@@ -8,9 +8,6 @@
 
 	if ($_POST) {
 
-		var_dump($_POST);
-		var_dump($_FILES);
-
 		// From http://www.php.net/manual/en/features.file-upload.errors.php#115746
 		$errs = array(
 			0 => 'There is no error, the file uploaded with success.',
@@ -61,43 +58,58 @@
 
 			// Insert session request
 			$stmt = mysqli_prepare($dbc, '
-				insert into sessionreqs (requested, name, email, phone, department, course, meets,
-					numstudents, type, date1, date2, moredates, description, assignment_fileid, syllabus_fileid)
-				values (now(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-			mysqli_stmt_bind_param($stmt, 'ssssssiissssii', $_POST['name'], $_POST['email'],
-				$_POST['phone'], $_POST['department'], $_POST['course'], $_POST['meets'],
-				$_POST['numstudents'], $_POST['type'], $date1, $date2,
-				$_POST['moredates'], $_POST['description'], $fileids['assignment'],
-				$fileids['syllabus']);
+				insert into sessionreqs (requested, name, email, phone, department, coursename,
+					courseprefixid, coursenumber, coursesection, meets,	numstudents, type,
+					date1, date2, moredates, description, assignment_fileid, syllabus_fileid)
+				values (now(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+			mysqli_stmt_bind_param($stmt, 'sssssiiisiissssii', $_POST['name'],
+				$_POST['email'], $_POST['phone'], $_POST['department'], $_POST['coursename'],
+				$_POST['courseprefixid'],	$_POST['coursenumber'], $_POST['coursesection'],
+				$_POST['meets'], $_POST['numstudents'], $_POST['type'], $date1, $date2,
+				$_POST['moredates'], $_POST['description'], $fileids['assignment'],	$fileids['syllabus']);
 			if(!mysqli_stmt_execute($stmt)) { throw new Exception('Failed to insert session request: ' . mysqli_error($dbc)); }
 
-			// Get name of session type
-			$typename = '';
-			$stmt = mysqli_prepare($dbc, 'select name from sessionreqs_types where id = ?');
-			mysqli_stmt_bind_param($stmt, 'i', $_POST['type']);
-			if (!mysqli_stmt_execute($stmt)) { throw new Exception('Failed to get name of session type: ' . mysqli_error($dbc)); }
+//			$result = mysqli_query($dbc, 'select LAST_INSERT_ID() as id');
+//			if (!$result) { throw new Exception('Failed to get ID of inserted session request: ' . mysqli_error($dbc)); }
+//			$row = mysqli_fetch_assoc($result);
+//			$newid = $row['id'];
+//			mysqli_free_result($result);
+
+			// Get course prefix, name of session type
+			// Hacky use of subqueries so we only make one request
+			$row = array();
+			$stmt = mysqli_prepare($dbc, 'select LAST_INSERT_ID() as id,
+				                                   (select name from sessionreqs_types where id = ?) as type,
+                                           (select crspName from courseprefix where crspID = ?) as prefix;');
+			mysqli_stmt_bind_param($stmt, 'ii', $_POST['type'], $_POST['courseprefixid']);
+			if (!mysqli_stmt_execute($stmt)) { throw new Exception('Failed to get last ID, course prefix, name of session type: ' . mysqli_error($dbc)); }
 			mysqli_stmt_store_result($stmt);
-			mysqli_stmt_bind_result($stmt, $typename);
+			mysqli_stmt_bind_result($stmt, $row['id'], $row['typename'], $row['prefixname']);
 			mysqli_stmt_fetch($stmt);
-			mysqli_stmt_free_result($stmt);
+
+			$link = 'http://kscmasonlibrary.org/assessment/requestView.php?id='.$row['id'];
+			$coursenum = $row['prefixname']."-".$row['coursenumber']."-".$row['coursesection'];
 
 			// Build text summary of form for email
 			$longtext =
 				"A new session request has been added.\n".
-				"Please visit http://kscmasonlibrary.org/assessment/ and review the session.\n".
+				"Please visit $link to review the session.\n".
 				"A summary of the data has been included below for your convenience.\n\n".
 				"Name: "                  .$_POST['name']       ."\n".
 				"Email: "                 .$_POST['email']      ."\n".
 				"Phone: "                 .$_POST['phone']      ."\n".
 				"Department: "            .$_POST['department'] ."\n".
-				"Course: "                .$_POST['course']     ."\n".
+				"Course number: "         .$coursenum           ."\n".
+				"Course name: "           .$_POST['coursename'] ."\n".
 				"Meets: "                 .$_POST['meets']      ."\n".
 				"Number of students: "    .$_POST['numstudents']."\n".
-				"Type of session: "       .$typename            ."\n".
+				"Type of session: "       .$row['typename']     ."\n".
 				"Date 1: "                .$date1               ."\n".
 				"Date 2: "                .$date2               ."\n".
 				"More dates: "            .$_POST['moredates']  ."\n".
 				"Assignment description: ".$_POST['description']."\n";
+
+			mysqli_stmt_free_result($stmt);
 
 			// Get people to email (all admins)
 			$result = mysqli_query($dbc, '
@@ -108,12 +120,14 @@
 				where ur.roleroleID = 1;');
 			if (!$result) { throw new Exception('Failed to get notification email recipients:' . mysqli_error($dbc)); }
 			while ($row = mysqli_fetch_assoc($result)) {
-				notify($row['userID'], 'New session request', $longtext);
+				notify($row['userID'], 'New information literacy session request ('.$coursenum.')', $longtext, $link);
 			}
 			mysqli_free_result($result);
 
 			mysqli_commit($dbc);
 			mysqli_autocommit($dbc, true);
+
+			$_SESSION['dialogText'] .= 'Session request successfully added.';
 
 		} catch (Exception $e) {
 
@@ -122,6 +136,8 @@
 			$_SESSION['dialogText'] .= 'Failed to add session request: '.$e->getMessage();
 
 		}
+
+		header('Location: requestSession.php');
 
 	}
 
@@ -150,8 +166,28 @@
 	</div>
 
 	<div>
-		<label for="course">Course name and number</label>
-		<div><input type="text" id="course" name="course" maxlength="80" required></div>
+		<label>Course prefix, number, and section</label>
+		<div>
+			<select id="courseprefixid" name="courseprefixid" required>
+				<option selected disabled></option>
+				<?php
+					$result = mysqli_query($dbc, 'select crspID, crspName from courseprefix') or die('Failed get course prefixes:' . mysqli_error($dbc));
+					while ($row = mysqli_fetch_assoc($result)) {
+						echo '<option value="'.$row['crspID'].'">'.$row['crspName'].'</option>';
+					}
+					mysqli_free_result($result);
+				?>
+			</select>
+			-
+			<input type="text" id="coursenumber" name="coursenumber" size="3" maxlength="3" pattern="[0-9]{3}" title="Course number (three digits)" required>
+			-
+			<input type="text" id="coursesection" name="coursesection" size="2" maxlength="2" pattern="[0-9]{2}" title="Course section (two digits)" required>
+		</div>
+	</div>
+
+	<div>
+		<label for="coursename">Course name</label>
+		<div><input type="text" id="coursename" name="coursename" maxlength="80" required></div>
 	</div>
 
 	<div>
