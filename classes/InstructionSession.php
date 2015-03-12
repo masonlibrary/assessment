@@ -10,7 +10,7 @@ class InstructionSession {
 		private $fellowPresent = 'no';
     private $dateOfSession = '';
 
-    private $lengthOfSessionID =0;
+    private $lengthOfSessionID = null;
     private $numberOfStudents;
     private $coursePrefixID=0;
     private $courseNumber;
@@ -18,7 +18,7 @@ class InstructionSession {
     private $courseTitle='';
     private $sessionNumber='';
     private $faculty='';
-    private $locationID = 0;
+    private $locationID = null;
     private $sesdCopyID=0;
     private $outcomeDone='no';
     private $assessed='no';
