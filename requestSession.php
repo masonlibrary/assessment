@@ -87,8 +87,8 @@
 			mysqli_stmt_bind_result($stmt, $row['id'], $row['typename'], $row['prefixname']);
 			mysqli_stmt_fetch($stmt);
 
-			$link = 'http://kscmasonlibrary.org/assessment/requestView.php?id='.$row['id'];
-			$coursenum = $row['prefixname']."-".$row['coursenumber']."-".$row['coursesection'];
+			$link = 'http://kscmasonlibrary.org/assessment/requestAssign.php?id='.$row['id'];
+			$coursenum = $row['prefixname']."-".$_POST['coursenumber']."-".$_POST['coursesection'];
 
 			// Build text summary of form for email
 			$longtext =
