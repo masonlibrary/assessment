@@ -1,6 +1,6 @@
 <?php
 	require_once('control/connection.php');
-    require_once('control/startSession.php');
+	require_once('control/startSession.php');
 
 	if (!isset($_SESSION['userID'])) { header("Location: login.php"); exit("Not logged in"); }
 	if (!isset($_GET['userID'])) { $_GET['userID'] = $_SESSION['userID']; } // No user means we load the logged-in user
@@ -24,6 +24,9 @@
 	mysqli_stmt_fetch($userDataStmt);
 	mysqli_stmt_free_result($userDataStmt);
 //	$ppleID = $row['ppleID']; // used for setting real name below
+
+	$page_title = $row['userName'] . ' - User edit';
+	include('includes/header.php');
 
 	if($_POST) {
 		try {
@@ -60,23 +63,16 @@
 
 			mysqli_commit($dbc);
 			mysqli_autocommit($dbc, true);
+			$_SESSION['dialogText'] .= 'Changes saved.';
 		} catch (Exception $e) {
 			mysqli_rollback($dbc);
 			mysqli_autocommit($dbc, true);
-			echo "Error: " . $e->getMessage();
+			$_SESSION['dialogText'] .= 'Error: ' . $e->getMessage();
 		}
+
+		header('Location: '.$_SERVER['REQUEST_URI']);
+
 	}
-
-	$page_title = $row['userName'] . ' - User edit';
-	include('includes/header.php');
-
-	// reuse $userDataStmt from above
-	mysqli_stmt_execute($userDataStmt) or die("Failed to get user data: " . mysqli_error($dbc));
-	mysqli_stmt_store_result($userDataStmt);
-	mysqli_stmt_bind_result($userDataStmt, $row['userID'], $row['userName'], $row['userPass'], $row['roleroleID'],
-		$row['libmStatus'], $row['ppleID'], $row['ppleFName'], $row['ppleLName'], $row['ppleEmail']);
-	mysqli_stmt_fetch($userDataStmt);
-	mysqli_stmt_free_result($userDataStmt);
 
 	echo '<h1>Edit user '.$row['userName'].'</h1>
 		<form method="post">
