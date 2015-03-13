@@ -117,7 +117,7 @@
 					left outer join librarianmap l on u.userID = l.libmuserID
 					left outer join people p on l.libmppleID = p.ppleID
 					left outer join userroles ur on ur.roleuserID = u.userID
-				where ur.roleroleID = 1;');
+				where ur.roleroleID = 1 and l.libmStatus = "active"');
 			if (!$result) { throw new Exception('Failed to get notification email recipients:' . mysqli_error($dbc)); }
 			while ($row = mysqli_fetch_assoc($result)) {
 				notify($row['userID'], 'New information literacy session request ('.$coursenum.')', $longtext, $link);
