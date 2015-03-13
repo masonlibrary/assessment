@@ -1,4 +1,5 @@
 <?php
+	ob_start();
 	// For all pages, make sure the user is logged in before going any further.
 	if (!isset($_SESSION['userID'])) { header("Location: login.php"); exit('Not logged in'); }
 
