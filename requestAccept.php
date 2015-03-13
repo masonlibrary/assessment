@@ -1,8 +1,9 @@
 <?php
 
+	require_once 'classes/InstructionSession.php';
+	require_once 'classes/User.php';
 	require_once 'control/startSession.php';
 	require_once 'control/connection.php';
-	require_once 'classes/InstructionSession.php';
 
 	$page_title = 'Accept Session Request';
 	require_once 'includes/header.php';
@@ -24,7 +25,7 @@
 	mysqli_stmt_fetch($stmt);
 	mysqli_stmt_free_result($stmt);
 
-	if ($row['librarianid'] != $_SESSION['librarianID']) { die('This request is not yours to accept!'); }
+	if ($row['librarianid'] != $_SESSION['thisUser']->librarianID) { die('This request is not yours to accept!'); }
 	if ($row['status'] != 'a') { die('This request is not ready to be accepted!'); }
 
 	$stmt = mysqli_prepare($dbc, 'select (select name from sessionreqs_types where id = ?) as typename,
