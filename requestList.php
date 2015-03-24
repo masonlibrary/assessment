@@ -31,12 +31,12 @@
 			echo '<td>'.$row['coursename'].'</td>';
 			echo '<td>'.$row['meets'].'</td>';
 			if ($row['assignment_fileid']) {
-				echo '<td><a class="symbol" href="requestFile?id='.$row['assignment_fileid'].'">&#128196;</a></td>';
+				echo '<td><a class="symbol" title="Download file" href="requestFile.php?id='.$row['assignment_fileid'].'">&#128196;</a></td>';
 			} else {
 				echo '<td></td>';
 			}
 			if ($row['syllabus_fileid']) {
-				echo '<td><a class="symbol" href="requestFile?id='.$row['syllabus_fileid']  .'">&#128196;</a></td>';
+				echo '<td><a class="symbol" title="Download file" href="requestFile.php?id='.$row['syllabus_fileid']  .'">&#128196;</a></td>';
 			} else {
 				echo '<td></td>';
 			}
