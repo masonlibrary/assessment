@@ -14,6 +14,13 @@
 			<div id="tabzilla-nav">
 				<ul>
 					<li>
+						<h2>Session Requests</h2>
+						<ul>
+							<li><a href="requestSession.php">Request new IL session</a></li>
+							<li><a href="requestList.php">View existing IL requests</a></li>
+						</ul>
+					</li>
+					<li>
 						<h2>Enter Data</h2>
 						<ul>
 							<li><a href="enterSession.php">Enter Session</a></li>
@@ -28,14 +35,6 @@
 							<li><a href="myAssessments.php">My Assessments</a></li>
 							<li><a href="reportSessionsByLength.php">Sessions by Length</a></li>
 							<!-- <li><a href="reportSessionsByLengthTable.php">Sessions by Length tbl</a></li>    -->
-						</ul>
-					</li>
-					<li>
-						<h2>&nbsp;</h2>
-						<ul>
-							<li><a href="#">&nbsp;</a></li>
-							<li><a href="#">&nbsp;</a></li>
-							<li><a href="#">&nbsp;</a></li>
 						</ul>
 					</li>
 					<li>
