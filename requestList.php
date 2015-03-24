@@ -47,7 +47,7 @@
 				case 'x': echo '<td>Accepted</td>'; break;
 				case 'c': echo '<td>Canceled</td>'; break;
 			}
-			echo '<td><a href="requestAssign.php?id='.$row['id'].'">View &raquo;</a></td>';
+			echo '<td><a href="requestAssign.php?id='.$row['id'].'">View&nbsp;&raquo;</a></td>';
 		echo '</tr>';
 	}
 	echo '</tbody></table>';
