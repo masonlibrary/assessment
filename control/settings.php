@@ -1,4 +1,5 @@
 <?php
 
- define('DEBUG', true);
+	$publicpages = array('/assessment/requestSession.php');
+
 ?>
