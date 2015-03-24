@@ -36,6 +36,8 @@
 
 	if($_POST) {
 
+		if ($_SESSION['roleID'] != 1) { header('HTTP/1.0 403 Forbidden'); die('Must be admin to assign requests!'); }
+
 		$librarianid = $_POST['libmID'];
 
 		$stmt = mysqli_prepare($dbc, 'update sessionreqs set status="a", librarianid=? where id=?');
@@ -112,28 +114,30 @@
 		echo '</tr>';
 	echo '</table>';
 
-	echo '<form method="post">';
-		echo '<h2>Assign to librarian</h2>';
-		echo '<select id="libmID" name="libmID">';
-		$result = mysqli_query($dbc, 'select l.libmID as ID, p.ppleFName as FName, p.ppleLName as LName, l.libmStatus as Status
-			from people p, librarianmap l where p.ppleID=l.libmppleID') or die('Error querying for librarians: ' . mysqli_error($dbc));
+	if ($_SESSION['roleID'] == 1) {
+		echo '<form method="post">';
+			echo '<h2>Assign to librarian</h2>';
+			echo '<select id="libmID" name="libmID">';
+			$result = mysqli_query($dbc, 'select l.libmID as ID, p.ppleFName as FName, p.ppleLName as LName, l.libmStatus as Status
+				from people p, librarianmap l where p.ppleID=l.libmppleID') or die('Error querying for librarians: ' . mysqli_error($dbc));
 
-		echo '<option selected disabled>Select a librarian</option>';
-		while ($row = mysqli_fetch_assoc($result)) {
+			echo '<option selected disabled>Select a librarian</option>';
+			while ($row = mysqli_fetch_assoc($result)) {
 
-			if ($row['Status'] != 'active') { continue; }
-			if ($librarianid == $row['ID']) {
-				echo '<option id="libm'.$row['ID'].'" value="'.$row['ID'].'" selected>'.$row['FName'].' '.$row['LName'].'</option>';
-			} else {
-				echo '<option id="libm'.$row['ID'].'" value="'.$row['ID'].'">'.$row['FName'].' '.$row['LName'].'</option>';
+				if ($row['Status'] != 'active') { continue; }
+				if ($librarianid == $row['ID']) {
+					echo '<option id="libm'.$row['ID'].'" value="'.$row['ID'].'" selected>'.$row['FName'].' '.$row['LName'].'</option>';
+				} else {
+					echo '<option id="libm'.$row['ID'].'" value="'.$row['ID'].'">'.$row['FName'].' '.$row['LName'].'</option>';
+				}
 			}
-		}
 
-		mysqli_free_result($result);
-		echo '</select>';
+			mysqli_free_result($result);
+			echo '</select>';
 
-		echo '<input type="submit">';
-	echo '</form>';
+			echo '<input type="submit">';
+		echo '</form>';
+	}
 
 	require_once 'includes/footer.php';
 
