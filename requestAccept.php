@@ -61,16 +61,15 @@
 //		$session->setLocationID($inPost['locationID']);
 //		$session->setSessionNote($inPost['sessionNote']);
 //		$session->setResourcesIntroducedID($inPost['resourcesIntroduced']);
-		$session->insertSession();
-
+		$newid = $session->insertSession();
 
 		try {
 
 			mysqli_autocommit($dbc, false);
 
 			// update request
-			$stmt = mysqli_prepare($dbc, 'update sessionreqs set status="x", sessionid=LAST_INSERT_ID(), accepted=now() where id=?');
-			mysqli_stmt_bind_param($stmt, 'i', $_GET['id']);
+			$stmt = mysqli_prepare($dbc, 'update sessionreqs set status="x", sessionid=?, accepted=now() where id=?');
+			mysqli_stmt_bind_param($stmt, 'ii', $newid, $_GET['id']);
 			if (!mysqli_stmt_execute($stmt)) { throw new Exception('Failed to accept session: ' . mysqli_error($dbc)); }
 
 			mysqli_commit($dbc);
