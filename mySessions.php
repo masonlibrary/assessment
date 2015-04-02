@@ -66,9 +66,13 @@
 				<td>" . toSemester($date) . "</td>
 				<td class='dateCell'>" . toUSDate($date) . "</td>
 				<td class='sqlDateCel'>$date</td>
-				<td>$outcomeDone</td>
-				<td>$AssessedDone</td>
-				<td><div id='d$sessionID' class='menu-div'><p>+</p></div></td>";
+				<td><a href='enterCurrentOutcomes.php?session=$sessionID'>$outcomeDone</a></td>";
+			if ($outcomeDone == 'yes') {
+				echo "<td><a href='assessOutcome.php?session=$sessionID'>$AssessedDone</a></td>";
+			} else {
+				echo "<td>$AssessedDone</td>";
+			}
+			echo "<td><div id='d$sessionID' class='menu-div'><p>+</p></div></td>";
 		}
 		mysqli_stmt_free_result($stmt);
 
