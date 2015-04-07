@@ -91,10 +91,8 @@
 			$coursenum = $row['prefixname']."-".$_POST['coursenumber']."-".$_POST['coursesection'];
 
 			// Build text summary of form for email
-			$longtext =
-				"A new session request has been added.\n".
-				"Please visit $link to review the session.\n".
-				"A summary of the data has been included below for your convenience.\n\n".
+
+			$summary =
 				"Name: "                  .$_POST['name']       ."\n".
 				"Email: "                 .$_POST['email']      ."\n".
 				"Phone: "                 .$_POST['phone']      ."\n".
@@ -111,6 +109,21 @@
 
 			mysqli_stmt_free_result($stmt);
 
+			// For confirmation emails
+			$text =
+				"Your session request has been successfully added.\n".
+				"If you don't recieve a response within 48 hours, please contact\n".
+				"Elizabeth Dolinger at edolinger@keene.edu.\n".
+				"A summary of the data has been included below for your convenience.\n\n";
+
+			mail($_POST['email'], 'Information literacy session request confirmation ('.$coursenum.')', $text.$summary);
+
+			// For notifying admins
+			$text =
+				"A new session request has been added.\n".
+				"Please visit $link to review the session.\n".
+				"A summary of the data has been included below for your convenience.\n\n";
+
 			// Get people to email (all admins)
 			$result = mysqli_query($dbc, '
 				select userID from users u
@@ -120,7 +133,7 @@
 				where ur.roleroleID = 1 and l.libmStatus = "active"');
 			if (!$result) { throw new Exception('Failed to get notification email recipients:' . mysqli_error($dbc)); }
 			while ($row = mysqli_fetch_assoc($result)) {
-				notify($row['userID'], 'New information literacy session request ('.$coursenum.')', $longtext, $link);
+				notify($row['userID'], 'New information literacy session request ('.$coursenum.')', $text.$summary, $link);
 			}
 			mysqli_free_result($result);
 
