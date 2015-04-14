@@ -1,6 +1,10 @@
 		</div>
 		<div id="footer" class="light right">
-			<?php echo 'Copyright &copy; 2013-' . date('Y') . ' Keene State College'; ?>
+			<?php
+				$end = microtime(true);
+				echo 'Copyright &copy; 2013-' . date('Y') . ' Keene State College. ';
+				printf('Page created in %.3f seconds.', ($end - $start));
+			?>
 		</div>
 
 		<script type="text/javascript" src="js/jquery.js"></script>

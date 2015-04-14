@@ -1,4 +1,5 @@
 <?php
+	$start = microtime(true);
 	ob_start();
 
 	require_once 'control/settings.php';
