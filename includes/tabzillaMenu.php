@@ -92,6 +92,7 @@
 </div>
 
 <?php
+ // @TODO hide these on public pages
 	echo '<a class="tab menu"><div>menu</div></a>';
 	if ($notifications > 0) {
 		echo '<a class="tab notifications symbol glow"><div>&#128276;'.$notifications.'</div></a>';

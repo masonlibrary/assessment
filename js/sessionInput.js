@@ -27,7 +27,7 @@
                 else{}
             });
 
-	        if(!checkResourcesCompletion()) {
+	        if(!checkOutcomesCompletion()) {
 				mustHaveRemaining++;
 				retval = false;
 			}
@@ -76,17 +76,17 @@
             else {$(inID).removeClass('complete').addClass('complete');}
         }
 
-    function checkResourcesCompletion()
+    function checkOutcomesCompletion()
     {
-        $('#resourcesSelect').removeClass('complete');
+        $('#outcomesSelect').removeClass('complete');
 
-            if ($('.resourcesBox').is(':checked'))
+            if ($('.outcomesBox').is(':checked'))
             {
-                $('#resourcesSelect').removeClass('complete').addClass('complete');
+                $('#outcomesSelect').removeClass('complete').addClass('complete');
             }
             else
             {
-                $('#resourcesSelect').removeClass('complete');
+                $('#outcomesSelect').removeClass('complete');
                 $('#submitButtonDiv').removeClass('complete');
 				return false;
 

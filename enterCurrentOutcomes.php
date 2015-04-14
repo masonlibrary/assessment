@@ -57,16 +57,16 @@ require_once('control/startSession.php');
             
          ?>
          
-     <form id="outcomesTaughtForm" method="post" action="submitOutcomes.php">       
+     <form id="outcomesTaughtForm" method="post" action="submitOutcomes.php">
          
          
       <?php //include('includes/selectSessionsNoOutcomes.php');
          include("control/connection.php");
 				 
-						$query='select oh.otchID as headingID, oh.otchName as headingName, od.otcdID as outcomeID, od.otcdName as outcomeName 
-							from outcomeheading oh, outcomedetail od 
-							where oh.otchID=od.otcdotchID 
-							order by oh.otchID, od.otcdName;';
+						$query='select oh.otchID as headingID, oh.otchName as headingName, od.otcdID as outcomeID, od.otcdName as outcomeName
+							from outcomedetail od
+							left join outcomeheading oh on oh.otchID = od.otcdotchID
+							order by oh.otchID, od.otcdName';
 
              $currentOutcomeHeading='first';
              

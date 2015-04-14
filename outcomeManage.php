@@ -59,7 +59,8 @@
 	mysqli_stmt_bind_result($stmt, $heading['otchID'], $heading['otchName'], $heading['otchActive']);
 	mysqli_stmt_fetch($stmt);
 //	mysqli_stmt_free_result($stmt);
-	
+
+	// @TODO these aren't editable?
 	echo '<h1>'.$page_title.'</h1>
 		<form method="post">
 		<h2>Outcome heading name</h2>

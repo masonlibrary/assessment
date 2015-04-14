@@ -223,6 +223,7 @@
 	</div>
 
 	<?php /****** Resources checkboxes ******/ ?>
+	<?php /*
 	<div id="resourcesSelect" class="item ui-corner-all">
 		<h2>Resources introduced <span id="resourcesComment" class="commentDiv"></span></h2>
 		<div class="selectBox">
@@ -263,6 +264,47 @@
 				?>
 
 			</div>
+		</div>
+	</div>
+	*/ ?>
+
+	<?php /****** Outcomes checkboxes ******/ ?>
+	<div id="outcomesSelect" class="item ui-corner-all">
+		<h2>Outcomes taught</h2>
+		<div id="outcomesSelectContainer">
+			<?php
+
+				// Don't allow changing outcomes if they've been assessed
+				if ($currentSession->getAssessed() == 'yes') {
+					$disabled = 'disabled';
+					echo '<span style="color: #78f;">These outcomes have already been assessed. Editing is disabled.</span>';
+				} else {
+					$disabled = '';
+				}
+
+				$lastheading = 0;
+				$row = array();
+				$stmt = mysqli_prepare($dbc, '
+					select oh.otchID, oh.otchName, od.otcdID, od.otcdName, ot.otctsesdID
+					from outcomedetail od
+					left join outcomeheading oh on oh.otchID = od.otcdotchID
+					left join outcomestaught ot on ot.otctotcdID = od.otcdID and ot.otctsesdID = ?
+					order by oh.otchID, od.otcdName
+				');
+				mysqli_stmt_bind_param($stmt, 'i', $_GET['sesdID']);
+				mysqli_stmt_execute($stmt) or die('Failed to get outcomes: ' . mysqli_error($dbc));
+				mysqli_stmt_store_result($stmt);
+				mysqli_stmt_bind_result($stmt, $row['otchID'], $row['otchName'], $row['otcdID'], $row['otcdName'], $row['checked']);
+				while (mysqli_stmt_fetch($stmt)) {
+					if ($row['otchID'] != $lastheading) {
+						echo '<br><h3>'.$row['otchID'].". ".$row['otchName'].'</h3>';
+						$lastheading = $row['otchID'];
+					}
+					if ($row['checked']) { $checked = 'checked'; } else { $checked = ''; }
+					echo '<label><input type="checkbox" name="outcomesTaught[]" class="outcomesBox" value="'.$row['otcdID'].'" '.$checked.' '.$disabled.'>'.$row['otcdName'].'</label><br>';
+				}
+				mysqli_stmt_free_result($stmt);
+			?>
 		</div>
 	</div>
 	

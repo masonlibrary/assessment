@@ -49,31 +49,44 @@ class InstructionSession {
         {
          $this->outcomesTaught=$inArray;
         }
-    public function insertOutcomesTaught()
+    public function insertOutcomesTaught($id = null)
         {
 				$success = 'Inserting outcomes taught:<br/>';
+
+				if (!$id) { $id = $this->getSessionID(); }
 				
+				if ($this->getAssessed() == 'yes') {
+					$success .= "Error: Can't update when outcomes have been assessed!<br/>";
+					return $success;
+				}
+
 				$dbc=$this->getConnection();
+
+				// Clear any old outcomes associated with this session
+				$stmt = mysqli_prepare($dbc, 'delete from outcomestaught where otctsesdID = ?');
+				mysqli_bind_param($stmt, 'i', $id);
+				mysqli_stmt_execute($stmt) or die('Failed to delete old outcomes: ' . mysqli_error($dbc));
+
 				$stmt = mysqli_prepare($dbc, 'insert into outcomestaught (otctsesdID, otctotcdID) values (?, ?)');
 				
 				$numOutcomes = count($this->outcomesTaught);
 				
 				for ($i=0; $i<$numOutcomes; $i++) {
-					mysqli_bind_param($stmt, 'ii', $this->sessionID, $this->outcomesTaught[$i]);
+					mysqli_bind_param($stmt, 'ii', $id, $this->outcomesTaught[$i]);
 					if (mysqli_stmt_execute($stmt)) {
 						
-						$success .= 'Successfully inserted session '.$this->sessionID.', outcome '.$this->outcomesTaught[$i].'<br/>';
+						$success .= 'Successfully inserted session '.$id.', outcome '.$this->outcomesTaught[$i].'<br/>';
 						$stmt2 = mysqli_prepare($dbc, 'update sessiondesc set sesdOutcomeDone="yes" where sesdID=?');
-						mysqli_bind_param($stmt2, 'i', $this->sessionID);
+						mysqli_bind_param($stmt2, 'i', $id);
 						
 						if (mysqli_stmt_execute($stmt2)) {
-							$success .= 'Successfully updated session '.$this->sessionID.' to assessed<br/>';
+							$success .= 'Successfully updated session '.$id.' to assessed<br/>';
 						} else {
-							$success .= 'Error: Failed to update session '.$this->sessionID.' to assessed: '.mysqli_error($dbc).'<br/>';
+							$success .= 'Error: Failed to update session '.$id.' to assessed: '.mysqli_error($dbc).'<br/>';
 						}
 						
 					} else {
-						$success .= 'Error: Failed to insert session '.$this->sessionID.', outcome '.$this->outcomesTaught[$i].': '.mysqli_error($dbc).'<br/>';
+						$success .= 'Error: Failed to insert session '.$id.', outcome '.$this->outcomesTaught[$i].': '.mysqli_error($dbc).'<br/>';
 					}
 				}
 						 
@@ -87,6 +100,32 @@ class InstructionSession {
             $success=$this->insertOutcomesTaught();
             return $success;
         }
+
+		public function getOutcomesTaught($id) {
+			$dbc = $this->getConnection();
+			$row = array();
+			$result = array();
+			$stmt = mysqli_prepare($dbc, '
+				select oh.otchID, oh.otchName, od.otcdID, od.otcdName, ot.otctsesdID
+				from outcomedetail od
+				left join outcomeheading oh on oh.otchID = od.otcdotchID
+				left join outcomestaught ot on ot.otctotcdID = od.otcdID and ot.otctsesdID = ?
+				order by oh.otchID, od.otcdName
+			');
+			mysqli_stmt_bind_param($stmt, 'i', $id);
+			mysqli_stmt_execute($stmt) or die('Failed to get outcomes taught: ' . mysqli_error($dbc));
+			mysqli_stmt_store_result($stmt);
+			mysqli_stmt_bind_result($stmt, $row['otchID'], $row['otchName'], $row['otcdID'], $row['otcdName'], $row['otctsesdID']);
+			while (mysqli_stmt_fetch($stmt)) {
+				// We have to break it down because mysql does something funky
+				// behind the scenes, so a simple `$result[] = $row` doesn't work
+				$tmp = array();
+				foreach ($row as $k => $v) { $tmp[$k] = $v; }
+				$result[] = $tmp;
+			}
+//			mysqli_stmt_free_result($stmt);
+			return $result;
+		}
 
     public function setAndInsertOutcomesAssessed($inArray)
         { 
@@ -269,8 +308,9 @@ class InstructionSession {
         $this->setSessionNote($inPost['sessionNote'.$inSuffix]);
 
         //resourcesIntroduced
-        $this->setResourcesIntroducedID($inPost['resourcesIntroduced'.$inSuffix]);
+//        $this->setResourcesIntroducedID($inPost['resourcesIntroduced'.$inSuffix]);
 
+				$this->setOutcomesTaught($inPost['outcomesTaught']);
 
         //if(DEBUG==true){return("All the variables are filled.<br /> Suffix: >>$inSuffix<<");}
         return("Session Created <br />");
@@ -301,7 +341,8 @@ class InstructionSession {
 		$this->setSessionID($id);
 
 		$this->setNotes($dbc, $this->sessionID, $this->sessionNote);
-		$this->setResources($dbc, $this->sessionID, $this->resourcesIntroducedID);
+//		$this->setResources($dbc, $this->sessionID, $this->resourcesIntroducedID);
+		echo $this->insertOutcomesTaught($this->sessionID);
 
 		return $id;
 	}
@@ -328,7 +369,9 @@ class InstructionSession {
 			$stmt->close;
 
 			$this->setNotes($dbc, $id, $this->sessionNote);
-			$this->setResources($dbc, $id, $this->resourcesIntroducedID);
+//			$this->setResources($dbc, $id, $this->resourcesIntroducedID);
+			// Can't change outcomes if they've already been assessed
+			if (!$this->outcomesAssessed) { echo $this->insertOutcomesTaught($id); }
 	}
 
 		private function setResources($dbc, $inID, $inResources) {
