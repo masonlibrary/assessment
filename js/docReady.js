@@ -433,7 +433,9 @@ function rowdialog(row, action) {
 	$('#dialog').html('Loading...');
 	$("#dialog").dialog({
 		width: 800,
-		height: 600
+		height: 600,
+		open:  function(){ $('.fixedHeader').hide(); },
+		close: function(){ $('.fixedHeader').show(); },
 	});
 
 	var req;
