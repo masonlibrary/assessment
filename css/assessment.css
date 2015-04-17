@@ -331,7 +331,7 @@ td.assessmentInput input {width: 40px;}
 
 
 
-#sessionNumberContainer .ui-widget, .ui-selectmenu-menu li a, .ui-selectmenu-status {font-size: 11px; margin-bottom: 6px;}
+/*#sessionNumberContainer .ui-widget, .ui-selectmenu-menu li a, .ui-selectmenu-status {font-size: 11px; margin-bottom: 6px;}*/
 #outcomesTaughtDiv table{margin-left: auto; margin-right: auto;}
 #chooseCoursesOTCT{height: 30px; margin-left: 230px; margin-bottom: 20px;}
 td form input.assessOutcomeButton.ui-widget {height: 30px;}

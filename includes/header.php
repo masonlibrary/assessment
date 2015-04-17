@@ -20,7 +20,8 @@
 		<?php echo '<title>' . $page_title . ' - Assessment</title>'; ?>
 		<link rel="icon" type="image/png" href="images/favicon.png" />
 
-		<link rel="stylesheet" type="text/css" href="css/jquery-ui.css" />
+		<!--<link rel="stylesheet" type="text/css" href="css/jquery-ui.css" />-->
+		<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" />
 		<link rel="stylesheet" type="text/css" href="css/tabzilla.css" />
 		<link rel="stylesheet" type="text/css" href="css/assessment.css" />
 		<link rel="stylesheet" type="text/css" href="css/dataTables.css" />

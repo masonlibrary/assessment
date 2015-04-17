@@ -39,7 +39,7 @@
 					$thisUser = new User($_SESSION['userID'], $_SESSION['userName'], $_SESSION['roleName']);
 					$_SESSION['librarianID'] = $thisUser->getLibrarianID();
 																		
-					echo '<select id="librarianID" name="librarianID" class="mustHave" title="You must select a librarian."' . ($_SESSION['roleName'] == 'user' ? 'disabled="disabled"' : '') . '>';
+					echo '<select id="librarianID" name="librarianID" required title="You must select a librarian."' . ($_SESSION['roleName'] == 'user' ? 'disabled="disabled"' : '') . '>';
 					$reportLibID = $currentSession->getLibrarianID();
 					echo '<option value="" ' . ((!$reportLibID && $_SESSION['roleName'] == 'admin') ? 'selected="selected"' :  '') . '> &nbsp; &nbsp;Please select:</option>';
 
@@ -77,7 +77,7 @@
 			<h4>Course Prefix</h4>
 			<div id="selectBox">
 				<div id="coursePrefixSelectContainer" class="floatLeft">
-					<select id="coursePrefixID" name="coursePrefixID" class="mustHave" title="You must select a course prefix.">
+					<select id="coursePrefixID" name="coursePrefixID" required title="You must select a course prefix.">
 						<option value="" >&nbsp;</option>
 						<?php
 							$query = "select crspID as ID, crspName as Name from courseprefix";
@@ -103,18 +103,18 @@
 			</div>
 		</div>
 		<div class="courseNumberColumn">
-			<h4>Number</h4> <div id="courseNumberContainer"><input id="courseNumber" name="courseNumber" type="text" size="15" value="<?php echo $currentSession->getCourseNumber(); ?>" class="mustHave" title="You must have a course number." /></div>
+			<h4>Number</h4> <div id="courseNumberContainer"><input id="courseNumber" name="courseNumber" required type="number" size="15" value="<?php echo $currentSession->getCourseNumber(); ?>" tyitle="You must have a course number." /></div>
 		</div>
 		<div class="courseSectionColumn">
-			<h4>Section</h4> <div id="courseSectionContainer"><input id="courseSection" name="courseSection" type="text" size="10" value="<?php if ($action!='duplicate'){echo $currentSession->getCourseSection();} ?>" class="mustHave" title="You must provide a section number." /></div>
+			<h4>Section</h4> <div id="courseSectionContainer"><input id="courseSection" name="courseSection" required type="number" size="10" value="<?php if ($action!='duplicate'){echo $currentSession->getCourseSection();} ?>" title="You must provide a section number." /></div>
 		</div>
 		<div class="courseTitleColumn">
-			<h4>Title</h4> <div id="courseTitleContainer"><input id="courseTitle" name="courseTitle" type="text" size="15" value="<?php echo $currentSession->getCourseTitle(); ?>" class="mustHave" title="You must have a course title." /></div>
+			<h4>Title</h4> <div id="courseTitleContainer"><input id="courseTitle" name="courseTitle" required type="text" size="15" value="<?php echo $currentSession->getCourseTitle(); ?>" title="You must have a course title." /></div>
 		</div>
 		<div class="courseSessionColumn">
 			<h4>Session #</h4>
 			<div id="sessionNumberContainer">
-				<select name="sessionNumber" id="sessionNumber" class="mustHave" title="You must select a session number." >
+				<select name="sessionNumber" id="sessionNumber" required title="You must select a session number." >
 					<?php $sessionNumber = $currentSession->getSessionNumber(); ?>
 					<option value="I" <?php if($sessionNumber === "I") echo 'selected="selected"'; ?> >I</option>
 					<option value="II" <?php if($sessionNumber === "II") echo 'selected="selected"'; ?> >II</option>
@@ -131,8 +131,8 @@
 	<div id="facultySelect" class="item">
 		<h2>Faculty name <span id="facultyComment" class="commentDiv" ></span></h2> <!-- classroom faculty -->
 		<div id="facultySelectContainer" >
-			<span class="courseInfo xxx faculty"></span><span class="xxx courseSection faculty"></span>
-			<input id="faculty" class="mustHave xxx faculty" name="faculty" type="text" value="<?php echo $currentSession->getFaculty(); ?>" title="You must enter the faculty name." />
+			<span class="courseInfo faculty"></span><span class="courseSection faculty"></span>
+			<input id="faculty" class="faculty" required name="faculty" type="text" value="<?php echo $currentSession->getFaculty(); ?>" title="You must enter the faculty name." />
 		</div>
 	</div>
 
@@ -141,10 +141,10 @@
 		<h2>Location <span id="locationComment" class="commentDiv" ></span></h2> <!-- classroom -->
 		<div class="selectBox">
 			<div id="locationSelectContainer" class="floatLeft">
-				<span class="courseInfo xxx location"></span><span class="xxx courseSection location"></span>
-				<select id="locationID" name="locationID" class="xxx location mustHave" title="You must select a location." >
+				<span class="courseInfo location"></span><span class="courseSection location"></span>
+				<select id="locationID" name="locationID" class="location" required title="You must select a location." >
 
-					<option class="xxx location" value=""> &nbsp; &nbsp;Please select:</option>
+					<option class="location" value=""> &nbsp; &nbsp;Please select:</option>
 
 					<?php
 						$query = "select locaID as ID, locaname as Name from location";
@@ -156,9 +156,9 @@
 							$id = $row['ID'];
 							$Name = $row['Name'];
 							if ($location == $id) {
-								echo '<option class="xxx location" value="' . $id . '" selected="selected">' . $Name . '</option>';
+								echo '<option class="location" value="' . $id . '" selected="selected">' . $Name . '</option>';
 							} else {
-								echo '<option class="xxx location" value="' . $id . '" >' . $Name . '</option>';
+								echo '<option class="location" value="' . $id . '" >' . $Name . '</option>';
 							}
 						}
 
@@ -173,9 +173,9 @@
 	<div id="dateSelect" class="item">
 		<h2>Date of session <span id="dateTimeComment" class="commentDiv"></span></h2>
 		<div id="dateSelectContainer" class="floatLeft">
-			<span class="xxx courseInfo datepicker"></span><span class="xxx courseSection datepicker"></span>
+			<span class="courseInfo datepicker"></span><span class="courseSection datepicker"></span>
 			<?php $date = $currentSession->getDateOfSession(); ?>
-			<input type="text" id="datePicker" class="xxx datepicker mustHave" name="dateOfSession" value="<?php if($date) {echo date("m/d/y", strtotime($date)); } ?>" title="You must enter the date of the session." />
+			<input type="text" id="datePicker" class="datepicker" required name="dateOfSession" value="<?php if($date) {echo date("m/d/y", strtotime($date)); } ?>" title="You must enter the date of the session." />
 		<!--  <input type="text" name="timeOfSession" id="timepicker" /> -->
 
 		</div>
@@ -186,8 +186,8 @@
 		<h2>Session Length <span id="lengthComment" class="commentDiv"></span></h2>
 		<div class="selectBox">
 			<div id="lengthSelectContainer" class="floatLeft">
-				<span class="courseInfo xxx length"></span><span class="xxx courseSection length"></span>
-				<select id="lengthID" name="lengthID" class="mustHave xxx length" title="You must select a session length." >
+				<span class="courseInfolength"></span><span class="courseSection length"></span>
+				<select id="lengthID" name="lengthID" required title="You must select a session length." >
 					<option value="" selected="selected"> &nbsp; &nbsp;Please select:</option>
 					<?php
 						$query = "select seslID as ID, seslName as Name from sesslength";
@@ -216,9 +216,9 @@
 	<div id="numberSelect" class="item ui-corner-all">
 		<h2>Number of students<span id="numberStudentsComment" class="commentDiv"></span></h2>
 		<div id="numberOfStudentsContainer">
-			<span class="courseInfo xxx student"></span><span class="xxx courseSection student"></span>
-			<input id="numberOfStudents" class="mustHave xxx student" title="You must enter the number of students in session."
-				   name="numberOfStudents" type="text" value="<?php echo $currentSession->getNumberOfStudents(); ?>"/>
+			<span class="courseInfostudent"></span><span class="courseSection student"></span>
+			<input id="numberOfStudents" required title="You must enter the number of students in session."
+				   name="numberOfStudents" type="number" value="<?php echo $currentSession->getNumberOfStudents(); ?>"/>
 		</div>
 	</div>
 
@@ -228,7 +228,7 @@
 		<h2>Resources introduced <span id="resourcesComment" class="commentDiv"></span></h2>
 		<div class="selectBox">
 			<div id="resourcesSelectContainer" class="floatLeft">
-				<span class="courseInfo xxx resourcesBox"></span><span class="xxx courseSection resourcesBox"></span><br />
+				<span class="courseInforesourcesBox"></span><span class="courseSection resourcesBox"></span><br />
 				<?php
 					if(isset($_GET['sesdID'])) {
 						$query = "select rsrpID, rsrpName, rsrirsrpID from resourcepool rp
@@ -244,7 +244,7 @@
 						$isNone='none'; // Add 'none' class for first row
 						while (mysqli_stmt_fetch($stmt)) {
 							$resourceID ? $checked = "checked" : $checked = "";
-							echo '<input class="xxx resourcesBox mustHaveBox '.$isNone.'" title="You must choose at least 1 resource (or \'None\') per session" type="checkbox" ' . $checked . ' name="resourcesIntroduced[]" value="' . $id . '"  /><span class="xxx resourcesbox">' . $Name . '</span><br class="xxx resourcesbox" />';
+							echo '<input class="resourcesBox '.$isNone.'" title="You must choose at least 1 resource (or \'None\') per session" type="checkbox" ' . $checked . ' name="resourcesIntroduced[]" value="' . $id . '"  /><span class="resourcesbox">' . $Name . '</span><br class="resourcesbox" />';
 							$isNone='notNone'; // Add notNone class for subsequent rows
 						}
 						mysqli_stmt_free_result($stmt);
@@ -256,7 +256,7 @@
 						while ($row = mysqli_fetch_assoc($result)) {
 							$id = $row['ID'];
 							$Name = $row['Name'];
-							echo '<input class="xxx resourcesBox mustHaveBox '.$isNone.'" title="You must choose at least 1 resource (or \'None\') per session" type="checkbox" name="resourcesIntroduced[]" value="' . $id . '"  /><span class="xxx resourcesbox">' . $Name . '</span><br class="xxx resourcesbox" />';
+							echo '<input class="resourcesBox '.$isNone.'" title="You must choose at least 1 resource (or \'None\') per session" type="checkbox" name="resourcesIntroduced[]" value="' . $id . '"  /><span class="resourcesbox">' . $Name . '</span><br class="resourcesbox" />';
 							$isNone='notNone'; // Add notNone class for subsequent rows
 					}
 						mysqli_free_result($result);
@@ -312,8 +312,8 @@
 	<div id="commentSelect" class="item">
 		<h2>Comments/Notes</h2>
 		<div id="noteSelectContainer">
-			<span class="courseInfo xxx notebox"></span><span class="xxx courseSection notebox"></span><br />
-			<textarea class="xxx notebox optional" rows="4" cols="60" id="sessionNote" name="sessionNote" title="Notes are optional"><?php echo $currentSession->getSessionNote() ?></textarea>
+			<span class="courseInfonotebox"></span><span class="courseSection notebox"></span><br />
+			<textarea class="notebox optional" rows="4" cols="60" id="sessionNote" name="sessionNote" title="Notes are optional"><?php echo $currentSession->getSessionNote() ?></textarea>
 		</div>
 	</div>
 
@@ -361,6 +361,7 @@
 <br />
 
 <?php
-	$jsOutput .= '$(document).ready( function(){noneOrSome(); checkCompletion();} );';
+	$jsOutput .= '//$(document).ready( function(){noneOrSome(); checkCompletion();} );';
+	$jsOutput .= '$("#numberOfStudents").spinner();';
 	if (!isset($_GET['lite'])) { include('includes/footer.php'); }
 ?>

@@ -8,8 +8,9 @@
 		</div>
 
 		<script type="text/javascript" src="js/jquery.js"></script>
-		<script type="text/javascript" src="js/jquery-ui.js"></script>
-		<script type="text/javascript" src="js/jquery.ui.selectmenu.js"></script>
+		<!--<script type="text/javascript" src="js/jquery-ui.js"></script>-->
+		<!--<script type="text/javascript" src="js/jquery.ui.selectmenu.js"></script>-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.js"></script>
 		<script type="text/javascript" src="js/dataTables.js"></script>
 		<script type="text/javascript" src="js/dataTablesRowGrouping.js"></script>
 		<script type="text/javascript" src="js/dataTables.fixedHeader.min.js"></script>

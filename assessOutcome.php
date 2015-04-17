@@ -26,7 +26,7 @@ require_once('control/startSession.php');
  
  echo $currentSession->getOutcomesToAssess();
 
- $jsOutput .= 'assessmentDropdown();';
+// $jsOutput .= 'assessmentDropdown();';
  include('includes/footer.php');
  
 ?>

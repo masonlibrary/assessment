@@ -270,7 +270,7 @@ class InstructionSession {
 
                     $output.='</table><input type="hidden" name="assessedCount" value="'.$assessedCount.'" />
 														<input type="hidden" name="sessionID" value="'.$this->sessionID.'"/>
-                            <input id="assessSubmit" type="submit" name="assessSubmit" disabled="disabled" value="Submit" /></form></div>' ;
+                            <input id="assessSubmit" type="submit" name="assessSubmit" value="Submit" /></form></div>' ;
 
                     return $output;
         }

@@ -1,6 +1,6 @@
 <?php
 
-
+ob_start();
 include('control/connectionVars.php');
 include('classes/InstructionSession.php');
 include('classes/User.php');

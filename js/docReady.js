@@ -147,7 +147,7 @@ $(function(){
 
                 $( "#coursePrefixID" ).combobox();
                 $('.assessmentDropDown').combobox();
-                $('select#sessionNumber').selectmenu({width: 65});
+//                $('select#sessionNumber').selectmenu({width: 65});
 
                 //$('#locationID').selectmenu();
                 //$('#lengthID').selectmenu();
@@ -156,7 +156,7 @@ $(function(){
                 $('#assessOutcomesDiv').tabs();
 
                 //if user selects 'none' (no resources introduced) then disable resources checkbox
-                $('.resourcesBox').live('click', noneOrSome);
+//                $('.resourcesBox').live('click', noneOrSome);
 
 
                 $('.areYouSure').click(function(e){
@@ -203,7 +203,7 @@ $(function(){
                         //alert('in no it is not checked'+ $(noAssessString).val());
 
                     }
-                        assessmentDropdown();
+//                        assessmentDropdown();
 
                 });
 
@@ -217,29 +217,29 @@ $(function(){
 
                 });
 
-                $('.checkAll').change(function(){
-                    prefixName=$(this).attr('class').split(' ')[1];
-                   differential = '.'+ prefixName;
-                   spanID='span#span'+prefixName;
-
-                   if ($(this).is(':checked'))
-                   {
-                       $(differential).attr('checked', true);
-                       $(spanID).addClass('hasChecked');
-                       $('input.outcomesNeeded').not(differential).attr('disabled', true);
-                       $('input.checkAll').not(differential).attr('disabled', true);
-                   }
-                    else
-                    {
-                       $(differential).attr('checked', false);
-                       $(spanID).removeClass('hasChecked');
-                       $('input.outcomesNeeded').removeAttr("disabled");
-                       $('input.checkAll').removeAttr('disabled');
-                    }
-
-                   if ($('.outcomesNeeded').is(':checked')) {$('#chooseCoursesOTCT').removeAttr('disabled');}
-                   else {$('#chooseCoursesOTCT').attr('disabled', true);}
-                });
+//                $('.checkAll').change(function(){
+//                    prefixName=$(this).attr('class').split(' ')[1];
+//                   differential = '.'+ prefixName;
+//                   spanID='span#span'+prefixName;
+//
+//                   if ($(this).is(':checked'))
+//                   {
+//                       $(differential).attr('checked', true);
+//                       $(spanID).addClass('hasChecked');
+//                       $('input.outcomesNeeded').not(differential).attr('disabled', true);
+//                       $('input.checkAll').not(differential).attr('disabled', true);
+//                   }
+//                    else
+//                    {
+//                       $(differential).attr('checked', false);
+//                       $(spanID).removeClass('hasChecked');
+//                       $('input.outcomesNeeded').removeAttr("disabled");
+//                       $('input.checkAll').removeAttr('disabled');
+//                    }
+//
+//                   if ($('.outcomesNeeded').is(':checked')) {$('#chooseCoursesOTCT').removeAttr('disabled');}
+//                   else {$('#chooseCoursesOTCT').attr('disabled', true);}
+//                });
 
                 $('input.outcomesNeeded').change(function(){
 
@@ -263,107 +263,108 @@ $(function(){
 
                 });
 
-                $('#sameNotes').change(function(){updateNotes();})
-                $('#sameResources').change(function(){updateResources();});
-                $('#sameLocations').change(function(){updateLocation();});
+//                $('#sameNotes').change(function(){updateNotes();})
+//                $('#sameResources').change(function(){updateResources();});
+//                $('#sameLocations').change(function(){updateLocation();});
 
                 //think about how to handle this without destroying everything else
-                $('#sameDates').change(function(){
-                   $('.datePicker').datepicker('destroy');
-                   updateDates();
-                });
+//                $('#sameDates').change(function(){
+//                   $('.datePicker').datepicker('destroy');
+//                   updateDates();
+//                });
 
-                $('#sameLengths').change(function(){updateLength();});
-                $('#sameFaculty').change(function(){updateFaculty();});
+//                $('#sameLengths').change(function(){updateLength();});
+//                $('#sameFaculty').change(function(){updateFaculty();});
 
                 /* ******************** */
                 /*  Detect Changes      */
                 /* *******************  */
 
-                $('#librarianID').change(function(){
-                        checkCompletion();
-			});
-
-                $('#coursePrefixID').change(function(){
-                        checkCompletion();
-                });
-
-                $('#courseNumber').change(function(){
-                     checkCompletion();
-                });
-
-                $('#courseSection').change(function(){
-                    checkCompletion();
-                });
-
-                $('#courseTitle').change(function(){
-                    checkDivCompletion('#courseSelect');
-                    checkCompletion();
-                });
-
-                $('#sessionNumber').change(function(){
-                    checkCompletion();
-                });
-
-                $('#faculty').change(function(){
-			var faculty= $('#faculty').val();
-
-                         checkCompletion();
-			});
-
-
-		$('#locationID').change(function(){
-
-                          checkCompletion();
-			});
-
-
-		$('#datePicker').change(function(){
-
-			var datePick = $('#datePicker').val();
-
-                           if($('#sameDates').is(':checked')){updateDates();}
-                           checkCompletion();
-			});
-
-
-		$('#lengthID').change(function(){
-                        //updateLength();
-                        checkCompletion();
-			});
-
-		$('#numberOfStudents').change(function(){
-			var numberStudents= $('#numberOfStudents').val();
-
-			if ( isNaN(numberStudents))
-                            {
-				alert(numberStudents +' is not a number.');
-                                $('#numberOfStudents').val('');
-                            }
-                         checkCompletion();
-			});
-
-
-				   // The button is always live, but won't go unless checkCompletion() returns true
-					 // Should fix the "complete then uncomplete but can still submit" bug
-                  $('.resourcesBox.xxx').change(function(){
-                       if($('#sameResources').is(':checked')){updateResources();}
-                      checkCompletion();
-                  });
-
-                  $('.resourcesBox.copy').live('click', function() {
-                    checkCompletion();
-                    });
+//                $('#librarianID').change(function(){
+//                        checkCompletion();
+//			});
+//
+//                $('#coursePrefixID').change(function(){
+//                        checkCompletion();
+//                });
+//
+//                $('#courseNumber').change(function(){
+//                     checkCompletion();
+//                });
+//
+//                $('#courseSection').change(function(){
+//                    checkCompletion();
+//                });
+//
+//                $('#courseTitle').change(function(){
+//                    checkDivCompletion('#courseSelect');
+//                    checkCompletion();
+//                });
+//
+//                $('#sessionNumber').change(function(){
+//                    checkCompletion();
+//                });
+//
+//                $('#faculty').change(function(){
+//			var faculty= $('#faculty').val();
+//
+//                         checkCompletion();
+//			});
+//
+//
+//		$('#locationID').change(function(){
+//
+//                          checkCompletion();
+//			});
+//
+//
+//		$('#datePicker').change(function(){
+//
+//			var datePick = $('#datePicker').val();
+//
+//                           if($('#sameDates').is(':checked')){updateDates();}
+//                           checkCompletion();
+//			});
+//
+//
+//		$('#lengthID').change(function(){
+//                        //updateLength();
+//                        checkCompletion();
+//			});
+//
+//		$('#numberOfStudents').change(function(){
+//			var numberStudents= $('#numberOfStudents').val();
+//
+//			if ( isNaN(numberStudents))
+//                            {
+//				alert(numberStudents +' is not a number.');
+//                                $('#numberOfStudents').val('');
+//                            }
+//                         checkCompletion();
+//			});
+//
+//
+//				   // The button is always live, but won't go unless checkCompletion() returns true
+//					 // Should fix the "complete then uncomplete but can still submit" bug
+//                  $('.resourcesBox.xxx').change(function(){
+//                       if($('#sameResources').is(':checked')){updateResources();}
+//                      checkCompletion();
+//                  });
+//
+//                  $('.resourcesBox.copy').live('click', function() {
+//                    checkCompletion();
+//                    });
 
 
 
                 /* ********************* */
                 // Activate datepicker   //
                 /* **********************/
-                $('.datepicker').live('click', function() {
-                   // alert('click!');
-                    $(this).datepicker('destroy').datepicker({showOn:'focus', changeMonth: true, changeYear: true}).focus();
-                    });
+//                $('.datepicker').live('click', function() {
+//                   // alert('click!');
+//                    $(this).datepicker('destroy').datepicker({showOn:'focus', changeMonth: true, changeYear: true}).focus();
+//                    });
+								$('input.datepicker').datepicker();
 
 
 
@@ -385,25 +386,25 @@ $(function(){
 
                })
 
-                $('.mustHave.copy').live('click', function(){
-                    checkCompletion();
-                })
-
-                $('#recheck').live('click', function(e) {
-                    e.preventDefault();
-                    checkCompletion();
-                    });
-
-								$('#assessmentForm').live('submit', function(e){
-									if (checkCompletion()) {
-										$('#librarianID').removeAttr('disabled');
-										return true;
-									} else {
-										e.preventDefault();
-										$('#librarianID').attr('disabled', 'disabled');
-										return false;
-									}
-								})
+//                $('.mustHave.copy').live('click', function(){
+//                    checkCompletion();
+//                })
+//
+//                $('#recheck').live('click', function(e) {
+//                    e.preventDefault();
+//                    checkCompletion();
+//                    });
+//
+//								$('#assessmentForm').live('submit', function(e){
+//									if (checkCompletion()) {
+//										$('#librarianID').removeAttr('disabled');
+//										return true;
+//									} else {
+//										e.preventDefault();
+//										$('#librarianID').attr('disabled', 'disabled');
+//										return false;
+//									}
+//								})
 
 });
 
