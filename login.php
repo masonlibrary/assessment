@@ -37,7 +37,10 @@
 
 		$row=array();
 		$stmt = mysqli_prepare($dbc, $query);
-		mysqli_bind_param($stmt, 'ss', $user_username, $user_password);
+                //original way is actually an alias
+		//mysqli_bind_param($stmt, 'ss', $user_username, $user_password);
+                //better way to test.... as of 09-14-2015
+                mysqli_stmt_bind_param($stmt, 'ss', $user_username, $user_password);
 		mysqli_stmt_execute($stmt) or die('Failed to look up user: ' . mysqli_error($dbc));
 		mysqli_stmt_store_result($stmt);
 		mysqli_stmt_bind_result($stmt, $row['userID'], $row['userName'], $row['roleID'], $row['roleName']);

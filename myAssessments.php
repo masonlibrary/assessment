@@ -12,6 +12,8 @@
 	$thisUser = $_SESSION['thisUser'];
 	
 	echo '<h2>'.$page_title.'</h2>';
+                /*TODO: this is an annoying workaround that prevents the focus to filter input from breaking (can't click or enter */
+        echo'<span>&nbsp;</span>';
 
 	$dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die('Error connecting to the stupid database');
 
@@ -69,7 +71,8 @@
 
 		$row = array();
 		$stmt = mysqli_prepare($dbc, $query);
-		mysqli_bind_param($stmt, 'i', $thisUser->getLibrarianID());
+                $thisLibrarianID = $thisUser->getLibrarianID();
+		mysqli_stmt_bind_param($stmt, 'i', $thisLibrarianID);
 		mysqli_stmt_execute($stmt) or die('Failed to retrieve assessments: ' . mysqli_error($dbc));
 		mysqli_stmt_store_result($stmt);
 		mysqli_stmt_bind_result($stmt, $row['SessionID'], $row['CoursePrefix'], $row['CourseNumber'], $row['CourseSection'], $row['SessionSection'], $row['Date'], $row['OutcomeTaughtID'], $row['OutcomeName'], $row['OutcomeID'], $row['Met'], $row['Partial'], $row['NotMet'], $row['NotAssessed']);

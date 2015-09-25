@@ -27,22 +27,22 @@
 		}
 		
 //		$stmt = mysqli_prepare($dbc, 'update outcomeheading set otchName=?, otchActive=? where otchID=?');
-//		mysqli_bind_param($stmt, "ssi", $_POST['outcomeHeading'], $headingActive, $_POST['headingID']);
+//		mysqli_stmt_bind_param($stmt, "ssi", $_POST['outcomeHeading'], $headingActive, $_POST['headingID']);
 		$stmt = mysqli_prepare($dbc, 'update outcomeheading set otchActive=? where otchID=?');
-		mysqli_bind_param($stmt, "si", $headingActive, $_POST['headingID']);
+		mysqli_stmt_bind_param($stmt, "si", $headingActive, $_POST['headingID']);
 		mysqli_stmt_execute($stmt) or die('Failed to update outcome headings: ' . mysqli_error($dbc));
 		
 //		$stmt = mysqli_prepare($dbc, 'update outcomedetail set otcdName=? where otcdID=?');
 //		foreach ($_POST['editOutcomeDetailName'] as $i=>$name) {
 //			if (!$name) { $name = "(blank)"; }
-//			mysqli_bind_param($stmt, "si", $name, $i);
+//			mysqli_stmt_bind_param($stmt, "si", $name, $i);
 //			mysqli_stmt_execute($stmt) or die('Failed to update outcome detail names: ' . mysqli_error($dbc));
 //		}
 		
 		$stmt = mysqli_prepare($dbc, 'insert into outcomedetail (otcdotchID, otcdName) values (?, ?)');
 		foreach ($_POST['newOutcomeDetailName'] as $name) {
 			if(trim($name) == '') { continue; }
-			mysqli_bind_param($stmt, "is", $id, $name);
+			mysqli_stmt_bind_param($stmt, "is", $id, $name);
 			mysqli_stmt_execute($stmt) or die('Failed to insert new outcome details: ' . mysqli_error($dbc));
 		}
 		
@@ -53,7 +53,7 @@
 	$detail = array();
 	
 	$stmt = mysqli_prepare($dbc, 'select otchID, otchName, otchActive from outcomeheading where otchID=?');
-	mysqli_bind_param($stmt, "i", $id);
+	mysqli_stmt_bind_param($stmt, "i", $id);
 	mysqli_stmt_execute($stmt) or die("Error querying for outcome heading: " . mysqli_error($dbc));
 	mysqli_stmt_store_result($stmt);
 	mysqli_stmt_bind_result($stmt, $heading['otchID'], $heading['otchName'], $heading['otchActive']);
@@ -69,7 +69,7 @@
 		<table style="width:100%">';
 	
 	$stmt = mysqli_prepare($dbc, 'select otcdID, otcdotchID, otcdName from outcomedetail where otcdotchID=? order by otcdName');
-	mysqli_bind_param($stmt, "i", $id);
+	mysqli_stmt_bind_param($stmt, "i", $id);
 	mysqli_stmt_execute($stmt) or die("Error querying for outcome detail: " . mysqli_error($dbc));
 	mysqli_stmt_store_result($stmt);
 	mysqli_stmt_bind_result($stmt, $detail['otcdID'], $detail['otcdotchID'], $detail['otcdName']);

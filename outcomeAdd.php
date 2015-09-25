@@ -17,7 +17,7 @@
 		}
 		
 		$stmt = mysqli_prepare($dbc, 'insert into outcomeheading (otchName, otchActive) values (?, ?)');
-		mysqli_bind_param($stmt, "ss", $_POST['outcomeName'], $headingActive);
+		mysqli_stmt_bind_param($stmt, "ss", $_POST['outcomeName'], $headingActive);
 //		echo 'insert into outcomeheading (otchName) values ("'.$_POST['outcomeName'].'")<br/>';
 		mysqli_stmt_execute($stmt) or die('Failed to insert outcome heading: ' . mysqli_error($dbc));
 		
@@ -29,7 +29,7 @@
 		$stmt = mysqli_prepare($dbc, 'insert into outcomedetail (otcdotchID, otcdName) values (?, ?)');
 		foreach ($_POST['outcomeDetails'] as $detail) {
 			if(!$detail) { continue; }
-			mysqli_bind_param($stmt, "is", $otchID, $detail);
+			mysqli_stmt_bind_param($stmt, "is", $otchID, $detail);
 //			echo 'insert into outcomedetail (otcdotchID, otcdName) values ('.$otchID.', "'.$detail.'")<br/>';
 			mysqli_stmt_execute($stmt) or die('Failed to insert outcome detail: ' . mysqli_error($dbc));
 		}

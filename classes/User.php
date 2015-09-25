@@ -61,7 +61,7 @@ class User
 			$dbc=$this->getConnection();
 //			$result = mysqli_query($dbc, $query) or die('gah!- query issues.'.mysqli_error($dbc).$query);
 			$stmt = mysqli_prepare($dbc, 'select exists(select 1 from librarianmap where libmuserID=?) as count');
-			mysqli_bind_param($stmt, 'i', $inID);
+			mysqli_stmt_bind_param($stmt, 'i', $inID);
 			mysqli_stmt_execute($stmt) or die('Failed to see if librarian exists: ' . mysqli_error($dbc));
 			mysqli_stmt_store_result($stmt);
 			if (mysqli_stmt_num_rows($stmt)) {
@@ -74,7 +74,7 @@ class User
 	{
 		$dbc = $this->getConnection();
 		$stmt = mysqli_prepare($dbc, 'select p.ppleLName as LName, p.ppleFName as FName, l.libmID as ID from people p, librarianmap l where l.libmuserID=? and p.ppleID=l.libmppleID');
-		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_bind_param($stmt, 'i', $inID);
 		mysqli_stmt_execute($stmt) or die('Failed to retrieve librarian info: ' . mysqli_error($dbc));
 		mysqli_stmt_store_result($stmt);
 		mysqli_stmt_bind_result($stmt, $LName, $FName, $ID);
@@ -96,7 +96,7 @@ class User
 					group by s.sesdcrspID';
 
 				$stmt = mysqli_prepare($dbc, $query);
-				mysqli_bind_param($stmt, 'i', $inID);
+				mysqli_stmt_bind_param($stmt, 'i', $inID);
 				mysqli_stmt_execute($stmt) or die('Failed to retrieve number of outcomes to assess: ' . mysqli_error($dbc));
 				mysqli_stmt_store_result($stmt);
 				$row = array();
@@ -120,7 +120,7 @@ class User
 					where sd.sesdlibmID=? and cp.crspID=sd.sesdcrspID and sd.sesdAssessed="no" and sd.sesdOutcomeDone="yes"
 					order by sd.sesdcrspID, sd.sesdCourseSection, sd.sesdDate';
 				$stmt = mysqli_prepare($dbc, $query);
-				mysqli_bind_param($stmt, 'i', $inID);
+				mysqli_stmt_bind_param($stmt, 'i', $inID);
 				mysqli_stmt_execute($stmt) or die('Failed to retrieve session info: ' . mysqli_error($dbc));
 				mysqli_stmt_store_result($stmt);
 				mysqli_stmt_bind_result($stmt, $id, $prefixName, $courseNumber, $courseTitle, $courseSection, $sessionSection, $sessionDate);
@@ -170,7 +170,7 @@ class User
 							group by s.sesdcrspID';
 
 				$stmt = mysqli_prepare($dbc, $query);
-				mysqli_bind_param($stmt, 'i', $inID);
+				mysqli_stmt_bind_param($stmt, 'i', $inID);
 				mysqli_stmt_execute($stmt) or die('Failed to retrieve number of outcomes needed: ' . mysqli_error($dbc));
 				mysqli_stmt_store_result($stmt);
 				$row = array();
@@ -195,7 +195,7 @@ class User
 							order by sd.sesdcrspID, sd.sesdCourseSection, sd.sesdDate';
 				
 				$stmt = mysqli_prepare($dbc, $query);
-				mysqli_bind_param($stmt, 'i', $inID);
+				mysqli_stmt_bind_param($stmt, 'i', $inID);
 				mysqli_stmt_execute($stmt) or die('Failed to retrieve session info: ' . mysqli_error($dbc));
 				mysqli_stmt_store_result($stmt);
 				mysqli_stmt_bind_result($stmt, $id, $prefixName, $courseNumber, $courseTitle, $courseSection, $sessionSection, $sessionDate);

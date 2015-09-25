@@ -13,15 +13,18 @@
 	$thisUser = $_SESSION['thisUser'];
 
 	echo '<h2>'.$page_title.'</h2>';
+        
+        /*TODO: this is an annoying workaround that prevents the focus to filter input from breaking (can't click or enter */
+        echo'<span>&nbsp;</span>';
 
-	$dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die('Error connecting to the stupid database');
+	$dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die('Error connecting to the dang database');
 
 	if ($thisUser->isLibrarian) {
 		echo '<div class="dataTables_filter">
 				<label for="dataTables_filter">Filter</label><input type="text" id="dataTables_filter" class="ui-widget" />
 				<label for="dataTables_invert">Invert</label><input type="checkbox" id="dataTables_invert" />
 			</div>
-			<table id="mySessions"><thead id="mySessionsHead"><tr>
+			<table id="mySessions" ><thead id="mySessionsHead"><tr>
 			<th>Course</th>
 			<th>Title</th>
 			<th>Faculty</th>
@@ -51,7 +54,8 @@
 			order by CoursePrefix, CourseNumber, CourseSection';
 
 		$stmt = mysqli_prepare($dbc, $query);
-		mysqli_bind_param($stmt, 'i', $thisUser->getLibrarianID());
+                $idToUse=$thisUser->getLibrarianID();
+		mysqli_stmt_bind_param($stmt, 'i', $idToUse);
 		mysqli_stmt_execute($stmt) or die('Failed to retrieve session info: ' . mysqli_error($dbc));
 		mysqli_stmt_store_result($stmt);
 		mysqli_stmt_bind_result($stmt, $sessionID, $coursePrefix, $courseNumber, $courseSection,
@@ -89,15 +93,14 @@
 			"sDom": "T<\'clear\'>lrtip",
 			"iDisplayLength": -1,
 			"aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
-			"fnDrawCallback": function(){ $("#test").click(); },
 			"aoColumns": [
 				null,
 				null,
 				null,
 				null,
 				null,
-				null,
 				{"iDataSort": 6},
+				null,
 				{"bVisible": false},
 				null,
 				null,
@@ -127,45 +130,7 @@
 			}
 		});
 
-		$("#test").click(function(e){
-			e.preventDefault();
-
-			var data = oTable._("td.coursePrefix", {"filter": "applied"});
-			var associativeData = [];
-			var chartData = [];
-			var filterString = "<br />" + $("div.dataTables_filter input").val();
-
-			for (var x = 1; x < data.length; x++)
-			{
-				prefix = data[x].split(" ")[0];
-				if (associativeData[prefix] == null) {
-					associativeData[prefix] = 1;
-				} else {
-					associativeData[prefix]++;
-				}
-			}
-
-			for (var key in associativeData) { chartData.push([key, associativeData[key]]); }
-
-			testChart = new Highcharts.Chart({
-				chart: {renderTo: "testChart"},
-				title: {text: "Sessions by prefix" + filterString},
-				plotOptions: {
-					pie: {
-						animation: false,
-						enableMouseTracking: false,
-						dataLabels: {
-							formatter: function(){ return "<b>" + this.point.name + "</b><br>" + this.y + " (" + Highcharts.numberFormat(this.percentage, 2) + "%)"; }
-						}
-					}
-				},
-				series: [{
-					type: "pie",
-					data: chartData
-				}]
-			});
-		});
-		$("#test").click();';
+		';
 
 	echo '<div id="dialog" style="display:none;"><div class="vcenter">Loading...</div></div>';
 

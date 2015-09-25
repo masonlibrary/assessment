@@ -23,7 +23,8 @@ $userName=$_SESSION['userName'];
 $InstructionSession= new InstructionSession($userName);
 
 $output='';
-
+var_dump($_POST);
+echo "<h1>librarianID:". $_POST['librarianID']. "<br></h1>";
 //$output.=
 $InstructionSession->doPost($_POST);
 //$output.= '<p>'.
@@ -41,7 +42,7 @@ if(isset($_POST['action']) && $_POST['action'] == "edit") {
 	$InstructionSession->insertSession();
 }
 $output.= "<br />";
-$output.="<span class='immediateOutcomeEntry'><a id='immediateOutcomeEntry'class='ui-corner-all' href='enterCurrentOutcomes.php?session=".$_POST['sesdID']."'>Enter Outcomes Taught for these sessions</a></span><br /><br />";
+//$output.="<span class='immediateOutcomeEntry'><a id='immediateOutcomeEntry'class='ui-corner-all' href='enterCurrentOutcomes.php?session=".$_POST['sesdID']."'>Enter Outcomes Taught for these sessions</a></span><br /><br />";
 $output.= "<h3>Original Session</h3>".$InstructionSession->toString();
 
 $_SESSION['dialogText']=$output;

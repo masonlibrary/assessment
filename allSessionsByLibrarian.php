@@ -73,6 +73,8 @@
 						}
 
 						echo '<h2>All Sessions by Librarian - '.htmlspecialchars($semester).' semester, AY '.$year.'</h2>';
+                                                      /*TODO: this is an annoying workaround that prevents the focus to filter input from breaking (can't click or enter */
+                                                     echo'<span>&nbsp;</span>';
 
 						$query .= 'order by '.
                         'LastName, '.

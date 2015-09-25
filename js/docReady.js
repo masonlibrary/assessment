@@ -3,7 +3,6 @@ var chartData;
 var aySSChart;
 var aySSChartData;
 var sySSChartData1;
-
 var asInitVals = new Array();
 $(function(){
 
@@ -78,6 +77,7 @@ $(function(){
 					$('.fixedHeader').show();
 				});
 			});
+
 
 			$.fn.dataTableExt.afnFiltering.push(
 				function(oSettings, aData, iDataIndex) {

@@ -22,7 +22,10 @@
 
   ?>
 
-<?php echo '<h2>Assessment Summary - '.$semester.' semester, '.$reportRange.'</h2>'; ?>
+<?php echo '<h2>Assessment Summary - '.$semester.' semester, '.$reportRange.'</h2>'; 
+      /*TODO: this is an annoying workaround that prevents the focus to filter input from breaking (can't click or enter */
+        echo'<span>&nbsp;</span>';
+        ?>
 
 <?php
             $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)

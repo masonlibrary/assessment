@@ -14,7 +14,7 @@
 //		$stmt = mysqli_prepare($dbc, 'update resourcepool set rsrpName=? where rsrpID=?');
 //		foreach ($_POST['resources'] as $id=>$name) {
 //			if (trim($name) == '') { $name = "(blank)"; }
-//			mysqli_bind_param($stmt, 'si', $name, $id);
+//			mysqli_stmt_bind_param($stmt, 'si', $name, $id);
 //			mysqli_stmt_execute($stmt) or die('Failed to update existing resources: ' . mysqli_error($dbc));
 //		}
 
@@ -22,7 +22,7 @@
 		$stmt = mysqli_prepare($dbc, 'update resourcepool set rsrpActive=? where rsrpID=?');
 		for ($i=0; $i<$_POST['numResources']; $i++) {
 			if (isset($_POST['active'][$i]) && $_POST['active'][$i] == 'on') { $active = 'yes'; } else { $active = 'no'; }
-			mysqli_bind_param($stmt, 'si', $active, $i);
+			mysqli_stmt_bind_param($stmt, 'si', $active, $i);
 			mysqli_stmt_execute($stmt) or die('Failed to update existing resources: ' . mysqli_error($dbc));
 		}
 
@@ -31,7 +31,7 @@
 		foreach ($_POST['newResources'] as $id=>$name) {
 			if (trim($name) == '') { continue; }
 			if (isset($_POST['newActive'][$id]) && $_POST['newActive'][$id] == 'on') { $active = 'yes'; } else { $active = 'no'; };
-			mysqli_bind_param($stmt, 'ss', $name, $active);
+			mysqli_stmt_bind_param($stmt, 'ss', $name, $active);
 			mysqli_stmt_execute($stmt) or die('Failed to insert new resources: ' . mysqli_error($dbc));
 		}
 

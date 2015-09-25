@@ -38,9 +38,14 @@
 				<?php
 					$thisUser = new User($_SESSION['userID'], $_SESSION['userName'], $_SESSION['roleName']);
 					$_SESSION['librarianID'] = $thisUser->getLibrarianID();
-																		
+					
+                                      
+                                        
 					echo '<select id="librarianID" name="librarianID" required title="You must select a librarian."' . ($_SESSION['roleName'] == 'user' ? 'disabled="disabled"' : '') . '>';
+                                       
+                                        
 					$reportLibID = $currentSession->getLibrarianID();
+                                        
 					echo '<option value="" ' . ((!$reportLibID && $_SESSION['roleName'] == 'admin') ? 'selected="selected"' :  '') . '> &nbsp; &nbsp;Please select:</option>';
 
 					$query = "select l.libmID as ID, p.ppleFName as FName, p.ppleLName as LName, l.libmStatus as Status " .
@@ -63,6 +68,10 @@
 				</select>
 				<br>
 				<?php
+                                    //add hidden input to compensate for cases where select is disabled
+                                         if ($_SESSION['roleName']=='user'){
+                                             echo "<input type='hidden' name='librarianID' value='".$_SESSION['librarianID']."' />";
+                                         }
 					echo '<input type="checkbox" id="fellowPresent" name="fellowPresent"'.(($currentSession->getFellowPresent()=='yes')?' checked':'').'>
 						<label for="fellowPresent">Fellow was present</label>';
 				?>
@@ -236,7 +245,7 @@
 							on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = ?)
 							where rp.rsrpActive='yes'";
 						$stmt = mysqli_prepare($dbc, $query);
-						mysqli_bind_param($stmt, "i", $_GET['sesdID']);
+						mysqli_stmt_bind_param($stmt, "i", $_GET['sesdID']);
 						mysqli_stmt_execute($stmt) or die('Error querying for resource checkboxes: ' . mysqli_error($dbc));
 						mysqli_stmt_store_result($stmt);
 						mysqli_stmt_bind_result($stmt, $id, $Name, $resourceID);

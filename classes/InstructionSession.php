@@ -64,7 +64,7 @@ class InstructionSession {
 
 				// Clear any old outcomes associated with this session
 				$stmt = mysqli_prepare($dbc, 'delete from outcomestaught where otctsesdID = ?');
-				mysqli_bind_param($stmt, 'i', $id);
+				mysqli_stmt_bind_param($stmt, 'i', $id);
 				mysqli_stmt_execute($stmt) or die('Failed to delete old outcomes: ' . mysqli_error($dbc));
 
 				$stmt = mysqli_prepare($dbc, 'insert into outcomestaught (otctsesdID, otctotcdID) values (?, ?)');
@@ -72,12 +72,12 @@ class InstructionSession {
 				$numOutcomes = count($this->outcomesTaught);
 				
 				for ($i=0; $i<$numOutcomes; $i++) {
-					mysqli_bind_param($stmt, 'ii', $id, $this->outcomesTaught[$i]);
+					mysqli_stmt_bind_param($stmt, 'ii', $id, $this->outcomesTaught[$i]);
 					if (mysqli_stmt_execute($stmt)) {
 						
 						$success .= 'Successfully inserted session '.$id.', outcome '.$this->outcomesTaught[$i].'<br/>';
 						$stmt2 = mysqli_prepare($dbc, 'update sessiondesc set sesdOutcomeDone="yes" where sesdID=?');
-						mysqli_bind_param($stmt2, 'i', $id);
+						mysqli_stmt_bind_param($stmt2, 'i', $id);
 						
 						if (mysqli_stmt_execute($stmt2)) {
 							$success .= 'Successfully updated session '.$id.' to assessed<br/>';
@@ -144,7 +144,7 @@ class InstructionSession {
 								$row['NotMet']=0;
 							}
 							
-							mysqli_bind_param($stmt, 'iiiii', $row['otctID'], $row['Met'], $row['Partial'], $row['NotMet'], $row['NotAssessed']);
+							mysqli_stmt_bind_param($stmt, 'iiiii', $row['otctID'], $row['Met'], $row['Partial'], $row['NotMet'], $row['NotAssessed']);
 							
 							// If inserting outcome assessment succeeds, update sessiondesc for this session and set assessed to 'yes':
 							if (mysqli_stmt_execute($stmt)) {
@@ -154,7 +154,7 @@ class InstructionSession {
 								// Set assessed to 'yes'
 								
 								$stmt2 = mysqli_prepare($dbc, 'update sessiondesc set sesdAssessed="yes" where sesdID=?');
-								mysqli_bind_param($stmt2, 'i', $this->sessionID);
+								mysqli_stmt_bind_param($stmt2, 'i', $this->sessionID);
 								
 								if (mysqli_stmt_execute($stmt2)) {
 									$this->assessed='yes';
@@ -205,7 +205,7 @@ class InstructionSession {
 
                 $dbc=$this->getConnection();
 								$stmt = mysqli_prepare($dbc, $query);
-								mysqli_bind_param($stmt, 'ii', $this->sessionID, $this->coursePrefixID);
+								mysqli_stmt_bind_param($stmt, 'ii', $this->sessionID, $this->coursePrefixID);
 								mysqli_stmt_execute($stmt) or die('Failed to get outcomes to assess: ' . mysqli_error($dbc));
 								mysqli_stmt_store_result($stmt);
 								mysqli_stmt_bind_result($stmt, $taughtID, $headingID, $headingName, $subheadingName, $outcomeID, $outcomeName);
@@ -281,7 +281,7 @@ class InstructionSession {
 
     public function doPost($inPost, $inSuffix='')
         {
-
+        var_dump($inPost);
         $this->setLibrarianID($inPost['librarianID']);
 				
 				if (isset($inPost['fellowPresent']) && $inPost['fellowPresent'] == 'on') {
@@ -433,7 +433,7 @@ class InstructionSession {
 				sesdCourseNumber, sesdCourseSection, sesdSessionSection, sesdFaculty, sesdlocaID, sesdOutcomeDone, sesdAssessed, sesnNote
 			FROM sessiondesc sd LEFT OUTER JOIN sessionnotes sn
 			ON sd.sesdID = sn.sesnsesdID WHERE sesdID=?');
-		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_bind_param($stmt, 'i', $inID);
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_store_result($stmt);
 		mysqli_stmt_bind_result($stmt, $row['sesdID'], $row['sesdUser'], $row['sesdlibmID'], $row['fellowPresent'], $row['sesdDate'], $row['sesdseslID'], $row['sesdNumStudents'],
@@ -464,7 +464,7 @@ class InstructionSession {
 			left outer join resourcesintroduced ri
 			on (ri.rsrirsrpID = rp.rsrpID and ri.rsrisesdID = ?)
 			where rp.rsrpActive="yes"');
-		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_bind_param($stmt, 'i', $inID);
 		mysqli_stmt_execute($stmt) or die('Failed to execute query: ' . mysqli_error($dbc));
 		mysqli_stmt_store_result($stmt);
 		mysqli_stmt_bind_result($stmt, $row['name'], $row['id']);
@@ -644,7 +644,7 @@ class InstructionSession {
 					$dbc = $this->getConnection();
 					$prefixName = "";
 					$stmt = mysqli_prepare($dbc, 'select crspName from courseprefix where crspID=?');
-					mysqli_bind_param($stmt, 'i', $inID);
+					mysqli_stmt_bind_param($stmt, 'i', $inID);
 					mysqli_stmt_execute($stmt) or die('Failed to retrieve course prefix name: ' . mysqli_error($dbc));
 					mysqli_stmt_store_result($stmt);
 					mysqli_stmt_bind_result($stmt, $prefixName);
@@ -659,7 +659,7 @@ class InstructionSession {
 					$LName="";
 					$FName="";
 					$stmt = mysqli_prepare($dbc, 'select ppleLName, ppleFName from people p, librarianmap l where libmID=? and p.ppleID=l.libmppleID');
-					mysqli_bind_param($stmt, 'i', $inID);
+					mysqli_stmt_bind_param($stmt, 'i', $inID);
 					mysqli_stmt_execute($stmt) or die('Failed to retrieve librarian name: ' . mysqli_error($dbc));
 					mysqli_stmt_store_result($stmt);
 					mysqli_stmt_bind_result($stmt, $LName, $FName);
@@ -689,7 +689,7 @@ class InstructionSession {
 					$dbc = $this->getConnection();
 					$name = "";
 					$stmt = mysqli_prepare($dbc, 'select locaName from location where locaID=?');
-					mysqli_bind_param($stmt, 'i', $inID);
+					mysqli_stmt_bind_param($stmt, 'i', $inID);
 					mysqli_stmt_execute($stmt) or die('Failed to retrieve location name: ' . mysqli_error($dbc));
 					mysqli_stmt_store_result($stmt);
 					mysqli_stmt_bind_result($stmt, $name);
@@ -719,7 +719,7 @@ class InstructionSession {
 					$dbc = $this->getConnection();
 					$name = "";
 					$stmt = mysqli_prepare($dbc, 'select seslName from sesslength where seslID=?');
-					mysqli_bind_param($stmt, 'i', $inID);
+					mysqli_stmt_bind_param($stmt, 'i', $inID);
 					mysqli_stmt_execute($stmt) or die('Failed to retrieve session length name: ' . mysqli_error($dbc));
 					mysqli_stmt_store_result($stmt);
 					mysqli_stmt_bind_result($stmt, $name);
@@ -829,7 +829,7 @@ class InstructionSession {
 					$resourceName = "";
 					$stmt = mysqli_prepare($dbc, 'select rsrpName from resourcepool where rsrpID=?');
 					foreach($inResourcesIntroducedID as $value) {
-						mysqli_bind_param($stmt, 'i', $value);
+						mysqli_stmt_bind_param($stmt, 'i', $value);
 						mysqli_stmt_execute($stmt) or die('Failed to retrieve resource name: ' . mysqli_error($dbc));
 						mysqli_stmt_store_result($stmt);
 						mysqli_stmt_bind_result($stmt, $resourceName);

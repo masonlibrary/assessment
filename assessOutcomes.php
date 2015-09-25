@@ -9,6 +9,10 @@ require_once('control/startSession.php');
   $page_title = 'Assess Outcomes Taught';
   include('includes/header.php');
   
+  
+  echo '<h2>'.$page_title.'</h2>';
+       /*TODO: this is an annoying workaround that prevents the focus to filter input from breaking (can't click or enter */
+        echo'<span>&nbsp;</span>';
 ?>
 
 <div id="message" class="hidden"><p>Assessment successfully updated!</p></div>

@@ -19,7 +19,7 @@
 		mysqli_autocommit($dbc, false);
 
 		$stmt = mysqli_prepare($dbc, 'delete from outcomesassessed where otcaotctID in (select otctID from outcomestaught where otctsesdID=?)');
-		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_bind_param($stmt, 'i', $inID);
 		if (mysqli_stmt_execute($stmt)) {
 			$output .= 'Outcomes assessed prepared for deletion<br/>';
 		} else {
@@ -27,7 +27,7 @@
 		}
 
 		$stmt = mysqli_prepare($dbc, 'delete from outcomestaught where otctsesdID=?');
-		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_bind_param($stmt, 'i', $inID);
 		if (mysqli_stmt_execute($stmt)) {
 			$output .= 'Outcomes taught prepared for deletion<br/>';
 		} else {
@@ -35,7 +35,7 @@
 		}
 
 		$stmt = mysqli_prepare($dbc, 'delete from resourcesintroduced where rsrisesdID=?');
-		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_bind_param($stmt, 'i', $inID);
 		if (mysqli_stmt_execute($stmt)) {
 			$output .= 'Resources introduced prepared for deletion<br/>';
 		} else {
@@ -43,7 +43,7 @@
 		}
 
 		$stmt = mysqli_prepare($dbc, 'delete from sessionnotes where sesnsesdID=?');
-		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_bind_param($stmt, 'i', $inID);
 		if (mysqli_stmt_execute($stmt)) {
 			$output .= 'Session notes prepared for deletion<br/>';
 		} else {
@@ -51,7 +51,7 @@
 		}
 
 		$stmt = mysqli_prepare($dbc, 'delete from sessiondesc where sesdID=?');
-		mysqli_bind_param($stmt, 'i', $inID);
+		mysqli_stmt_bind_param($stmt, 'i', $inID);
 		if (mysqli_stmt_execute($stmt)) {
 			$output .= 'Session description prepared for deletion<br/>';
 		} else {
@@ -74,7 +74,7 @@
 	$_SESSION['dialogText'] = $output;
 	$_SESSION['dialogTitle'] = "Result";
 
-	echo $output;
+	//echo $output;
 	header('Location: mySessions.php');
 	exit();
 
